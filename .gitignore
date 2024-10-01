@@ -131,7 +131,7 @@ env.bak/
 venv.bak/
 env_projet_kit_big_data/
 .env_projet_kit_big_data
-
+environnement_projet_bigdata
 
 
 # Spyder project settings
