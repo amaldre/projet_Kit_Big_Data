@@ -10,7 +10,7 @@ l'opportunité de choisir l’axe d’analyse que vous trouverez le plus intére
 développer et mettre en avant.
 Ainsi, vous devez identifier une question / un thème qui définissent le fil principal de
 votre étude, par exemple :
-[ ] le profil des utilisateurs contribuant le plus au site ?
+[] le profil des utilisateurs contribuant le plus au site ?
 [ ] Quelles sont les caractéristiques des recettes les plus populaires ?
 [ ] Recommandation de recette en fonction du temps dont on dispose, avec une
 interface permettant de sélectionner le temps/les ingrédients
