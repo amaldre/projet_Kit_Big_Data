@@ -1,2 +1,7 @@
-streamlit == " 1.38.0 "
-pandas == " 2.0.3 "
+streamlit
+pandas
+matplotlib
+seaborn
+pygwalker
+jupyter
+ipykernel
