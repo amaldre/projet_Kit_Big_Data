@@ -22,3 +22,12 @@ votre étude, par exemple :
 - [ ] Est-ce que les utilisateurs les plus anciens obtiennent de meilleures notes à leurs recettes ?
 - [ ] 
 ETC..
+
+
+
+### Idée
+
+- [ ] Faire une page relative à la nutrition, se  concentrer sur chaque ingrédients, à quel point il est nutritif, les qualités nutritives des recettes qui l'utilisent
+- [ ] relations entre popularité d'une recette (à définir) et une autre feature (les ingrédients qu'elle utilise, le temps qu'elle met, sa popularité au fil du temps, sa classe)
+- [ ] Tag, ingrédients, nutrition à la mode
+- [ ] 
