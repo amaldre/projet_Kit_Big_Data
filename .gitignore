@@ -169,3 +169,6 @@ cython_debug/
 Dataset/
 dataset/
 data/
+
+archive
+sujet
