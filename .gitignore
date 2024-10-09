@@ -171,6 +171,9 @@ dataset/
 data/
 TP_EDA/
 
+#Models 
+models/
+
 archives
 archive
 sujet
