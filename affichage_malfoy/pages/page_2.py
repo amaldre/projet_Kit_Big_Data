@@ -17,7 +17,7 @@ with st.form('form2'):
 
     filtre = spices+common_ingredients+alcohol
 
-    RAW_recipes = pd.read_csv("RAW_recipes.csv")
+    RAW_recipes = pd.read_csv("../../data/RAW_recipes.csv")
 
     RAW_recipes[['calories','total fat (%)','sugar (%)','sodium (%)','protein (%)','saturated fat (%)','carbohydrates (%)']] = RAW_recipes.nutrition.str.split(",",expand=True)
     RAW_recipes['calories'] = RAW_recipes['calories'].apply(lambda x: x.replace('[','')) 

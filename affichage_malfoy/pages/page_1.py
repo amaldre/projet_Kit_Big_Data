@@ -18,7 +18,7 @@ filtre = spices+common_ingredients+alcohol
 @st.cache_data
 def load_data():
     # Simuler un chargement de données lourd
-    data = pd.read_csv("RAW_recipes.csv")
+    data = pd.read_csv("../../data/RAW_recipes.csv")
     return data
 
 RAW_recipes = load_data()

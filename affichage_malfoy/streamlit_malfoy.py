@@ -6,10 +6,10 @@ import ast
 import time
 from collections import Counter
 
-PP_recipe = pd.read_csv("PP_recipes.csv")
-PP_users = pd.read_csv("PP_users.csv")
-RAW_recipes = pd.read_csv("RAW_recipes.csv")
-interactions_test = pd.read_csv("interactions_test.csv")
+PP_recipe = pd.read_csv("../data/PP_recipes.csv")
+PP_users = pd.read_csv("../data/PP_users.csv")
+RAW_recipes = pd.read_csv("../data/RAW_recipes.csv")
+interactions_test = pd.read_csv("../data/interactions_test.csv")
 
 ############ definition of the functions
 
