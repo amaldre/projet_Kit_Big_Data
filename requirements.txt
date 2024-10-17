@@ -5,3 +5,7 @@ seaborn
 pygwalker
 jupyter
 ipykernel
+scipy
+nltk
+gensim
+scikit-learn
