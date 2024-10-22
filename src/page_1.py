@@ -87,12 +87,13 @@ def main():
 
     axis_x_list = ["count_total","mean_rating"]
     axis_y_list = ["calories","n_steps","minutes","n_ingredients","mean_rating","count_total"]
+    filters = ["count_total","mean_rating"]
 
     
 
     if st.button("Add Graph"):
         name = f"graph {len(st.session_state["graph"]) + 1}"
-        study = Study(dataframe, axis_x_list, axis_y_list, name)
+        study = Study(dataframe, axis_x_list, axis_y_list, filters, name)
         st.session_state["graph"].append(study)
         print("add",len(st.session_state["graph"]))
 
