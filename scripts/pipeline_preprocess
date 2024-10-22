@@ -1,0 +1,11 @@
+import pandas as pd
+import numpy as np
+import os
+
+PATH_DATA = '../../data/'
+RAW_RECIPE = 'RAW_recipes.csv'
+
+
+def load_data(path):
+    data = pd.read_csv(path)
+    return data
