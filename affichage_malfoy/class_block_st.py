@@ -6,9 +6,9 @@ import ast
 import time
 from collections import Counter
 
-spices = ['salt', 'garlic', 'pepper', 'paprika', 'basil', 'lime', 'cumin', 'garlic'] # Common spices to exclude from list of ingredients
-common_ingredients = ['water', 'flour', 'baking powder','cornstarch'] # Because water and flour don't have important nutritional values
-alcohol = ['vodka', 'ice', 'beer']
+# spices = ['salt', 'garlic', 'pepper', 'paprika', 'basil', 'lime', 'cumin', 'garlic'] # Common spices to exclude from list of ingredients
+# common_ingredients = ['water', 'flour', 'baking powder','cornstarch'] # Because water and flour don't have important nutritional values
+# alcohol = ['vodka', 'ice', 'beer']
 
 class Block:
 
@@ -20,8 +20,11 @@ class Block:
         self.filtre = filtre
 
         pass
+
+    def __del__(self):
+        return
     
-    def filtre_dataframe(_self, dataframe, argument, valeur, filtre):
+    def __filtre_dataframe(_self, dataframe, argument, valeur, filtre):
 
         #dataframe = self.dataframe
         #argument = self.argument
@@ -44,7 +47,7 @@ class Block:
         
         return filtered_recipes, list_ing
     
-    def top_ing(_self, filtered_recipes, list_ing):
+    def __top_ing(_self, filtered_recipes, list_ing):
 
         #filtered_recipes, list_ing = self.filtre_dataframe()
 
@@ -62,9 +65,9 @@ class Block:
         #argument = self.argument
         #valeur = self.valeur
 
-        filtered_recipes, list_ing = _self.filtre_dataframe(dataframe, argument, valeur, filtre)
+        filtered_recipes, list_ing = _self.__filtre_dataframe(dataframe, argument, valeur, filtre)
 
-        matching_rows = _self.top_ing(filtered_recipes, list_ing)
+        matching_rows = _self.__top_ing(filtered_recipes, list_ing)
 
         f, axes = plt.subplots(1, 2, figsize=(18, 6))
         sns.boxplot(data=matching_rows, x='calories', ax=axes[0])
