@@ -40,7 +40,16 @@ class Study:
     def __create_slider_from_df(self, df,column):
         min = math.floor(df[column].min())
         max = math.ceil(df[column].max())
-        return st.slider(label = f"range for {column}", min_value=min, max_value=max, value=(min,max), step=1)
+        return st.slider(label = f"Range for {column}", min_value=min, max_value=max, value=(min,max), step=1)
+
+    def __set_date(self):
+        st.markdown("Time period")
+        col1, col2 = st.columns(2)
+        with col1: 
+            start_date = st.date_input("Start date")
+        with col2:
+            end_date = st.date_input("End date")
+        return start_date, end_date
 
     def get_data_points(self, df, axis_x, axis_y, range_axis_x, range_axis_y, chosen_filters, range_filters):
         columns = [axis_x,axis_y,"id"] + [filtre for filtre in chosen_filters if (filtre != axis_x and filtre != axis_y)]
@@ -54,8 +63,14 @@ class Study:
     
 
     def __set_range_axis(self):
-        range_axis_y = self.__create_slider_from_df(self.dataframe, self.axis_y)
-        range_axis_x = self.__create_slider_from_df(self.dataframe, self.axis_x)
+        if self.axis_y == "submitted":
+            range_axis_y = self.__set_date(self.dataframe, self.axis_y)
+        else:
+            range_axis_y = self.__create_slider_from_df(self.dataframe, self.axis_y)
+        if self.axis_x == "submitted":
+            range_axis_x = self.__set_date(self.dataframe, self.axis_y)
+        else:    
+            range_axis_x = self.__create_slider_from_df(self.dataframe, self.axis_x)
         return range_axis_x, range_axis_y
 
     def __filters(self, axis_x, axis_y):
