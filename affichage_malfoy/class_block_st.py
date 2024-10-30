@@ -6,10 +6,6 @@ import ast
 import time
 from collections import Counter
 
-# spices = ['salt', 'garlic', 'pepper', 'paprika', 'basil', 'lime', 'cumin', 'garlic'] # Common spices to exclude from list of ingredients
-# common_ingredients = ['water', 'flour', 'baking powder','cornstarch'] # Because water and flour don't have important nutritional values
-# alcohol = ['vodka', 'ice', 'beer']
-
 class Block:
 
     def __init__(self, dataframe, argument, valeur, filtre):
@@ -26,10 +22,6 @@ class Block:
     
     def __filtre_dataframe(_self, dataframe, argument, valeur, filtre):
 
-        #dataframe = self.dataframe
-        #argument = self.argument
-        #valeur = self.valeur
-        #filtre = self.filtre
         list_ing = []
         list_ingredient = []
 
