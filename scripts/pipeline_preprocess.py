@@ -5,9 +5,11 @@ import ast
 import nltk
 import re
 
-PATH_DATA = '../../data/'
+PATH_DATA = '../data/'
 RAW_RECIPE = 'RAW_recipes.csv'
 RAW_INTERACTIONS = 'RAW_interactions.csv'
+PROCESSED_DATA = 'processed_data.csv'
+PP_RECIPES = 'PP_recipes.csv'
 
 
 def load_data(path: str):
@@ -87,6 +89,13 @@ def groupby(data: pd):
         df : The data in a pandas dataframe grouped by recipe_id
     """
     df = data.groupby(['recipe_id']).agg({
+    'i': 'first', 
+    'name_tokens': 'first', 
+    'ingredient_tokens': 'first',
+    'steps_tokens': 'first', 
+    'techniques': 'first', 
+    'calorie_level': 'first', 
+    'ingredient_ids': 'first',
     'name':'first',
     'minutes':'first',
     'contributor_id':'first',
@@ -113,7 +122,7 @@ def change_na_description_by_name(data: pd):
     """
     
     data['description'] = data['description'].fillna(data['name'])
-    data = data.dropna(subset=['description'])
+    data = data.dropna(subset=['name'])
     return data  
  
 def delete_outliers_minutes(data: pd):
@@ -147,16 +156,23 @@ def delete_outliers_steps(data:pd):
     return data
 
 def get_stopwords():
-    """"
+    """
     Get the stopwords from nltk
-    
+
     Returns:
         stopwords : The stopwords from nltk aggregated with custom stopwords
     """
+
     nltk.download('stopwords')
-    custom_stopwords =  {'recipe', 'recipes','time', 'one', 'like', 'use', 'from', 'make', 'made', 'used', 'dont', 'well', 'really', 'came', 'with', 'get', 'found', 'find', 'ii', 'try', 'tried', 'also', 'add', 'got'}
-    stopwords = set(nltk.corpus.stopwords.words('english'))| custom_stopwords
+
+    custom_stopwords =  {'recipe', 'recipes', 'time', 'one', 'like', 'use', 'from', 'make', 
+                         'made', 'used', 'dont', 'well', 'really', 'came', 'with', 'get', 
+                         'found', 'find', 'ii', 'try', 'tried', 'also', 'add', 'got'}
     
+    stopwords = set(nltk.corpus.stopwords.words('english')) | custom_stopwords
+    return stopwords
+
+
 def clean_and_tokenize(text: str,stopwords: set):
     """
     Clean and tokenize the text by removing stopwords and punctuation. Filtered also the POS tags to keep only the nouns and verbs
@@ -204,7 +220,20 @@ def clean_colonne(data: pd, colonne: str, stopwords: set):
     data['cleaned_'+colonne] = data[colonne].apply(lambda x: clean_and_tokenize(x, stopwords))
     return data
 
-def ingredient_to_ingredient_processed(ingredient_list):
+def ingredient_to_ingredient_processed(ingredient_list: list, processed_dict: dict, replaced_dict: dict):
+    """
+    From an list of ingredients, get the name of the processed ingredient and the name of the replaced ingredient
+    
+    Args:
+        ingredient_list (list): The ingredient
+        processed_dict (dict): The dictionary of processed ingredients
+        replaced_dict (dict): The dictionary of replaced ingredients
+    
+    Returns:
+        processed_list : The processed ingredient
+        replaced_list : The replaced ingredient
+    """
+    
     processed_list = [processed_dict.get(ingredient, None) for ingredient in ingredient_list]
     replaced_list = [replaced_dict.get(ingredient, None) for ingredient in ingredient_list]
     return processed_list, replaced_list
@@ -224,8 +253,8 @@ def processed_ingredient(data: pd):
     processed_dict = ingredients_data.set_index('raw_ingr')['processed'].to_dict()
     replaced_dict = ingredients_data.set_index('raw_ingr')['replaced'].to_dict()
     
-    data[['ingredients_processed', 'ingredients_replaced']] = data['ingredients'].apply(lambda x: pd.Series(ingredient_to_ingredient_processed(x)))
-    
+    data[['ingredients_processed', 'ingredients_replaced']] = data['ingredients'].apply(lambda x: pd.Series(ingredient_to_ingredient_processed(x, processed_dict, replaced_dict)))
+    return data
  
 def save_data(data: pd, path: str):
     """Save the data to the path
@@ -241,25 +270,29 @@ def preprocess():
     """
     Preprocess the data by loading, cleaning, and saving it
     """
+    
     raw_recipe_data = load_data(os.path.join(PATH_DATA, RAW_RECIPE))
     raw_interactions_data = load_data(os.path.join(PATH_DATA, RAW_INTERACTIONS))
+    pp_recipes_data = load_data(os.path.join(PATH_DATA, PP_RECIPES))
     
     change_to_date_time_format(raw_recipe_data, 'submitted')
     change_to_date_time_format(raw_interactions_data, 'date')
     
     change_to_list(raw_recipe_data, 'tags')
     change_to_list(raw_recipe_data, 'steps')
+    change_to_list(raw_recipe_data, 'nutrition')
     change_to_list(raw_recipe_data, 'ingredients')
-    change_to_list(raw_interactions_data, 'ingredients')
+    change_to_list(pp_recipes_data, 'techniques')
     
     df = merge_dataframe(raw_recipe_data, raw_interactions_data, 'id', 'recipe_id')
+    df = merge_dataframe(pp_recipes_data, df, 'id', 'recipe_id')
     df = groupby(df)
     
     df = change_na_description_by_name(df)
     
     df = change_category(df, 'contributor_id')
     df = change_category(df, 'recipe_id')
-    df = change_category(df, 'user_id')
+
     
     df = delete_outliers_minutes(df)
     df = delete_outliers_steps(df)
@@ -270,8 +303,8 @@ def preprocess():
     
     df = processed_ingredient(df)
     
-    save_data(df, os.path.join(PATH_DATA, 'preprocessed_data.csv'))
+    save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     
-    
+preprocess()
     
     
