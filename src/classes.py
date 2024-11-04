@@ -6,6 +6,13 @@ import logging
 
 # Créez un logger spécifique pour ce module
 logger = logging.getLogger(__name__)
+logging.basicConfig(
+    filename="app.log",               # Nom du fichier de log
+    filemode="a",                      # Mode append pour ajouter au fichier sans l'écraser
+    level=logging.INFO,                # Niveau minimum des messages de log à enregistrer
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Format des messages
+    datefmt="%Y-%m-%d %H:%M:%S"        # Format de la date
+)
 class Study:
 
     def __init__(self, dataframe, axis_x_list, axis_y_list, filters, key):
@@ -130,9 +137,9 @@ class Study:
                         display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
                         st.dataframe(display_df,hide_index=True)
                     
-                if st.form_submit_button(label="Delete graph"):
-                    self.delete = True
-                    logger.info("Graphique supprimé pour l'instance avec key='%s'", self.key)
-                    st.rerun()
+                    if st.form_submit_button(label="Delete graph"):
+                        self.delete = True
+                        logger.info("Graphique supprimé pour l'instance avec key='%s'", self.key)
+                        st.rerun()
 
 
