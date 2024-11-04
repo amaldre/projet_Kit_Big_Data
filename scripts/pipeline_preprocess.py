@@ -5,10 +5,22 @@ import ast
 import nltk
 import re
 
+
+
+def load_nltk_resources():
+    """
+    Load the nltk resources
+    """
+    nltk.download('punkt_tab')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('stopwords')
+
 PATH_DATA = '../data/'
 RAW_RECIPE = 'RAW_recipes.csv'
 RAW_INTERACTIONS = 'RAW_interactions.csv'
 PROCESSED_DATA = 'processed_data.csv'
+PROCESSED_DATA_JSON = 'processed_data.json'
 PP_RECIPES = 'PP_recipes.csv'
 
 
@@ -50,6 +62,7 @@ def change_to_list(data: pd, colone: str):
         panda df : The data in a pandas dataframe with the column as a list of strings
     """
     data[colone] = data[colone].apply(ast.literal_eval)
+    print("Type après conversion:", type(data[colone].iloc[0]))
     return data
 
 
@@ -253,7 +266,7 @@ def processed_ingredient(data: pd):
     processed_dict = ingredients_data.set_index('raw_ingr')['processed'].to_dict()
     replaced_dict = ingredients_data.set_index('raw_ingr')['replaced'].to_dict()
     
-    data[['ingredients_processed', 'ingredients_replaced']] = data['ingredients'].apply(lambda x: pd.Series(ingredient_to_ingredient_processed(x, processed_dict, replaced_dict)))
+    data[['ingredients_processed', 'ingredients_replaced']] = data['ingredients'].apply(lambda x: ingredient_to_ingredient_processed(x, processed_dict, replaced_dict)).apply(pd.Series)
     return data
  
 def save_data(data: pd, path: str):
@@ -265,26 +278,39 @@ def save_data(data: pd, path: str):
     """
     data.to_csv(path, index=False)
 
+def save_data_json(data: pd, path: str):
+    """Save the data to the path in json format
+
+    Args:
+        data (pd): Data in a pandas dataframe
+        path (str): The path to save the data
+    """
+    data.to_json(path, orient='records', lines=True)
+
 
 def preprocess():
     """
     Preprocess the data by loading, cleaning, and saving it
     """
+        
+    print("Downloading nltk resources")
+    load_nltk_resources()
     
     raw_recipe_data = load_data(os.path.join(PATH_DATA, RAW_RECIPE))
     raw_interactions_data = load_data(os.path.join(PATH_DATA, RAW_INTERACTIONS))
     pp_recipes_data = load_data(os.path.join(PATH_DATA, PP_RECIPES))
     
-    change_to_date_time_format(raw_recipe_data, 'submitted')
-    change_to_date_time_format(raw_interactions_data, 'date')
+    raw_recipe_data = change_to_date_time_format(raw_recipe_data, 'submitted')
+    raw_interactions_data = change_to_date_time_format(raw_interactions_data, 'date')
     
-    change_to_list(raw_recipe_data, 'tags')
-    change_to_list(raw_recipe_data, 'steps')
-    change_to_list(raw_recipe_data, 'nutrition')
-    change_to_list(raw_recipe_data, 'ingredients')
-    change_to_list(pp_recipes_data, 'techniques')
+    raw_recipe_data = change_to_list(raw_recipe_data, 'tags')
+    raw_recipe_data = change_to_list(raw_recipe_data, 'steps')
+    raw_recipe_data = change_to_list(raw_recipe_data, 'nutrition')
+    raw_recipe_data = change_to_list(raw_recipe_data, 'ingredients')
+    pp_recipes_data = change_to_list(pp_recipes_data, 'techniques')
     
     df = merge_dataframe(raw_recipe_data, raw_interactions_data, 'id', 'recipe_id')
+    print("Type après merge:", type(df['ingredients'].iloc[0]))
     df = merge_dataframe(pp_recipes_data, df, 'id', 'recipe_id')
     df = groupby(df)
     
@@ -303,8 +329,9 @@ def preprocess():
     
     df = processed_ingredient(df)
     
-    save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     
+    save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
+    save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))
 preprocess()
     
     

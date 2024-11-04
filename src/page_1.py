@@ -36,11 +36,9 @@ def main():
     recipes_df = recipes_df.drop(index=idx_with_max_value)
     dataframe = merge_df(recipes_df,mean_rating_df,"id")
 
-
-
-    axis_x_list = ["count_total","mean_rating"]
+    axis_x_list = ["count_total","mean_rating","submitted"]
     axis_y_list = ["calories","n_steps","minutes","n_ingredients","mean_rating","count_total"]
-    filters = ["count_total","mean_rating"]
+    filters = ["count_total","mean_rating","submitted"]
 
     
 
