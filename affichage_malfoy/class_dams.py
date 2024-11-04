@@ -1,6 +1,7 @@
 import streamlit as st
 import math
 import matplotlib.pyplot as plt
+import seaborn as sns 
 
 class Study:
 
@@ -35,7 +36,7 @@ class Study:
         max = math.ceil(df[column].max())
         return st.slider(label = f"range for {column}", min_value=min, max_value=max, value=(min,max), step=1)
 
-    def get_data_points(self, df, axis_x, range_axis_x, chosen_filters, range_filters):
+    def get_data_points(self, df, axis_x, range_axis_x, chosen_filters, range_filters,):
         columns = [axis_x,"id"] + [filtre for filtre in chosen_filters if (filtre != axis_x)]
         df = df[columns].sort_values(by=axis_x)
         df = df[(df[axis_x] >= range_axis_x[0]) & (df[axis_x] <= range_axis_x[1])]
@@ -64,7 +65,7 @@ class Study:
         print(range_filters)
         return chosen_filters,range_filters
 
-    def display_graph(self):
+    def display_graph(self):                        
         # Generate data
         print("début_display",self.delete)
         if self.delete ==False:
@@ -80,8 +81,21 @@ class Study:
                                                         chosen_filters,
                                                         range_filters)
                 y = range(len(x))
+
+                col1, col2, col3, col4, col5 = st.columns(5)
+
+                with col1:
+                    draw_graph_button = st.form_submit_button(label="Draw graph")
+                with col2:
+                    draw_boxplot_button = st.form_submit_button(label="Draw Box Plot")
+                with col3:
+                    draw_density_button = st.form_submit_button(label="Draw Density Plot")
+                with col4:
+                    draw_histogram_button = st.form_submit_button(label="Draw Histogram")
+                with col5:
+                    delete_graph_button = st.form_submit_button(label="Delete graph")
             
-                if st.form_submit_button(label="Draw graph"):
+                if draw_graph_button:
 
                     col = st.columns([1,3,1])
 
@@ -98,7 +112,58 @@ class Study:
                     with st.expander("The 10 recipes with the most comments (with current filters)"):
                         st.dataframe(display_df,hide_index=True)
                     
-                if st.form_submit_button(label="Delete graph"):
+                if draw_boxplot_button:
+
+                    col = st.columns([1,3,1])
+
+                    with col[1]:
+                    # Create a figure
+                        fig, ax = plt.subplots(figsize=(10,6))
+                        sns.boxplot(data=x, ax=ax)
+                        # Display Matplotlib figure in Streamlit
+                        st.pyplot(fig)
+                        st.write(f"number of recipes : {len(x)}")
+
+                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+                    with st.expander("The 10 recipes with the most comments (with current filters)"):
+                        st.dataframe(display_df,hide_index=True)
+
+                if draw_density_button  :
+
+                    col = st.columns([1,3,1])
+
+                    with col[1]:
+                    # Create a figure
+                        fig, ax = plt.subplots(figsize=(10,6))
+                        sns.kdeplot(data=x, ax=ax)
+                        # Display Matplotlib figure in Streamlit
+                        st.pyplot(fig)
+                        st.write(f"number of recipes : {len(x)}")
+
+                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+                    with st.expander("The 10 recipes with the most comments (with current filters)"):
+                        st.dataframe(display_df,hide_index=True)
+
+                if draw_histogram_button:
+                        
+                    col = st.columns([1,3,1])
+
+                    with col[1]:
+                    # Create a figure
+                        fig, ax = plt.subplots(figsize=(10,6))
+                        sns.histplot(data=x, ax=ax)
+                        # Display Matplotlib figure in Streamlit
+                        st.pyplot(fig)
+                        st.write(f"number of recipes : {len(x)}")
+
+                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+                    with st.expander("The 10 recipes with the most comments (with current filters)"):
+                        st.dataframe(display_df,hide_index=True)
+
+                if delete_graph_button:
                     self.delete = True
                     print("delete",self.delete)
                     st.rerun()
