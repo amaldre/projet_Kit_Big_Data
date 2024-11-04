@@ -50,7 +50,7 @@ def main():
     filters = ["count_total","mean_rating","calories","total fat (%)","sugar (%)","sodium (%)","protein (%)","saturated fat (%)","carbohydrates (%)"]
 
     if add_graph_button:
-        name = f"graph {len(st.session_state["graph"]) + 1}"
+        name = f"{len(st.session_state["graph"]) + 1}"
         study = Study(dataframe, axis_x_list, filters, name)
         st.session_state["graph"].append(study)
         print("add",len(st.session_state["graph"]))
