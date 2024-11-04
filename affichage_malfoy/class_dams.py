@@ -28,13 +28,13 @@ class Study:
 
 
     def __set_axis(self):
-        axis_x = st.selectbox(label="axis_x", options = self.axis_x_list)
+        axis_x = st.selectbox(label=f"graph {self.key}", options = self.axis_x_list, key=f"{self.key}_axis_x")
         return axis_x
     
     def __create_slider_from_df(self, df,column):
         min = math.floor(df[column].min())
         max = math.ceil(df[column].max())
-        return st.slider(label = f"range for {column}", min_value=min, max_value=max, value=(min,max), step=1)
+        return st.slider(label = f"range for {column}", min_value=min, max_value=max, value=(min,max), step=1, key=f"{self.key}_slider_{column}")
 
     def get_data_points(self, df, axis_x, range_axis_x, chosen_filters, range_filters,):
         columns = [axis_x,"id"] + [filtre for filtre in chosen_filters if (filtre != axis_x)]
@@ -52,18 +52,67 @@ class Study:
 
     def __filters(self, axis_x):
         filters = [filtre for filtre in self.filters if (filtre != axis_x)]
-        chosen_filters = st.sidebar.multiselect(label ="filters", options=filters)
+        chosen_filters = st.sidebar.multiselect(label =f"filtre pour le graph {self.key}", options=filters, key=f"{self.key}_chosen_filters")
         print(chosen_filters)
         range_filters = []
         for filter in chosen_filters:
             min = math.floor(self.dataframe[filter].min())
             max = math.ceil(self.dataframe[filter].max())
-            range = st.sidebar.slider(filter, min_value=min, max_value=max, value=(min,max))
+            range = st.sidebar.slider(filter, min_value=min, max_value=max, value=(min,max), key=f"{self.key}_range_{filter}")
             print(range)
             range_filters.append(range)
             print(range_filters)
         print(range_filters)
         return chosen_filters,range_filters
+    
+    # Pour les differents types de graphes
+    def graph_normal(self, x, recipes_id):
+        col = st.columns([1,3,1])
+        with col[1]:
+            fig, ax = plt.subplots(figsize=(10,6))
+            ax.plot(x, marker='o', markersize=0.5)
+            st.pyplot(fig)
+            st.write(f"number of recipes : {len(x)}")
+        display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+        display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+        with st.expander("The 10 recipes with the most comments (with current filters)"):
+            st.dataframe(display_df,hide_index=True)
+    
+    def graph_boxplot(self, x, recipes_id):
+        col = st.columns([1,3,1])
+        with col[1]:
+            fig, ax = plt.subplots(figsize=(10,6))
+            sns.boxplot(data=x, ax=ax)
+            st.pyplot(fig)
+            st.write(f"number of recipes : {len(x)}")
+        display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+        display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+        with st.expander("The 10 recipes with the most comments (with current filters)"):
+            st.dataframe(display_df,hide_index=True)
+    
+    def graph_density(self, x, recipes_id):
+        col = st.columns([1,3,1])
+        with col[1]:
+            fig, ax = plt.subplots(figsize=(10,6))
+            sns.kdeplot(data=x, ax=ax)
+            st.pyplot(fig)
+            st.write(f"number of recipes : {len(x)}")
+        display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+        display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+        with st.expander("The 10 recipes with the most comments (with current filters)"):
+            st.dataframe(display_df,hide_index=True)
+            
+    def graph_histogram(self, x, recipes_id):
+        col = st.columns([1,3,1])
+        with col[1]:
+            fig, ax = plt.subplots(figsize=(10,6))
+            sns.histplot(data=x, ax=ax)
+            st.pyplot(fig)
+            st.write(f"number of recipes : {len(x)}")
+        display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
+        display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
+        with st.expander("The 10 recipes with the most comments (with current filters)"):
+            st.dataframe(display_df,hide_index=True)
 
     def display_graph(self):                        
         # Generate data
@@ -97,71 +146,19 @@ class Study:
             
                 if draw_graph_button:
 
-                    col = st.columns([1,3,1])
-
-                    with col[1]:
-                    # Create a figure
-                        fig, ax = plt.subplots(figsize=(10,6))
-                        ax.plot(x, marker='o', markersize=0.5)
-                        # Display Matplotlib figure in Streamlit
-                        st.pyplot(fig)
-                        st.write(f"number of recipes : {len(x)}")
-
-                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
-                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
-                    with st.expander("The 10 recipes with the most comments (with current filters)"):
-                        st.dataframe(display_df,hide_index=True)
+                    self.graph_normal(x, recipes_id)
                     
                 if draw_boxplot_button:
 
-                    col = st.columns([1,3,1])
-
-                    with col[1]:
-                    # Create a figure
-                        fig, ax = plt.subplots(figsize=(10,6))
-                        sns.boxplot(data=x, ax=ax)
-                        # Display Matplotlib figure in Streamlit
-                        st.pyplot(fig)
-                        st.write(f"number of recipes : {len(x)}")
-
-                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
-                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
-                    with st.expander("The 10 recipes with the most comments (with current filters)"):
-                        st.dataframe(display_df,hide_index=True)
+                    self.graph_boxplot(x, recipes_id)
 
                 if draw_density_button  :
 
-                    col = st.columns([1,3,1])
-
-                    with col[1]:
-                    # Create a figure
-                        fig, ax = plt.subplots(figsize=(10,6))
-                        sns.kdeplot(data=x, ax=ax)
-                        # Display Matplotlib figure in Streamlit
-                        st.pyplot(fig)
-                        st.write(f"number of recipes : {len(x)}")
-
-                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
-                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
-                    with st.expander("The 10 recipes with the most comments (with current filters)"):
-                        st.dataframe(display_df,hide_index=True)
+                    self.graph_density(x, recipes_id)
 
                 if draw_histogram_button:
                         
-                    col = st.columns([1,3,1])
-
-                    with col[1]:
-                    # Create a figure
-                        fig, ax = plt.subplots(figsize=(10,6))
-                        sns.histplot(data=x, ax=ax)
-                        # Display Matplotlib figure in Streamlit
-                        st.pyplot(fig)
-                        st.write(f"number of recipes : {len(x)}")
-
-                    display_df = self.dataframe[self.dataframe['id'].isin(recipes_id)]
-                    display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
-                    with st.expander("The 10 recipes with the most comments (with current filters)"):
-                        st.dataframe(display_df,hide_index=True)
+                    self.graph_histogram(x, recipes_id)
 
                 if delete_graph_button:
                     self.delete = True
