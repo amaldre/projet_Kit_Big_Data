@@ -130,9 +130,9 @@ class Study:
                         display_df = display_df.sort_values(by="count_total",ascending=False)[:10]
                         st.dataframe(display_df,hide_index=True)
                     
-                if st.form_submit_button(label="Delete graph"):
-                    self.delete = True
-                    logger.info("Graphique supprimé pour l'instance avec key='%s'", self.key)
-                    st.rerun()
+                    if st.form_submit_button(label="Delete graph"):
+                        self.delete = True
+                        logger.info("Graphique supprimé pour l'instance avec key='%s'", self.key)
+                        st.rerun()
 
 
