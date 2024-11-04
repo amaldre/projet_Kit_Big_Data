@@ -6,51 +6,53 @@ import ast
 import time
 from collections import Counter
 import logging
-
+from class_dams import Study
 from class_block_st import Block
 
-with st.form('form2'):
+st.set_page_config(layout="wide")
+st.title("Data Visualiser")
 
-    spices = ['salt', 'garlic', 'pepper', 'paprika', 'basil', 'lime', 'cumin', 'garlic'] # Common spices to exclude from list of ingredients
-    common_ingredients = ['water', 'flour', 'baking powder','cornstarch'] # Because water and flour don't have important nutritional values
-    alcohol = ['vodka', 'ice', 'beer']
+@st.cache_data
+def import_df(df_path):
+    recipes_df = pd.read_csv(df_path)
+    return recipes_df
 
-    filtre = spices+common_ingredients+alcohol
+@st.cache_data
+def merge_df(df1, df2, column):
+    return pd.merge(df1, df2, on=column)
 
-    RAW_recipes = pd.read_csv("../../data/RAW_recipes.csv")
+if "graph" not in st.session_state:
+    st.session_state["graph"] = []
 
-    RAW_recipes[['calories','total fat (%)','sugar (%)','sodium (%)','protein (%)','saturated fat (%)','carbohydrates (%)']] = RAW_recipes.nutrition.str.split(",",expand=True)
-    RAW_recipes['calories'] = RAW_recipes['calories'].apply(lambda x: x.replace('[','')) 
-    RAW_recipes['carbohydrates (%)']= RAW_recipes['carbohydrates (%)'].apply(lambda x: x.replace(']',''))
+def main():
 
-    RAW_recipes['calories'] = RAW_recipes['calories'].apply(ast.literal_eval)
-    RAW_recipes['total fat (%)'] = RAW_recipes['total fat (%)'].apply(ast.literal_eval)
-    RAW_recipes['sugar (%)'] = RAW_recipes['sugar (%)'].apply(ast.literal_eval)
-    RAW_recipes['sodium (%)'] = RAW_recipes['sodium (%)'].apply(ast.literal_eval)
-    RAW_recipes['protein (%)'] = RAW_recipes['protein (%)'].apply(ast.literal_eval)
-    RAW_recipes['saturated fat (%)'] = RAW_recipes['saturated fat (%)'].apply(ast.literal_eval)
-    RAW_recipes['carbohydrates (%)'] = RAW_recipes['carbohydrates (%)'].apply(ast.literal_eval)
+    # print("début",len(st.session_state["graph"]))
+    if st.button("refresh"):
+        st.rerun()
 
-    RAW_recipes['ingredients_cleaned'] = RAW_recipes['ingredients'].str.lower().str.strip()
+    recipes_df = import_df("data/recipes_explicit_nutriments.csv")
+    mean_rating_df = import_df("data/mean_ratings.csv")
+    mean_rating_df.rename(columns={"recipe_id":"id"}, inplace=True)
+    idx_with_max_value = recipes_df["calories"].values.argmax()
+    recipes_df = recipes_df.drop(index=idx_with_max_value)
+    dataframe = merge_df(recipes_df,mean_rating_df,"id")
 
-    list_option = ['calories','total fat (%)', 'sugar (%)']
+    axis_x_list = ["count_total","mean_rating","calories","total_fat (%)","sugar (%)","sodium (%)","protein (%)","saturated_fat (%)","carbohydrates (%)"]
+    filters = ["count_total","mean_rating","calories","total_fat (%)","sugar (%)","sodium (%)","protein (%)","saturated_fat (%)","carbohydrates (%)"]
 
-    arg = st.selectbox(label = 'Choose', options = list_option)
+    if st.button("Add Graph"):
+        name = f"graph {len(st.session_state["graph"]) + 1}"
+        study = Study(dataframe, axis_x_list, filters, name)
+        st.session_state["graph"].append(study)
+        print("add",len(st.session_state["graph"]))
 
-    if arg == 'calories':
-        valeur = 1000
-    else:
-        valeur = 20
+    for i, graph in enumerate(st.session_state["graph"]):
+        
+        if graph.delete==True:
+            st.session_state["graph"].remove(graph)
+            print("remove",len(st.session_state["graph"]))
+        else:
+            graph.display_graph()
 
-    my_block = Block(RAW_recipes, arg, valeur, filtre)
-
-    if 'graphs' not in st.session_state:
-        st.session_state.graphs = []
-
-    if st.form_submit_button('$+$'):
-        if 'graph' not in st.session_state:
-            fig = my_block.graph()
-            st.session_state.graphs.append(fig)
-            st.write("Voici les graphes sauvegardés dans session_state :")
-            for graph in st.session_state.graphs:
-                st.pyplot(graph)
+if __name__ == "__main__":
+    main()

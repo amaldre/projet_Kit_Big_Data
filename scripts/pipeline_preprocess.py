@@ -9,6 +9,7 @@ PATH_DATA = '../data/'
 RAW_RECIPE = 'RAW_recipes.csv'
 RAW_INTERACTIONS = 'RAW_interactions.csv'
 PROCESSED_DATA = 'processed_data.csv'
+PP_RECIPES = 'PP_recipes.csv'
 
 
 def load_data(path: str):
@@ -88,6 +89,13 @@ def groupby(data: pd):
         df : The data in a pandas dataframe grouped by recipe_id
     """
     df = data.groupby(['recipe_id']).agg({
+    'i': 'first', 
+    'name_tokens': 'first', 
+    'ingredient_tokens': 'first',
+    'steps_tokens': 'first', 
+    'techniques': 'first', 
+    'calorie_level': 'first', 
+    'ingredient_ids': 'first',
     'name':'first',
     'minutes':'first',
     'contributor_id':'first',
@@ -265,6 +273,7 @@ def preprocess():
     
     raw_recipe_data = load_data(os.path.join(PATH_DATA, RAW_RECIPE))
     raw_interactions_data = load_data(os.path.join(PATH_DATA, RAW_INTERACTIONS))
+    pp_recipes_data = load_data(os.path.join(PATH_DATA, PP_RECIPES))
     
     change_to_date_time_format(raw_recipe_data, 'submitted')
     change_to_date_time_format(raw_interactions_data, 'date')
@@ -273,9 +282,10 @@ def preprocess():
     change_to_list(raw_recipe_data, 'steps')
     change_to_list(raw_recipe_data, 'nutrition')
     change_to_list(raw_recipe_data, 'ingredients')
-    
+    change_to_list(pp_recipes_data, 'techniques')
     
     df = merge_dataframe(raw_recipe_data, raw_interactions_data, 'id', 'recipe_id')
+    df = merge_dataframe(pp_recipes_data, df, 'id', 'recipe_id')
     df = groupby(df)
     
     df = change_na_description_by_name(df)
