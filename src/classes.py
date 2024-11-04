@@ -1,7 +1,10 @@
 import streamlit as st
 import math
 import matplotlib.pyplot as plt
+import logging
 
+# Créez un logger spécifique pour ce module
+logger = logging.getLogger(__name__)
 class Study:
 
     def __init__(self, dataframe, axis_x_list, axis_y_list, filters, key):
@@ -17,11 +20,16 @@ class Study:
         self.key = key
         self.delete = False
 
+        # Log l'initialisation de l'objet
+        logger.info("Instance de Study créée avec key='%s'", self.key)
+
     def __del__(self):
+        logger.info("Instance de Study avec key='%s' supprimée", self.key)
         return
 
     # Méthode d'affichage des attributs
     def print_self(self):
+        logger.info("Affichage des attributs de l'objet Study avec key='%s'", self.key)
         print(
             self.axis_x_list,
             self.axis_y_list,
@@ -35,27 +43,38 @@ class Study:
     def __set_axis(self):
         axis_y = st.selectbox(label="axis_y", options = self.axis_y_list)
         axis_x = st.selectbox(label="axis_x", options = self.axis_x_list)
+        logger.debug("Axes définis: axis_x=%s, axis_y=%s", axis_x, axis_y)
         return axis_x, axis_y
     
     def __create_slider_from_df(self, df,column):
         min = math.floor(df[column].min())
         max = math.ceil(df[column].max())
+        logger.debug("Création d'un slider pour '%s' avec min=%d, max=%d", column, min, max)
         return st.slider(label = f"range for {column}", min_value=min, max_value=max, value=(min,max), step=1)
 
     def get_data_points(self, df, axis_x, axis_y, range_axis_x, range_axis_y, chosen_filters, range_filters):
-        columns = [axis_x,axis_y,"id"] + [filtre for filtre in chosen_filters if (filtre != axis_x and filtre != axis_y)]
-        df = df[columns].sort_values(by=axis_x)
-        df = df[(df[axis_x] >= range_axis_x[0]) & (df[axis_x] <= range_axis_x[1])]
-        df = df[(df[axis_y] >= range_axis_y[0]) & (df[axis_y] <= range_axis_y[1])]
-        if len(chosen_filters)>0:
-            for i,filter in enumerate(chosen_filters):
-                df = df[(df[filter] >= range_filters[i][0]) & (df[filter] <= range_filters[i][1])]
-        return df[axis_x].values, df[axis_y].values, df["id"].values
-    
+        try:
+            columns = [axis_x, axis_y, "id"] + [filtre for filtre in chosen_filters if (filtre != axis_x and filtre != axis_y)]
+            df = df[columns].sort_values(by=axis_x)
+            df = df[(df[axis_x] >= range_axis_x[0]) & (df[axis_x] <= range_axis_x[1])]
+            df = df[(df[axis_y] >= range_axis_y[0]) & (df[axis_y] <= range_axis_y[1])]
+        
+            if len(chosen_filters) > 0:
+                for i, filter in enumerate(chosen_filters):
+                    df = df[(df[filter] >= range_filters[i][0]) & (df[filter] <= range_filters[i][1])]
+        
+            logger.info("Données filtrées pour les axes '%s' et '%s' avec %d points.", axis_x, axis_y, len(df))
+            return df[axis_x].values, df[axis_y].values, df["id"].values
+
+        except Exception as e:
+            logger.error("Erreur lors de l'obtention des points de données : %s", e)
+            return [], [], []
+
 
     def __set_range_axis(self):
         range_axis_y = self.__create_slider_from_df(self.dataframe, self.axis_y)
         range_axis_x = self.__create_slider_from_df(self.dataframe, self.axis_x)
+        logger.debug("Plages définies: range_axis_x=%s, range_axis_y=%s", range_axis_x, range_axis_y)
         return range_axis_x, range_axis_y
 
     def __filters(self, axis_x, axis_y):
@@ -69,11 +88,11 @@ class Study:
             range = st.sidebar.slider(filter, min_value=min, max_value=max, value=(min,max))
             print(range)
             range_filters.append(range)
-            print(range_filters)
-        print(range_filters)
+        logger.debug("Filtres choisis : %s", chosen_filters)
         return chosen_filters,range_filters
 
     def display_graph(self):
+        logger.info("Affichage du graphique pour l'instance avec key='%s'", self.key)
         # Generate data
         print("début_display",self.delete)
         if self.delete ==False:
@@ -110,7 +129,7 @@ class Study:
                     
                 if st.form_submit_button(label="Delete graph"):
                     self.delete = True
-                    print("delete",self.delete)
+                    logger.info("Graphique supprimé pour l'instance avec key='%s'", self.key)
                     st.rerun()
 
 
@@ -122,4 +141,5 @@ class TimeStudy(Study):
         end_date = st.date_input("start date",self.dataframe["date"])
 
         range_axis_x = (start_date, end_date)
+        logger.debug("Plage de dates définie : de %s à %s", start_date, end_date)
         return range_axis_x, range_axis_y
