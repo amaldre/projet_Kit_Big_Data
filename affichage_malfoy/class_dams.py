@@ -1,7 +1,9 @@
 import streamlit as st
 import math
 import matplotlib.pyplot as plt
-import seaborn as sns 
+import seaborn as sns
+import ast
+from collections import Counter
 
 class Study:
 
@@ -64,6 +66,36 @@ class Study:
             print(range_filters)
         print(range_filters)
         return chosen_filters,range_filters
+    
+    def filtre_top_ing(self, df, nb_top_ing):
+        
+        spices = ['salt', 'garlic', 'pepper', 'paprika', 'basil', 'lime', 'cumin', 'garlic'] # Common spices to exclude from list of ingredients
+        common_ingredients = ['water', 'flour', 'baking powder','cornstarch'] # Because water and flour don't have important nutritional values
+        alcohol = ['vodka', 'ice', 'beer']
+        filtre_ing = spices+common_ingredients+alcohol
+
+        l_ingredient = list(df.ingredients)
+        list_ingredient = []
+        for item in l_ingredient: 
+            item = ast.literal_eval(item)
+            for i in item: 
+                list_ingredient.append(i)
+
+        filtered_strings = [s for s in list_ingredient if not any(word in s for word in filtre_ing)]
+
+        element_counts = Counter(filtered_strings)
+        top_ing = element_counts.most_common(nb_top_ing)
+        print(top_ing)
+        list_ing = []
+        for i in range (len(top_ing)):
+            list_ing.append(top_ing[i][0])
+
+        def contains_top_ingredients(ingredients):
+            return any(ingredient in ingredients for ingredient in list_ing)
+
+        matching_rows = df[df['ingredients'].apply(contains_top_ingredients)].copy()
+
+        return matching_rows, list_ing
     
     # Pour les differents types de graphes
     def graph_normal(self, x, recipes_id):
