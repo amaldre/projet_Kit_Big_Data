@@ -48,7 +48,7 @@ idna==3.10
 importlib_resources==6.4.5
 ipykernel==6.29.5
 ipylab==1.0.0
-ipython==8.28.0
+ipython
 ipywidgets==8.1.5
 isoduration==20.11.0
 jedi==0.19.1
