@@ -88,7 +88,7 @@ from scripts.pipeline_preprocess import load_nltk_resources
 
 def test_load_nltk_resources():
     # Patch `nltk.download` pour éviter les téléchargements réels
-    with patch('src.your_module.nltk.download') as mock_download:
+    with patch('scripts.pipeline_preprocess.nltk.download') as mock_download:
         # Exécuter la fonction
         load_nltk_resources()
 
