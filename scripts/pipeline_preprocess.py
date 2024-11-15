@@ -4,6 +4,7 @@ import os
 import ast
 import nltk
 import re
+from datetime import date
 
 
 
@@ -48,7 +49,7 @@ def change_to_date_time_format(data: pd,colone: str):
         data : The data in a pandas dataframe with the column in datetime format
     """
     
-    data[colone] = pd.to_datetime(data[colone], format='%Y-%m-%d')
+    data[colone] = pd.to_datetime(data[colone], format='%Y-%m-%d').dt.date
     return data
 
 def change_to_list(data: pd, colone: str):
@@ -332,6 +333,7 @@ def preprocess():
     
     save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))
-preprocess()
+
+#preprocess()
     
     
