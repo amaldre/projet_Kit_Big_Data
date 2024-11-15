@@ -70,7 +70,8 @@ def test_study_display_graph():
     df = pd.DataFrame({
         'id': [1, 2, 3],
         'axis_x': [1, 2, 3],
-        'axis_y': [3, 2, 1]
+        'axis_y': [3, 2, 1],
+        'count_total': [100, 200, 300] 
     })
     axis_x_list = ['axis_x']
     axis_y_list = ['axis_y']
