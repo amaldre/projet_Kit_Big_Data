@@ -5,9 +5,9 @@ import os
 import pytest
 import pandas as pd
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from pipeline_preprocess import load_data
+from scripts.pipeline_preprocess import load_data
 
 def test_load_data(tmp_path):
     # Créer un DataFrame de test
@@ -23,7 +23,7 @@ def test_load_data(tmp_path):
     # Vérifier que le DataFrame chargé est identique au DataFrame initial
     pd.testing.assert_frame_equal(result_df, test_df)
 
-from pipeline_preprocess import change_to_date_time_format
+from scripts.pipeline_preprocess import change_to_date_time_format
 
 def test_change_to_date_time_format():
     # Créer un DataFrame de test
@@ -42,7 +42,7 @@ def test_change_to_date_time_format():
     assert result['date_column'].iloc[1] == pd.to_datetime('2022-12-31').date()
 
 
-from pipeline_preprocess import change_to_list
+from scripts.pipeline_preprocess import change_to_list
 
 def test_change_to_list():
     data = pd.DataFrame({
@@ -59,7 +59,7 @@ def test_change_to_list():
     assert result['list_column'].iloc[0] == [1, 2, 3]
     assert result['list_column'].iloc[1] == ['a', 'b', 'c']
 
-from pipeline_preprocess import delete_outliers_minutes
+from scripts.pipeline_preprocess import delete_outliers_minutes
 
 def test_delete_outliers_minutes():
     data = pd.DataFrame({
@@ -73,7 +73,7 @@ def test_delete_outliers_minutes():
     assert list(result['minutes']) == expected_minutes
 
 
-from pipeline_preprocess import get_stopwords
+from scripts.pipeline_preprocess import get_stopwords
 
 def test_get_stopwords():
     stopwords = get_stopwords()
