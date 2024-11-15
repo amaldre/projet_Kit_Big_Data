@@ -82,3 +82,21 @@ def test_get_stopwords():
     assert 'the' in stopwords
     assert 'and' in stopwords
     assert 'recipe' in stopwords  # Custom stopword
+
+from unittest.mock import patch
+from src.your_module import load_nltk_resources  # Remplacez `your_module` par le nom de votre fichier
+
+def test_load_nltk_resources():
+    # Patch `nltk.download` pour éviter les téléchargements réels
+    with patch('src.your_module.nltk.download') as mock_download:
+        # Exécuter la fonction
+        load_nltk_resources()
+
+        # Vérifier que `nltk.download` a été appelée pour chaque ressource
+        mock_download.assert_any_call('punkt_tab')
+        mock_download.assert_any_call('averaged_perceptron_tagger')
+        mock_download.assert_any_call('wordnet')
+        mock_download.assert_any_call('stopwords')
+
+        # Vérifier que `nltk.download` a été appelée exactement 4 fois
+        assert mock_download.call_count == 4
