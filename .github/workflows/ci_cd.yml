@@ -26,19 +26,7 @@ jobs:
         with:
           python-version: '3.12.3'
 
-      # Étape 3 : Mettre en cache les packages Python
-      - name: Cache Python packages
-        uses: actions/cache@v3
-        with:
-          # Chemin vers le cache des packages pip
-          path: ~/.cache/pip
-          # Clé unique basée sur le système d'exploitation et le hash du fichier requirements.txt
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          # Clés de restauration au cas où la clé principale ne serait pas trouvée
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      # Étape 4 : Installer les dépendances
+      # Étape 3 : Installer les dépendances
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

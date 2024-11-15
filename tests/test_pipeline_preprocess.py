@@ -84,7 +84,7 @@ def test_get_stopwords():
     assert 'recipe' in stopwords  # Custom stopword
 
 from unittest.mock import patch
-from src.your_module import load_nltk_resources  # Remplacez `your_module` par le nom de votre fichier
+from scripts.pipeline_preprocess import load_nltk_resources  
 
 def test_load_nltk_resources():
     # Patch `nltk.download` pour éviter les téléchargements réels
