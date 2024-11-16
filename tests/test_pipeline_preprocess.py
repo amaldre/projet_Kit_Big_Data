@@ -208,3 +208,66 @@ def test_delete_outliers_steps():
     # Les deux plus grandes valeurs et les valeurs égales à 0 doivent être supprimées
     expected_steps = [5, 10]
     assert list(result['n_steps']) == expected_steps
+    
+
+from scripts.pipeline_preprocess import groupby
+
+def test_groupby():
+
+    data = pd.DataFrame({
+        'recipe_id': [1, 1, 2, 2],
+        'i': [0, 1, 2, 3],
+        'name_tokens': ['token1', 'token1', 'token2', 'token2'],
+        'ingredient_tokens': ['ing1', 'ing1', 'ing2', 'ing2'],
+        'steps_tokens': ['step1', 'step1', 'step2', 'step2'],
+        'techniques': ['tech1', 'tech1', 'tech2', 'tech2'],
+        'calorie_level': ['low', 'low', 'high', 'high'],
+        'ingredient_ids': ['id1', 'id1', 'id2', 'id2'],
+        'name': ['name1', 'name1', 'name2', 'name2'],
+        'minutes': [10, 10, 20, 20],
+        'contributor_id': [100, 100, 200, 200],
+        'submitted': ['2020-01-01', '2020-01-01', '2020-01-02', '2020-01-02'],
+        'tags': ['tag1', 'tag1', 'tag2', 'tag2'],
+        'nutrition': ['nut1', 'nut1', 'nut2', 'nut2'],
+        'steps': ['steps1', 'steps1', 'steps2', 'steps2'],
+        'n_steps': [1, 1, 2, 2],
+        'description': ['desc1', 'desc1', 'desc2', 'desc2'],
+        'ingredients': ['ingr1', 'ingr1', 'ingr2', 'ingr2'],
+        'n_ingredients': [3, 3, 4, 4],
+        'review': ['good', 'bad', 'excellent', 'poor'],
+        'date': ['2020-02-01', '2020-02-02', '2020-02-03', '2020-02-04'],
+        'user_id': [1000, 1001, 1002, 1003],
+        'rating': [5, 3, 4, 2]
+    })
+
+
+    result = groupby(data)
+    
+    expected = pd.DataFrame({
+        'recipe_id': [1, 2],
+        'i': [0, 2],
+        'name_tokens': ['token1', 'token2'],
+        'ingredient_tokens': ['ing1', 'ing2'],
+        'steps_tokens': ['step1', 'step2'],
+        'techniques': ['tech1', 'tech2'],
+        'calorie_level': ['low', 'high'],
+        'ingredient_ids': ['id1', 'id2'],
+        'name': ['name1', 'name2'],
+        'minutes': [10, 20],
+        'contributor_id': [100, 200],
+        'submitted': ['2020-01-01', '2020-01-02'],
+        'tags': ['tag1', 'tag2'],
+        'nutrition': ['nut1', 'nut2'],
+        'steps': ['steps1', 'steps2'],
+        'n_steps': [1, 2],
+        'description': ['desc1', 'desc2'],
+        'ingredients': ['ingr1', 'ingr2'],
+        'n_ingredients': [3, 4],
+        'review': [['good', 'bad'], ['excellent', 'poor']],
+        'date': [['2020-02-01', '2020-02-02'], ['2020-02-03', '2020-02-04']],
+        'user_id': [[1000, 1001], [1002, 1003]],
+        'rating': [[5, 3], [4, 2]]
+    })
+
+    expected = expected[result.columns]
+    pd.testing.assert_frame_equal(result, expected)
