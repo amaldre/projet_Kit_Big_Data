@@ -100,3 +100,58 @@ def test_load_nltk_resources():
 
         # Vérifier que `nltk.download` a été appelée exactement 4 fois
         assert mock_download.call_count == 4
+        
+
+from scripts.pipeline_preprocess import change_to_str
+
+def test_change_to_str():
+    data = pd.DataFrame({
+        'int_column': [1, 2, 3],
+        'float_column': [1.0, 2.0, 3.0]
+    })
+    
+    result = change_to_str(data.copy(), ['int_column', 'float_column'])
+    
+    # Vérifier le type de la colonne
+    assert result['int_column'].dtype == 'O'
+    assert result['float_column'].dtype == 'O'
+    
+    # Vérifier les valeurs
+    assert result['int_column'].iloc[0] == '1'
+    assert result['float_column'].iloc[0] == '1.0'
+    
+
+from scripts.pipeline_preprocess import change_category
+
+def test_change_category():
+    data = pd.DataFrame({
+        'category_column': ['a', 'b', 'c']
+    })
+    
+    result = change_category(data.copy(), 'category_column')
+    
+    # Vérifier le type de la colonne
+    assert result['category_column'].dtype == 'category'
+    
+    # Vérifier les valeurs
+    assert result['category_column'].iloc[0] == 'a'
+    assert result['category_column'].iloc[1] == 'b'
+    assert result['category_column'].iloc[2] == 'c'
+    
+def merge_dataframes():
+    # Créer deux DataFrames de test
+    df1 = pd.DataFrame({'col1': [1, 2], 'col2': ['a', 'b']})
+    df2 = pd.DataFrame({'col1': [1, 2], 'col2': ['c', 'd']})
+    
+    # Appeler la fonction
+    result = merge_dataframes(df1, df2, lefton='col1', righton='col1')
+
+    # Vérifier le résultat
+    expected = pd.DataFrame({
+        'col1': [1, 2],
+        'col2_x': ['a', 'b'],
+        'col2_y': ['c', 'd']
+    })
+    
+    pd.testing.assert_frame_equal(result, expected)
+
