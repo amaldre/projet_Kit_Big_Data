@@ -101,7 +101,6 @@ def test_load_nltk_resources():
         # Vérifier que `nltk.download` a été appelée exactement 4 fois
         assert mock_download.call_count == 4
         
-
 from scripts.pipeline_preprocess import change_to_str
 
 def test_change_to_str():
@@ -113,12 +112,13 @@ def test_change_to_str():
     result = change_to_str(data.copy(), ['int_column', 'float_column'])
     
     # Vérifier le type de la colonne
-    assert result['int_column'].dtype == 'O'
-    assert result['float_column'].dtype == 'O'
+    assert result.dtypes['int_column'] == object  # Utilisez result.dtypes
+    assert result.dtypes['float_column'] == object
     
     # Vérifier les valeurs
     assert result['int_column'].iloc[0] == '1'
     assert result['float_column'].iloc[0] == '1.0'
+
     
 
 from scripts.pipeline_preprocess import change_category
