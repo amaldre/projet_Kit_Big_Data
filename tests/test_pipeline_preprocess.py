@@ -103,21 +103,47 @@ def test_load_nltk_resources():
         
 from scripts.pipeline_preprocess import change_to_str
 
+
 def test_change_to_str():
-    data = pd.DataFrame({
-        'int_column': [1, 2, 3],
-        'float_column': [1.0, 2.0, 3.0]
+    # Cas 1 : La colonne contient des listes
+    data_with_lists = pd.DataFrame({
+        'list_column': [['a', 'b', 'c'], ['d', 'e'], ['f']]
     })
-    
-    result = change_to_str(data.copy(), ['int_column', 'float_column'])
-    
-    # Vérifier le type de la colonne
-    assert result.dtypes['int_column'] == object  # Utilisez result.dtypes
-    assert result.dtypes['float_column'] == object
-    
-    # Vérifier les valeurs
-    assert result['int_column'].iloc[0] == '1'
-    assert result['float_column'].iloc[0] == '1.0'
+    result = change_to_str(data_with_lists.copy(), 'list_column')
+    expected = pd.DataFrame({
+        'list_column': ['a b c', 'd e', 'f']
+    })
+    assert result.equals(expected), "Échec de la conversion de la colonne de listes en chaîne de caractères"
+
+    # Cas 2 : La colonne contient des entiers
+    data_with_ints = pd.DataFrame({
+        'int_column': [1, 2, 3]
+    })
+    result = change_to_str(data_with_ints.copy(), 'int_column')
+    expected = pd.DataFrame({
+        'int_column': ['1', '2', '3']
+    })
+    assert result.equals(expected), "Échec de la conversion de la colonne d'entiers en chaîne de caractères"
+
+    # Cas 3 : La colonne contient des flottants
+    data_with_floats = pd.DataFrame({
+        'float_column': [1.0, 2.5, 3.75]
+    })
+    result = change_to_str(data_with_floats.copy(), 'float_column')
+    expected = pd.DataFrame({
+        'float_column': ['1.0', '2.5', '3.75']
+    })
+    assert result.equals(expected), "Échec de la conversion de la colonne de flottants en chaîne de caractères"
+
+    # Cas 4 : La colonne contient déjà des chaînes de caractères
+    data_with_strings = pd.DataFrame({
+        'string_column': ['a', 'b', 'c']
+    })
+    result = change_to_str(data_with_strings.copy(), 'string_column')
+    expected = pd.DataFrame({
+        'string_column': ['a', 'b', 'c']
+    })
+    assert result.equals(expected), "Échec de la manipulation de la colonne de chaînes de caractères"
 
     
 
