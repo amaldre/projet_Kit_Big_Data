@@ -181,3 +181,31 @@ def merge_dataframes():
     
     pd.testing.assert_frame_equal(result, expected)
 
+from scripts.pipeline_preprocess import change_na_description_by_name
+
+def test_change_na_description_by_name():
+    
+    data = pd.DataFrame({
+        'name': ['John', 'Alice', 'Bob'],
+        'description': ['description1', 'description2', None]
+    })
+    
+    result = change_na_description_by_name(data.copy(), 'name', 'description')
+    
+    # Vérifier les valeurs
+    assert result['description'].iloc[2] == 'Bob'
+    
+
+from scripts.pipeline_preprocess import delete_outliers_steps
+
+def test_delete_outliers_steps():
+    
+    data = pd.DataFrame({
+        'steps': [5, 10, 0]
+    })
+    
+    result = delete_outliers_steps(data.copy())
+    
+    # Les deux plus grandes valeurs et les valeurs égales à 0 doivent être supprimées
+    expected_steps = [5, 10]
+    assert list(result['steps']) == expected_steps
