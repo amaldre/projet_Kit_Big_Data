@@ -85,6 +85,7 @@ def test_get_stopwords():
 
 from unittest.mock import patch
 from scripts.pipeline_preprocess import load_nltk_resources  
+load_nltk_resources()
 
 def test_load_nltk_resources():
     # Patch `nltk.download` pour éviter les téléchargements réels
