@@ -278,10 +278,13 @@ def test_groupby():
 from scripts.pipeline_preprocess import clean_and_tokenize
 
 def test_clean_and_tokenize(self):
+
     string = 'This is a test.'
-    
     stopwords = {'is', 'a', 'another'}
     
-    str_after_clean = clean_and_tokenize(string, stopwords)
+    expected_result = ['this', 'test']
+    
 
-    assert str_after_clean == ['this', 'test']
+    result = clean_and_tokenize(string, stopwords)
+
+    self.assertEqual(result, expected_result)
