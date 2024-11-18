@@ -336,6 +336,6 @@ def preprocess():
     save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))
 
-preprocess()
+# preprocess()
     
     
