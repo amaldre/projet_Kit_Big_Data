@@ -284,4 +284,4 @@ def test_clean_and_tokenize(self):
     
     str_after_clean = clean_and_tokenize(string, stopwords)
 
-    assert str_after_clean == 'this test'
+    assert str_after_clean == ['this', 'test']
