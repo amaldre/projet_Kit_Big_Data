@@ -187,7 +187,7 @@ def get_stopwords():
     return stopwords
 
 
-def clean_and_tokenize(text: str,stopwords: set):
+def clean_and_tokenize(text: str,stopwords: set, do_pos_tags = True):
     """
     Clean and tokenize the text by removing stopwords and punctuation. Filtered also the POS tags to keep only the nouns and verbs
 
@@ -202,7 +202,9 @@ def clean_and_tokenize(text: str,stopwords: set):
     text = re.sub(r'[.;:!\'?,\"()\[\]]', "", text)  
     
     tokens = nltk.word_tokenize(text)
-    pos_tags = nltk.pos_tag(tokens)
+    
+    if do_pos_tags:
+        pos_tags = nltk.pos_tag(tokens)
   
     filtered_tokens = [word for word, tag in pos_tags if tag not in (
         'JJ', 'JJR', 'JJS',  # Adjectifs
@@ -334,6 +336,6 @@ def preprocess():
     save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))
 
-#preprocess()
+preprocess()
     
     

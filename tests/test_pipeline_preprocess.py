@@ -285,6 +285,6 @@ def test_clean_and_tokenize():
     expected_result = ['test', 'food']
     
 
-    result = clean_and_tokenize(string, stopwords)
+    result = clean_and_tokenize(string, stopwords, do_pos_tags=False)
 
     assert result == expected_result

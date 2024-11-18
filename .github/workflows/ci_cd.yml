@@ -42,7 +42,6 @@ jobs:
           source .venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
-          python3 -m nltk.downloader punkt averaged_perceptron_tagger
         if: steps.cache-venv.outputs.cache-hit != 'true'
       
       # Étape 5 : Vérifier les dépendances installées
