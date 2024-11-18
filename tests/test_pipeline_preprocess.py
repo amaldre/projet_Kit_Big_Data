@@ -278,25 +278,24 @@ def test_groupby():
 from unittest.mock import patch
 from scripts.pipeline_preprocess import clean_and_tokenize
 
-@patch('nltk.word_tokenize')
-@patch('nltk.pos_tag')
+@patch('nltk.word_tokenize', return_value=['hello', 'this', 'is', 'a', 'simple', 'test', 'with', 'numbers', 'and', 'punctuation'])
+@patch('nltk.pos_tag', return_value=[
+    ('hello', 'NN'), ('this', 'DT'), ('is', 'VBZ'), ('a', 'DT'), 
+    ('simple', 'JJ'), ('test', 'NN'), ('with', 'IN'), 
+    ('numbers', 'NNS'), ('and', 'CC'), ('punctuation', 'NN')
+])
 def test_clean_and_tokenize(self, mock_pos_tag, mock_word_tokenize):
     # Input text et stopwords pour le test
     text = "Hello! This is a simple test, with 123 numbers and punctuation."
     stopwords = {"is", "and", "with"}
     
-    # Mock des sorties de nltk.word_tokenize et nltk.pos_tag
-    mock_word_tokenize.return_value = ['hello', 'this', 'is', 'a', 'simple', 'test', 'with', 'numbers', 'and', 'punctuation']
-    mock_pos_tag.return_value = [
-        ('hello', 'NN'), ('this', 'DT'), ('is', 'VBZ'), ('a', 'DT'), 
-        ('simple', 'JJ'), ('test', 'NN'), ('with', 'IN'), 
-        ('numbers', 'NNS'), ('and', 'CC'), ('punctuation', 'NN')
-    ]
-
     # Appel de la fonction
+    from votre_module import clean_and_tokenize
     result = clean_and_tokenize(text, stopwords)
 
     # Vérification du résultat attendu
-    expected_result = ['hello', 'test', 'numbers', 'punctuation']  # Après nettoyage
+    expected_result = ['hello', 'test', 'numbers', 'punctuation']
     self.assertEqual(result, expected_result)
+
+
 
