@@ -172,7 +172,7 @@ def test_merge_dataframe():
     df2 = pd.DataFrame({'col1': [1, 2], 'col4': ['c', 'd']})
     
     # Appeler la fonction
-    result = merge_dataframe(df1, df2, lefton='col1', righton='col3')
+    result = merge_dataframe(df1, df2, lefton='col1', righton='col1')
 
     # Vérifier le résultat
     expected = pd.DataFrame({
