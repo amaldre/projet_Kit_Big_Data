@@ -89,7 +89,7 @@ def change_category(data: pd, colone: str):
     return data
 
 def merge_dataframe(dataframe1, dataframe2, lefton, righton):       
-    data = pd.merge(dataframe1, dataframe2, left_on=lefton, right_on=rihgton)
+    data = pd.merge(dataframe1, dataframe2, left_on=lefton, right_on=righton)
     return data
 
 def groupby(data: pd):
