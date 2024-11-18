@@ -304,7 +304,7 @@ def test_ingredient_to_ingredient_processed():
     processed_dict = {'flour': 'flour', 'roman salad': 'salad', 'pink salt': 'salt', 'letuce': 'letuce'}
     replaced_dict = {'flour': 'flour', 'roman salad': 'salad', 'pink salt': 'salt', 'letuce': 'salad'}
     
-    result_processed, result_replaced = ingredient_to_ingredient_processed()
+    result_processed, result_replaced = ingredient_to_ingredient_processed(ingredients, processed_dict, replaced_dict)
     
     expected_processed = ['flour', 'salad', 'salt', 'letuce']
     expected_replaced = ['flour', 'salad', 'salt', 'salad']
@@ -325,9 +325,16 @@ def test_save_data(tmp_path):
 from scripts.pipeline_preprocess import save_data_json
 
 def test_save_data_json(tmp_path):
-    test_df = pd.DataFrame({'col1': [1, 2], 'col2': ['a', 'b']})
-    test_json_path = tmp_path / "test_data.json"
-    save_data_json(test_df, test_json_path)
 
-    result_df = pd.read_json(test_json_path)
+    test_df = pd.DataFrame({
+        'col1': [1, 2, 3],
+        'col2': ['a', 'b', 'c']
+    })
+    test_json_path = tmp_path / "test_data.json"
+    
+    
+    save_data_json(test_df, test_json_path)
+    
+  
+    result_df = pd.read_json(test_json_path, lines=True)
     pd.testing.assert_frame_equal(result_df, test_df)
