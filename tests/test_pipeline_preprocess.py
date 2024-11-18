@@ -277,16 +277,17 @@ def test_groupby():
 
 from scripts.pipeline_preprocess import clean_and_tokenize
 
-def test_ckean_and_tokenize():
+def test_clean_and_tokenize(self):
     data = pd.DataFrame({
         'text': ['This is a test.', 'Another test!']
     })
+    stopwords = {'is', 'a', 'another'}
     
-    result = clean_and_tokenize(data.copy(), 'text')
-    
+    data['tokens'] = data['text'].apply(lambda x: clean_and_tokenize(x, stopwords))
+
     expected = pd.DataFrame({
-        'text': ['test'],
-        'tokens': [['test']]
+        'text': ['This is a test.', 'Another test!'],
+        'tokens': [['test'], ['test']]
     })
-    
-    pd.testing.assert_frame_equal(result, expected)
+
+    pd.testing.assert_frame_equal(data, expected)
