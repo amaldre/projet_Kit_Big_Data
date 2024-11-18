@@ -273,3 +273,20 @@ def test_groupby():
 
     expected = expected[result.columns]
     pd.testing.assert_frame_equal(result, expected)
+
+
+from scripts.pipeline_preprocess import clean_and_tokenize
+
+def test_ckean_and_tokenize():
+    data = pd.DataFrame({
+        'text': ['This is a test.', 'Another test!']
+    })
+    
+    result = clean_and_tokenize(data.copy(), 'text')
+    
+    expected = pd.DataFrame({
+        'text': ['test'],
+        'tokens': [['test']]
+    })
+    
+    pd.testing.assert_frame_equal(result, expected)
