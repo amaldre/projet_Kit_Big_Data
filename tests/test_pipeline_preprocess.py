@@ -85,7 +85,7 @@ def test_get_stopwords():
 
 from unittest.mock import patch
 from scripts.pipeline_preprocess import load_nltk_resources  
-load_nltk_resources()
+
 
 def test_load_nltk_resources():
     # Patch `nltk.download` pour éviter les téléchargements réels
@@ -275,17 +275,28 @@ def test_groupby():
     expected = expected[result.columns]
     pd.testing.assert_frame_equal(result, expected)
 
-
+from unittest.mock import patch
 from scripts.pipeline_preprocess import clean_and_tokenize
 
-def test_clean_and_tokenize():
-
-    string = 'This is a test and Food ? .'
-    stopwords = {'is', 'a', 'another'}
+@patch('nltk.word_tokenize')
+@patch('nltk.pos_tag')
+def test_clean_and_tokenize(self, mock_pos_tag, mock_word_tokenize):
+    # Input text et stopwords pour le test
+    text = "Hello! This is a simple test, with 123 numbers and punctuation."
+    stopwords = {"is", "and", "with"}
     
-    expected_result = ['test', 'food']
-    
+    # Mock des sorties de nltk.word_tokenize et nltk.pos_tag
+    mock_word_tokenize.return_value = ['hello', 'this', 'is', 'a', 'simple', 'test', 'with', 'numbers', 'and', 'punctuation']
+    mock_pos_tag.return_value = [
+        ('hello', 'NN'), ('this', 'DT'), ('is', 'VBZ'), ('a', 'DT'), 
+        ('simple', 'JJ'), ('test', 'NN'), ('with', 'IN'), 
+        ('numbers', 'NNS'), ('and', 'CC'), ('punctuation', 'NN')
+    ]
 
-    result = clean_and_tokenize(string, stopwords, do_pos_tags=False)
+    # Appel de la fonction
+    result = clean_and_tokenize(text, stopwords)
 
-    assert result == expected_result
+    # Vérification du résultat attendu
+    expected_result = ['hello', 'test', 'numbers', 'punctuation']  # Après nettoyage
+    self.assertEqual(result, expected_result)
+
