@@ -169,16 +169,16 @@ from scripts.pipeline_preprocess import merge_dataframe
 def test_merge_dataframe():
     # Créer deux DataFrames de test
     df1 = pd.DataFrame({'col1': [1, 2], 'col2': ['a', 'b']})
-    df2 = pd.DataFrame({'col1': [1, 2], 'col2': ['c', 'd']})
+    df2 = pd.DataFrame({'col3': [1, 2], 'col4': ['c', 'd']})
     
     # Appeler la fonction
-    result = merge_dataframe(df1, df2, lefton='col1', righton='col1')
+    result = merge_dataframe(df1, df2, lefton='col1', righton='col3')
 
     # Vérifier le résultat
     expected = pd.DataFrame({
         'col1': [1, 2],
-        'col2_x': ['a', 'b'],
-        'col2_y': ['c', 'd']
+        'col2': ['a', 'b'],
+        'col4': ['c', 'd']
     })
     
     pd.testing.assert_frame_equal(result, expected)
