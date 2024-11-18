@@ -296,4 +296,38 @@ def test_clean_and_tokenize(mock_pos_tag, mock_word_tokenize):
     assert result == expected_result
 
 
+from scripts.pipeline_preprocess import ingredient_to_ingredient_processed
 
+def test_ingredient_to_ingredient_processed():
+    ingredients =['flour', 'roman salad', 'pink salt', 'letuce']
+
+    processed_dict = {'flour': 'flour', 'roman salad': 'salad', 'pink salt': 'salt', 'letuce': 'letuce'}
+    replaced_dict = {'flour': 'flour', 'roman salad': 'salad', 'pink salt': 'salt', 'letuce': 'salad'}
+    
+    result_processed, result_replaced = ingredient_to_ingredient_processed()
+    
+    expected_processed = ['flour', 'salad', 'salt', 'letuce']
+    expected_replaced = ['flour', 'salad', 'salt', 'salad']
+    
+    assert result_processed == expected_processed
+    assert result_replaced == expected_replaced
+    
+from scripts.pipeline_preprocess import save_data
+
+def test_save_data(tmp_path):
+    test_df = pd.DataFrame({'col1': [1, 2], 'col2': ['a', 'b']})
+    test_csv_path = tmp_path / "test_data.csv"
+    save_data(test_df, test_csv_path)
+
+    result_df = pd.read_csv(test_csv_path)
+    pd.testing.assert_frame_equal(result_df, test_df)
+
+from scripts.pipeline_preprocess import save_data_json
+
+def test_save_data_json(tmp_path):
+    test_df = pd.DataFrame({'col1': [1, 2], 'col2': ['a', 'b']})
+    test_json_path = tmp_path / "test_data.json"
+    save_data_json(test_df, test_json_path)
+
+    result_df = pd.read_json(test_json_path)
+    pd.testing.assert_frame_equal(result_df, test_df)
