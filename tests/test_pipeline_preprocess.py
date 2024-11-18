@@ -163,14 +163,16 @@ def test_change_category():
     assert result['category_column'].iloc[0] == 'a'
     assert result['category_column'].iloc[1] == 'b'
     assert result['category_column'].iloc[2] == 'c'
-    
-def merge_dataframes():
+
+from scripts.pipeline_preprocess import merge_dataframe
+  
+def test_merge_dataframe():
     # Créer deux DataFrames de test
     df1 = pd.DataFrame({'col1': [1, 2], 'col2': ['a', 'b']})
     df2 = pd.DataFrame({'col1': [1, 2], 'col2': ['c', 'd']})
     
     # Appeler la fonction
-    result = merge_dataframes(df1, df2, lefton='col1', righton='col1')
+    result = merge_dataframe(df1, df2, lefton='col1', righton='col1')
 
     # Vérifier le résultat
     expected = pd.DataFrame({
