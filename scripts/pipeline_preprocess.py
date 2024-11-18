@@ -88,7 +88,7 @@ def change_category(data: pd, colone: str):
     data[colone] = data[colone].astype('category')
     return data
 
-def merge_dataframe(dataframe1, dataframe2, lefton, rihgton):       
+def merge_dataframe(dataframe1, dataframe2, lefton, righton):       
     data = pd.merge(dataframe1, dataframe2, left_on=lefton, right_on=rihgton)
     return data
 
