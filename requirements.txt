@@ -194,3 +194,4 @@ widgetsnbextension==4.0.13
 wrapt==1.16.0
 pytest
 pytest-cov
+pymongo
