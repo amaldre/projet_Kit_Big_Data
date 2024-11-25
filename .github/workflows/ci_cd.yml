@@ -50,7 +50,7 @@ jobs:
       
       - name: Run pylint
         run: |
-          pylint src/
+          ./.venv/bin/pylint src/
         continue-on-error: true
 
       # Étape 6 : Exécuter les tests avec pytest
