@@ -196,3 +196,4 @@ pytest
 pytest-cov
 pymongo
 python-dotenv
+pylint

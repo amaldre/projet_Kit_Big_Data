@@ -47,6 +47,11 @@ jobs:
       # Étape 5 : Vérifier les dépendances installées
       - name: Check installed packages
         run: ./.venv/bin/pip list
+      
+      - name: Run pylint
+        run: |
+          pylint src/
+        continue-on-error: true
 
       # Étape 6 : Exécuter les tests avec pytest
       - name: Run tests
