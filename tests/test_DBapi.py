@@ -23,21 +23,22 @@ def test_dbapi_init():
         mock_getenv.assert_called_once_with('URI_DB')
         mock_mongo_client.assert_called_once_with('mongodb://localhost:27017')
         assert db_api.client == mock_client_instance
-        assert db_api.db == mock_client_instance["MageTaMainDB"]
+        assert db_api.db == mock_client_instance["MangaTaMainDF"]
         assert db_api.collection == db_api.db["Food.com"]
 
-def test_dbapi_find_by():
+@patch('os.getenv')
+def test_dbapi_find_by(mock_getenv):
+    mock_getenv.return_value = "mongodb://mock_uri"
     with patch('src.dbapi.MongoClient') as mock_mongo_client:
-
         mock_collection = MagicMock()
         mock_db = {'Food.com': mock_collection}
-        mock_client_instance = {'MageTaMainDB': mock_db}
+        mock_client_instance = {'MangaTaMainDF': mock_db}
         mock_mongo_client.return_value = mock_client_instance
 
         db_api = DBapi()
 
         db_api.client = mock_client_instance
-        db_api.db = mock_client_instance['MageTaMainDB']
+        db_api.db = mock_client_instance['MangaTaMainDF']
         db_api.collection = mock_collection
 
         # Configurer find().limit()
@@ -58,26 +59,26 @@ def test_dbapi_find_range_submitted():
         # Mock de la collection
         mock_collection = MagicMock()
         mock_db = {'Food.com': mock_collection}
-        mock_client_instance = {'MageTaMainDB': mock_db}
+        mock_client_instance = {'MangaTaMainDF': mock_db}
         mock_mongo_client.return_value = mock_client_instance
 
         # Créer une instance de DBapi
         db_api = DBapi()
         db_api.client = mock_client_instance
-        db_api.db = mock_client_instance['MageTaMainDB']
+        db_api.db = mock_client_instance['MangaTaMainDF']
         db_api.collection = mock_collection
 
         # Configurer le side_effect pour find
         def side_effect(query):
-            submitted_value = query.get('submitted')
-            return ['doc_submitted_{}'.format(submitted_value)]
+            submitted_range = query.get('submitted')
+            return ['doc_submitted_{}'.format(i) for i in range(submitted_range['$gte'], submitted_range['$lt'])]
         mock_collection.find.side_effect = side_effect
 
         # Appeler la méthode
         result = db_api.find_range_submitted(1, 4)
 
         # Assertions
-        expected_calls = [({'submitted': i},) for i in range(1, 4)]
+        expected_calls = [({'submitted': {'$gte': 1, '$lt': 4}},)]
         actual_calls = [call.args for call in mock_collection.find.call_args_list]
         assert actual_calls == expected_calls
         expected_result = ['doc_submitted_1', 'doc_submitted_2', 'doc_submitted_3']
@@ -88,13 +89,13 @@ def test_dbapi_use_query():
         # Mock de la collection
         mock_collection = MagicMock()
         mock_db = {'Food.com': mock_collection}
-        mock_client_instance = {'MageTaMainDB': mock_db}
+        mock_client_instance = {'MangaTaMainDF': mock_db}
         mock_mongo_client.return_value = mock_client_instance
 
         # Créer une instance de DBapi
         db_api = DBapi()
         db_api.client = mock_client_instance
-        db_api.db = mock_client_instance['MageTaMainDB']
+        db_api.db = mock_client_instance['MangaTaMainDF']
         db_api.collection = mock_collection
 
         # Configurer find()

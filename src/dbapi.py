@@ -17,7 +17,7 @@ class DBapi:
             self.db = self.client["MangaTaMainDF"]
             self.collection = self.db["Food.com"]
             logging.info("Connexion à la base de données établie avec succès.")
-        except errors.ConnectionError as e:
+        except errors.ConfigurationError as e:
             logging.error(f"Erreur de connexion à la base de données : {e}")
         except Exception as e:
             logging.error(f"Une erreur est survenue : {e}")
