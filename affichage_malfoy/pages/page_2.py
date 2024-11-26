@@ -6,7 +6,7 @@ import ast
 import time
 from collections import Counter
 import logging
-from class_dams import Study
+from class_dams import AdvancedStudy
 from class_block_st import Block
 
 st.set_page_config(layout="wide")
@@ -51,7 +51,7 @@ def main():
 
     if add_graph_button:
         name = f"{len(st.session_state["graph"]) + 1}"
-        study = Study(dataframe, axis_x_list, filters, name)
+        study = AdvancedStudy(dataframe, axis_x_list, filters, name)
         st.session_state["graph"].append(study)
         print("add",len(st.session_state["graph"]))
 
