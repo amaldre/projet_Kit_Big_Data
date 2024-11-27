@@ -15,39 +15,12 @@ import logging
 import sys
 from pathlib import Path
 
-dotenv.load_dotenv()
-logging.basicConfig(level=logging.INFO)
+from dbapi import DBapi
 
-sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
+db_api = DBapi()
 
-from DBapi import DBapi
 
-recipes = pd.read_csv("../data/RAW_recipes.csv")
-interactions = pd.read_csv("../data/RAW_interactions.csv")
-recipes['nutrition'] = recipes['nutrition'].apply(ast.literal_eval)
-recipes['tags'] = recipes['tags'].apply(ast.literal_eval)
-recipes['steps'] = recipes['steps'].apply(ast.literal_eval)
-recipes['ingredients'] = recipes['ingredients'].apply(ast.literal_eval)
-recipes['submitted'] = pd.to_datetime(recipes['submitted'])
-interactions['date'] = pd.to_datetime(interactions['date'])
-df = pd.merge(recipes, interactions, left_on='id', right_on='recipe_id')
-df_g = df.groupby(['recipe_id']).agg({
-    'name':'first',
-    'minutes':'first',
-    'contributor_id':'first',
-    'submitted':'first',
-    'tags':'first',
-    'nutrition':'first',
-    'steps':'first',
-    'n_steps':'first',
-    'description':'first',
-    'ingredients':'first',
-    'n_ingredients':'first',
-    'review': lambda x: list(x) if len(x) > 0 else [], 
-    'date': lambda x: list(x) if len(x) > 0 else [],
-    'user_id': lambda x: list(x) if len(x) > 0 else [],
-    'rating': lambda x: list(x) if len(x) > 0 else []
-}).reset_index()
+
 df_g['description'] = df_g['description'].fillna(df_g['name'])
 df_g = df_g.dropna(subset=['name'])
 df_g['contributor_id'] = df_g.contributor_id.astype('category')
