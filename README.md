@@ -36,22 +36,22 @@ ETC..
 # TODO : Points clefs du projets
 
 ### La gestion du projet
-1- Structure du projet : organisez votre projet en respectant une structure cohérente.
+- [X] Structure du projet : organisez votre projet en respectant une structure cohérente.
 Utilisez des packages et des modules pour diviser votre code en composants
 logiques. Vous pouvez utiliser Visual Studio Code si vous n’avez pas encore d’IDE
 préféré.
-2- Environnement Python : utilisez un gestionnaire d'environnement Python ou
+- [X] Environnement Python : utilisez un gestionnaire d'environnement Python ou
 Poetry pour gérer les dépendances de votre projet. Choisissez bien votre version
 de Python. Assurez-vous d'avoir un fichier requirements.txt ou pyproject.toml
 correctement configuré.
-3- Git : initialiser un dépôt Git pour votre projet et suivez les meilleures pratiques de
+- [X] Git : initialiser un dépôt Git pour votre projet et suivez les meilleures pratiques de
 gestion de code avec des commits (assurez-vous de committer régulièrement), et
 dans la mesure du possible, des branches et des Pull Request pour travailler en
 équipe. Assurez-vous d'inclure un fichier README.md qui explique comment
 installer, exécuter, déployer et utiliser votre application.
 Optionnel : créez éventuellement des tags de version pour marquer les versions
 stables de votre application.
-4- Streamlit : développer votre webapp avec une expérience utilisateur (UX) simple et
+- [ ] Streamlit : développer votre webapp avec une expérience utilisateur (UX) simple et
 intuitive, en laissant à l’utilisateur la possibilité d'interagir avec vos données pour bien
 comprendre la storytelling que vous lui raconterez. Cette storytelling doit comporter
 des insights au travers de graphiques (charts, etc.) et doit répondre à votre
@@ -59,20 +59,20 @@ problématique / question initiale.
 
 ### La programmation
 
-5- Programmation orientée objet : dans la mesure du possible, utilisez le paradigme
+- [X] Programmation orientée objet : dans la mesure du possible, utilisez le paradigme
 orienté objet. Utilisez les principes de l'encapsulation et de l'héritage si approprié.
 Utilisez également les bonnes structures de données.
-● Type Hinting : utilisez des annotations de type pour améliorer la lisibilité de votre
+- [ ] Type Hinting : utilisez des annotations de type pour améliorer la lisibilité de votre
 code.
-● PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
+- [ ] PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
 la cohérence du code. Utilisez un formateur (par exemple black)
-● Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
+- [ ] Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
 exceptions personnalisées lorsque nécessaire. Par exemple en cas de saisie
 incorrecte de l'utilisateur.
-● Logger : utilisez le module logging pour enregistrer les actions de l'utilisateur et les
+- [ ] Logger : utilisez le module logging pour enregistrer les actions de l'utilisateur et les
 événements importants dans un fichier de log. Créer un fichier de log pour le debug,
 et un autre pour les erreurs (ERROR et CRITICAL).
-● Sécurité : assurez-vous (un minimum) que les bibliothèques que vous utilisez sont
+- [ ] Sécurité : assurez-vous (un minimum) que les bibliothèques que vous utilisez sont
 connues et n'ont pas de vulnérabilités de sécurité évidentes. Si vous autorisez une
 entrée utilisateur, ne pas utiliser la fonction `eval`, évitez les mots de passe/token en
 clair dans le code, etc.
@@ -80,25 +80,26 @@ clair dans le code, etc.
 
 ### Les tests
 
-● Tests unitaires : écrivez des tests unitaires approfondis pour chaque composant de
+- [ ] Tests unitaires : écrivez des tests unitaires approfondis pour chaque composant de
 votre application en utilisant pytest. Vérifiez que la logique de votre application
 fonctionne correctement.
-● Test coverage : utilisez un outil de test coverage (comme pytest-cov) pour mesurer
+- [ ] Test coverage : utilisez un outil de test coverage (comme pytest-cov) pour mesurer
 la couverture de vos tests et assurez-vous d'avoir une couverture suffisante (90% de
 couverture minimum).
 
 ### La documentation du projet
-● Commentaires : assurez-vous d'inclure des commentaires pertinents dans votre
+
+- [ ] Commentaires : assurez-vous d'inclure des commentaires pertinents dans votre
 code pour expliquer la logique complexe ou les décisions de conception importantes.
-● Docstrings : utilisez des docstrings pour documenter vos classes, méthodes et
+- [ ] Docstrings : utilisez des docstrings pour documenter vos classes, méthodes et
 fonctions de manière détaillée, en expliquant leur but, leurs paramètres et leurs
 valeurs de retour. Vous pouvez utiliser la convention qu'il vous plaira : Google,
 NumPy ou reStructuredText (reST).
-● Documentation : créez une documentation claire et concise pour votre application
+- [ ] Documentation : créez une documentation claire et concise pour votre application
 en utilisant Sphinx. Documentez les classes, les méthodes, et expliquez comment
 installer et utiliser votre application.
 ### La CI
-● Pipeline CI/CD : configurez un pipeline de CI avec GitHub Actions pour checker
+- [ ] Pipeline CI/CD : configurez un pipeline de CI avec GitHub Actions pour checker
 que pep8 est bien respecté, que les docstrings sur les fonctions / méthodes,
 classes, modules sont bien présentes, pour automatiser les tests et vérifier que le
 test coverage est supérieur à 90% du code. Les tests unitaires doivent être
