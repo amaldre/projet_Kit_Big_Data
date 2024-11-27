@@ -8,6 +8,20 @@ from collections import Counter
 import logging
 import statsmodels.api as sm
 
+from pymongo import MongoClient, errors
+import dotenv
+import os
+import logging
+import sys
+from pathlib import Path
+
+dotenv.load_dotenv()
+logging.basicConfig(level=logging.INFO)
+
+sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
+
+from DBapi import DBapi
+
 recipes = pd.read_csv("../data/RAW_recipes.csv")
 interactions = pd.read_csv("../data/RAW_interactions.csv")
 recipes['nutrition'] = recipes['nutrition'].apply(ast.literal_eval)
@@ -75,6 +89,8 @@ decomposition = sm.tsa.seasonal_decompose(submissions_groupmonth, model='additiv
 trend = decomposition.trend
 seasonal = decomposition.seasonal
 residual = decomposition.resid
+
+
 
 st.set_page_config(
     page_title="Analyse de la Perte de Popularité de Food.com",
