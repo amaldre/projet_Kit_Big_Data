@@ -6,11 +6,11 @@ from unittest.mock import patch, MagicMock
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.dbapi import DBapi
+from src.utils.dbapi import DBapi
 
 def test_dbapi_init():
-    with patch('src.dbapi.os.getenv') as mock_getenv, \
-         patch('src.dbapi.MongoClient') as mock_mongo_client:
+    with patch('src.utils.dbapi.os.getenv') as mock_getenv, \
+         patch('src.utils.dbapi.MongoClient') as mock_mongo_client:
 
         mock_getenv.return_value = 'mongodb://localhost:27017'
         mock_client_instance = MagicMock()
@@ -29,7 +29,7 @@ def test_dbapi_init():
 @patch('os.getenv')
 def test_dbapi_find_by(mock_getenv):
     mock_getenv.return_value = "mongodb://mock_uri"
-    with patch('src.dbapi.MongoClient') as mock_mongo_client:
+    with patch('src.utils.dbapi.MongoClient') as mock_mongo_client:
         mock_collection = MagicMock()
         mock_db = {'Food.com': mock_collection}
         mock_client_instance = {'MangaTaMainDF': mock_db}
@@ -55,7 +55,7 @@ def test_dbapi_find_by(mock_getenv):
         assert result == ['doc1', 'doc2']
 
 def test_dbapi_find_range_submitted():
-    with patch('src.dbapi.MongoClient') as mock_mongo_client:
+    with patch('src.utils.dbapi.MongoClient') as mock_mongo_client:
         # Mock de la collection
         mock_collection = MagicMock()
         mock_db = {'Food.com': mock_collection}
@@ -85,7 +85,7 @@ def test_dbapi_find_range_submitted():
         assert result == expected_result
 
 def test_dbapi_use_query():
-    with patch('src.dbapi.MongoClient') as mock_mongo_client:
+    with patch('src.utils.dbapi.MongoClient') as mock_mongo_client:
         # Mock de la collection
         mock_collection = MagicMock()
         mock_db = {'Food.com': mock_collection}
@@ -110,7 +110,7 @@ def test_dbapi_use_query():
         assert result == ['doc1', 'doc2']
 
 def test_dbapi_close_connection():
-    with patch('src.dbapi.MongoClient') as mock_mongo_client:
+    with patch('src.utils.dbapi.MongoClient') as mock_mongo_client:
         # Mock du client
         mock_client_instance = MagicMock()
         mock_mongo_client.return_value = mock_client_instance

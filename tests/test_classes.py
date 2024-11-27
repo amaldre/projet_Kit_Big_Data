@@ -9,7 +9,7 @@ from unittest.mock import patch, MagicMock
 # Ajouter le répertoire racine du projet au sys.path pour importer classes.py
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.classes import Study
+from src.utils.classes import Study
 
 def test_study_init():
     # Créer un DataFrame d'exemple
