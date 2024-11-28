@@ -44,15 +44,15 @@ préféré.
 Poetry pour gérer les dépendances de votre projet. Choisissez bien votre version
 de Python. Assurez-vous d'avoir un fichier requirements.txt ou pyproject.toml
 correctement configuré.
-        [ ] : Vérifier sur un nouvel env que le requirements.txt est à jour
+  - [ ] : Vérifier sur un nouvel env que le requirements.txt est à jour
 
 - [X] Git : initialiser un dépôt Git pour votre projet et suivez les meilleures pratiques de
 gestion de code avec des commits (assurez-vous de committer régulièrement), et
 dans la mesure du possible, des branches et des Pull Request pour travailler en
 équipe. Assurez-vous d'inclure un fichier README.md qui explique comment
 installer, exécuter, déployer et utiliser votre application.
-        - [ ] README à mettre à jour
-        - [ ] Protection des branches        
+  - [ ] README à mettre à jour
+  - [ ] Protection des branches        
 
 Optionnel : créez éventuellement des tags de version pour marquer les versions
 stables de votre application.
@@ -63,6 +63,12 @@ intuitive, en laissant à l’utilisateur la possibilité d'interagir avec vos d
 comprendre la storytelling que vous lui raconterez. Cette storytelling doit comporter
 des insights au travers de graphiques (charts, etc.) et doit répondre à votre
 problématique / question initiale.
+  - [ ] Story Telling
+  - [X] Question Initial : "Pourquoi le site perds des membres ?"
+  - [ ] Pages :
+    - [ ] Accueil
+    - [ ] Preprocessing
+
 
 ### La programmation
 
