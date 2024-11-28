@@ -3,11 +3,14 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from classes import Study
+from src.utils.classes import Study
+from datetime import date
 
 
 st.set_page_config(layout="wide")
-st.title("Data Visualiser")
+st.title("DataViz")
+
+st.markdown("Dans cette page, parcourez librement les données")
 
 
 @st.cache_data
@@ -35,7 +38,7 @@ def main():
     idx_with_max_value = recipes_df["calories"].values.argmax()
     recipes_df = recipes_df.drop(index=idx_with_max_value)
     dataframe = merge_df(recipes_df,mean_rating_df,"id")
-
+    dataframe["submitted"] = pd.to_datetime(dataframe["submitted"]).dt.date
     axis_x_list = ["count_total","mean_rating","submitted"]
     axis_y_list = ["calories","n_steps","minutes","n_ingredients","mean_rating","count_total"]
     filters = ["count_total","mean_rating","submitted"]
