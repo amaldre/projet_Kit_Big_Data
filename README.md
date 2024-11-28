@@ -14,26 +14,26 @@ votre étude, par exemple :
 
 ### Liste des thèmes potentiels
 
-- [ ] Le profil des utilisateurs contribuant le plus au site ?
-- [ ] Quelles sont les caractéristiques des recettes les plus populaires ?
-- [ ] Recommandation de recette en fonction du temps dont on dispose, avec une interface permettant de sélectionner le temps/les ingrédients
-- [ ] Visualisation des recettes par réduction de dimension pour déterminer les recettes qui se rapprochent de celles que l'on a déjà faites
-- [ ] Générer un nom de recette à partir des ingrédients et des techniques utilisées pour la réaliser
-- [ ] Est-ce que les utilisateurs les plus anciens obtiennent de meilleures notes à leurs recettes ?
-- [ ] 
+- [X] Le profil des utilisateurs contribuant le plus au site ?
+- [X] Quelles sont les caractéristiques des recettes les plus populaires ?
+- [X] Recommandation de recette en fonction du temps dont on dispose, avec une interface permettant de sélectionner le temps/les ingrédients
+- [X] Visualisation des recettes par réduction de dimension pour déterminer les recettes qui se rapprochent de celles que l'on a déjà faites
+- [X] Générer un nom de recette à partir des ingrédients et des techniques utilisées pour la réaliser
+- [X] Est-ce que les utilisateurs les plus anciens obtiennent de meilleures notes à leurs recettes ?
+   
 ETC..
 
 
 
 ### Idée
 
-- [ ] Faire une page relative à la nutrition, se  concentrer sur chaque ingrédients, à quel point il est nutritif, les qualités nutritives des recettes qui l'utilisent
-- [ ] relations entre popularité d'une recette (à définir) et une autre feature (les ingrédients qu'elle utilise, le temps qu'elle met, sa popularité au fil du temps, sa classe)
-- [ ] Tag, ingrédients, nutrition à la mode
+- [X] Faire une page relative à la nutrition, se  concentrer sur chaque ingrédients, à quel point il est nutritif, les qualités nutritives des recettes qui l'utilisent
+- [X] relations entre popularité d'une recette (à définir) et une autre feature (les ingrédients qu'elle utilise, le temps qu'elle met, sa popularité au fil du temps, sa classe)
+- [X] Tag, ingrédients, nutrition à la mode
 
 
 
-# TODO : Points clefs du projets
+# TODO: Points clefs du projets
 
 ### La gestion du projet
 - [X] Structure du projet : organisez votre projet en respectant une structure cohérente.
@@ -44,13 +44,20 @@ préféré.
 Poetry pour gérer les dépendances de votre projet. Choisissez bien votre version
 de Python. Assurez-vous d'avoir un fichier requirements.txt ou pyproject.toml
 correctement configuré.
+        [ ] : Vérifier sur un nouvel env que le requirements.txt est à jour
+
 - [X] Git : initialiser un dépôt Git pour votre projet et suivez les meilleures pratiques de
 gestion de code avec des commits (assurez-vous de committer régulièrement), et
 dans la mesure du possible, des branches et des Pull Request pour travailler en
 équipe. Assurez-vous d'inclure un fichier README.md qui explique comment
 installer, exécuter, déployer et utiliser votre application.
+        - [ ] README à mettre à jour
+        - [ ] Protection des branches        
+
 Optionnel : créez éventuellement des tags de version pour marquer les versions
 stables de votre application.
+
+
 - [ ] Streamlit : développer votre webapp avec une expérience utilisateur (UX) simple et
 intuitive, en laissant à l’utilisateur la possibilité d'interagir avec vos données pour bien
 comprendre la storytelling que vous lui raconterez. Cette storytelling doit comporter
