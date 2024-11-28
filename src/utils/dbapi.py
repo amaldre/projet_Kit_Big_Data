@@ -86,6 +86,29 @@ class DBapi:
             except errors.PyMongoError as e:
                 logging.error(f"Erreur lors de la récupération des documents : {e}")
         return []
+    
+    def get_percentage(self, colonne: str, per =1):
+        """
+        Renvoi un pourcentage de documents aléatoires de la colone spécifiée.
+        
+        Args:
+            colonne (str): Nom de la colonne.
+            per (int): Pourcentage de documents à renvoyer entre 0 et 1.
+            
+        """
+        if self.client:
+            try:
+                cursor = self.collection.aggregate([
+                    {"$sample": {"size": int(per * self.collection.count_documents({}))}},
+                    {"$project": {"_id": 0, colonne: 1}}
+                ])
+                result = list(cursor)
+                logging.info(f"{len(result)} documents trouvés pour {colonne} avec un pourcentage de {per}.")
+                return result
+            except errors.PyMongoError as e:
+                logging.error(f"Erreur lors de la récupération des documents : {e}")
+        return []
+
 
     def close_connection(self):
         """
