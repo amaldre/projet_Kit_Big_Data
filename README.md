@@ -65,7 +65,7 @@ des insights au travers de graphiques (charts, etc.) et doit répondre à votre
 problématique / question initiale.
   - [ ] Story Telling
   - [X] Question Initial : "Pourquoi le site perds des membres ?"
-  - [ ] Pages :
+  - Pages :
     - [ ] Accueil
     - [ ] Preprocessing
 
@@ -79,16 +79,18 @@ Utilisez également les bonnes structures de données.
 code.
 - [ ] PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
 la cohérence du code. Utilisez un formateur (par exemple black)
+  - [ ] Améliorer la note de 6/10 de pylint
 - [ ] Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
 exceptions personnalisées lorsque nécessaire. Par exemple en cas de saisie
 incorrecte de l'utilisateur.
 - [ ] Logger : utilisez le module logging pour enregistrer les actions de l'utilisateur et les
 événements importants dans un fichier de log. Créer un fichier de log pour le debug,
 et un autre pour les erreurs (ERROR et CRITICAL).
-- [ ] Sécurité : assurez-vous (un minimum) que les bibliothèques que vous utilisez sont
+- [X] Sécurité : assurez-vous (un minimum) que les bibliothèques que vous utilisez sont
 connues et n'ont pas de vulnérabilités de sécurité évidentes. Si vous autorisez une
 entrée utilisateur, ne pas utiliser la fonction `eval`, évitez les mots de passe/token en
 clair dans le code, etc.
+
 
 
 ### Les tests
