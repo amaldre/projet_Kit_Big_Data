@@ -6,6 +6,8 @@ import logging
 dotenv.load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
+# TODO : Commentaires à avoir en liste : Importer la liste de tout les commentaires et
+# pas la liste des caractères des commentaires
 
 class DBapi:
     def __init__(self):

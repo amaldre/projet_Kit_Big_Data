@@ -121,3 +121,6 @@ test coverage est supérieur à 90% du code. Les tests unitaires doivent être
 exécutés automatiquement à chaque push sur une branche en review, et lors du
 merge de la branche en review sur master.
 Optionnel : inclure votre phase de déploiement de l’application dans votre CI/CD
+### Commentaires
+- [ ] Commentaires à avoir en liste : Importer la liste de tout les commentaires et
+pas la liste des caractères des commentaires
