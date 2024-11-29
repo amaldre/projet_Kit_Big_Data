@@ -2,7 +2,7 @@ from pymongo import MongoClient, errors
 import dotenv
 import os
 import logging
-
+import pandas as pd
 dotenv.load_dotenv()
 logging.basicConfig(level=logging.INFO)
 
@@ -43,6 +43,31 @@ class DBapi:
             except errors.PyMongoError as e:
                 logging.error(f"Erreur lors de la recherche des documents : {e}")
         return []
+
+    def find_by_columns(self, columns: list, nb=0):
+        """
+        Find documents by a value in a specific column, returning only specified columns, with an optional limit.
+        :param columns: List of columns to be included in the result.
+        :param value: Value to filter by (default is None, meaning no filter).
+        :param nb: Maximum number of documents to retrieve (default is 0, meaning no limit).
+        """
+        if self.client:
+            try:
+                # Constructing projection dynamically based on the list of columns
+                projection = {column: 1 for column in columns}
+                projection['_id'] = 0  # Exclude the '_id' field
+                
+                # Filter: If value is None, select all documents
+                filter_query = {}  # Default filter selects all documents
+                
+                # Fetch the documents and convert to DataFrame
+                documents = list(self.collection.find(filter_query, projection).limit(nb))
+                return pd.DataFrame(documents)
+            except errors.PyMongoError as e:
+                print(f"Error finding documents: {e}")
+                return pd.DataFrame()
+        return pd.DataFrame()
+
     
     def find_range_submitted(self, begin, end):
         """
