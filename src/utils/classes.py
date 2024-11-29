@@ -8,12 +8,14 @@ import pandas as pd
 # Créez un logger spécifique pour ce module
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    filename="app.log",               # Nom du fichier de log
-    filemode="a",                      # Mode append pour ajouter au fichier sans l'écraser
-    level=logging.INFO,                # Niveau minimum des messages de log à enregistrer
+    filename="app.log",  # Nom du fichier de log
+    filemode="a",  # Mode append pour ajouter au fichier sans l'écraser
+    level=logging.INFO,  # Niveau minimum des messages de log à enregistrer
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Format des messages
-    datefmt="%Y-%m-%d %H:%M:%S"        # Format de la date
+    datefmt="%Y-%m-%d %H:%M:%S",  # Format de la date
 )
+
+
 class Study:
 
     def __init__(self, key, dataframe, plot_type, axis_x_list=None, axis_y_list=None, filters=None,  axis_x=None, axis_y=None, name = None):
@@ -52,16 +54,16 @@ class Study:
             self.axis_y,
             self.range_axis_x,
             self.range_axis_y,
-            self.key)
-
+            self.key,
+        )
 
     def __set_axis(self):
         axis_y = st.selectbox(label=f"axis_y ({self.key})", options = self.axis_y_list)
         axis_x = st.selectbox(label=f"axis_x ({self.key})", options = self.axis_x_list)
         logger.debug("Axes définis: axis_x=%s, axis_y=%s", axis_x, axis_y)
         return axis_x, axis_y
-    
-    def __create_slider_from_df(self, df,column):
+
+    def __create_slider_from_df(self, df, column):
         min = math.floor(df[column].min())
         max = math.ceil(df[column].max())
         logger.debug("Création d'un slider pour '%s' avec min=%d, max=%d", column, min, max)
@@ -104,7 +106,7 @@ class Study:
             range_axis = self.__create_slider_from_df(self.dataframe, axis)
         logger.debug(f"Plages définies pour axis {axis}: range_axis_x= {range_axis}")
         return range_axis
-    
+
     def __filters(self, axis_x, axis_y):
         filters = [filtre for filtre in self.filters if (filtre != axis_x and filtre != axis_y)]
         
