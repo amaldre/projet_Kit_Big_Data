@@ -206,6 +206,21 @@ class bivariateStudy:
             st.pyplot(fig)
             st.write(f"number of data points : {len(x)}")
 
+    def __draw_plot(self, x, y, recipes_id):
+        col = st.columns([1, 3, 1])
+        with col[1]:
+            # Create a figure
+            fig = plt.figure(figsize=(10, 6))
+            plt.title(self.name)
+            plt.xlabel(self.axis_x)
+            plt.ylabel(self.axis_y)
+            if self.plot_type == "scatter":
+                plt.scatter(x, y, s=1)
+            elif self.plot_type == "plot":
+                plt.plot(x, y)
+            st.pyplot(fig)
+            st.write(f"number of data points : {len(x)}")
+
         if "recipe_id" in self.dataframe.columns:
             st.write(f"number of data point : {len(self.x)}")
             with st.expander(f"Dataframe best {self.axis_y} ({self.key})"):

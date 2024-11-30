@@ -67,5 +67,3 @@ def test_study_get_data_points():
     assert list(x_values) == list(expected_df[axis_x])
     assert list(y_values) == list(expected_df[axis_y])
     assert list(ids) == list(expected_df["id"])
-
-
