@@ -1,45 +1,74 @@
 import streamlit as st
 import pandas as pd
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import seaborn as sns 
 import ast
 import time
 from collections import Counter
 import logging
-
-from class_block_st import Block
+from utils.dbapi import DBapi
+from class_dams import AdvanceStudy
 import functions
 
-@st.cache_data
-def load_data(df_path):
-    data = pd.read_csv(df_path)
-    return data
+def tracer_graphes():
+    client_DB = DBapi()
 
-RAW_recipes = load_data("../data/RAW_recipes.csv")
+    # nombre de recettes par années
+    nb_recette_par_annee_df = client_DB.find_by_columns(
+        ["recipe_id", "submitted", "rating"]
+    )
+    print(nb_recette_par_annee_df.head())
+    nb_recette_par_annee_df["submitted"] = pd.to_datetime(
+        nb_recette_par_annee_df["submitted"]
+    )
+    nb_recette_par_annee_df["rating"] = nb_recette_par_annee_df["rating"].apply(
+        lambda x: ast.literal_eval(x)
+    )
 
-RAW_recipes[['calories','total fat (%)','sugar (%)','sodium (%)','protein (%)','saturated fat (%)','carbohydrates (%)']] = RAW_recipes.nutrition.str.split(",",expand=True)
-RAW_recipes['calories'] = RAW_recipes['calories'].apply(lambda x: x.replace('[','')) 
-RAW_recipes['carbohydrates (%)']= RAW_recipes['carbohydrates (%)'].apply(lambda x: x.replace(']',''))
+    nb_recette_par_annee_df["rating_count"] = nb_recette_par_annee_df["rating"].apply(
+        len
+    )
+    nb_recette_par_annee_df["rating_mean"] = nb_recette_par_annee_df["rating"].apply(
+        lambda x: sum(x) / len(x) if len(x) > 0 else 0
+    )
+    nb_recette_par_annee_df["year"] = nb_recette_par_annee_df["submitted"].dt.year
+    nb_recette_par_annee_df["month"] = nb_recette_par_annee_df["submitted"].dt.month
+    nb_recette_par_annee_df["submitted_by_month"] = (
+        nb_recette_par_annee_df["submitted"].dt.to_period("M").dt.to_timestamp()
+    )
+    submissions_groupmonth = (
+        nb_recette_par_annee_df["submitted_by_month"].value_counts().sort_index()
+    )
+    decomposition = sm.tsa.seasonal_decompose(
+        submissions_groupmonth, model="additive", period=12
+    )
+    trend = pd.DataFrame(
+        {
+            "Date": decomposition.trend.index,  # X-axis: Time or index
+            "Trend": decomposition.trend.values,  # Y-axis: Trend values
+        }
+    )
+    nb_recette_par_annee_study = AdvanceStudy(
+        dataframe=trend,
+        key="1",
+        name="Moyenne du nombre de recettes au cours du temps",
+        axis_x="Date",
+        axis_y="Trend",
+        plot_type="plot",
+    )
+    st.session_state["locked_graphs"].append(nb_recette_par_annee_study)
 
-RAW_recipes['calories'] = RAW_recipes['calories'].apply(ast.literal_eval)
-RAW_recipes['total fat (%)'] = RAW_recipes['total fat (%)'].apply(ast.literal_eval)
-RAW_recipes['sugar (%)'] = RAW_recipes['sugar (%)'].apply(ast.literal_eval)
-RAW_recipes['sodium (%)'] = RAW_recipes['sodium (%)'].apply(ast.literal_eval)
-RAW_recipes['protein (%)'] = RAW_recipes['protein (%)'].apply(ast.literal_eval)
-RAW_recipes['saturated fat (%)'] = RAW_recipes['saturated fat (%)'].apply(ast.literal_eval)
-RAW_recipes['carbohydrates (%)'] = RAW_recipes['carbohydrates (%)'].apply(ast.literal_eval)
-RAW_recipes['ingredients_cleaned'] = RAW_recipes['ingredients'].str.lower().str.strip()
 
-spices = ['salt', 'garlic', 'pepper', 'paprika', 'basil', 'lime', 'cumin', 'garlic'] # Common spices to exclude from list of ingredients
-common_ingredients = ['water', 'flour', 'baking powder','cornstarch'] # Because water and flour don't have important nutritional values
-alcohol = ['vodka', 'ice', 'beer']
-filtre = spices+common_ingredients+alcohol
+def main():
+    st.markdown("")
+    if st.session_state["first_load"] == True:
+        tracer_graphes()
+        st.session_state["first_load"] = False
 
-list_option = ['calories','total fat (%)', 'sugar (%)']
-list_df = ['RAW_recipes','RAW_recipes']
+    for graph in st.session_state["locked_graphs"]:
+        graph.display_graph()
 
-with st.form('form_df'):
-    df_choose = st.selectbox(label='Choose', options = list_df, key='df_choose')
-    submit_button1 = st.form_submit_button('Set Dataframe')
 
-functions.main(RAW_recipes, list_option, filtre)
+if __name__ == "__main__":
+    main()

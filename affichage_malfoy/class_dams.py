@@ -7,15 +7,6 @@ from collections import Counter
 # from ../classes import Study
 import logging
 
-# Créez un logger spécifique pour ce module
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    filename="app.log",               # Nom du fichier de log
-    filemode="a",                      # Mode append pour ajouter au fichier sans l'écraser
-    level=logging.INFO,                # Niveau minimum des messages de log à enregistrer
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",  # Format des messages
-    datefmt="%Y-%m-%d %H:%M:%S"        # Format de la date
-)
 class AdvanceStudy:
 
     def __init__(self, dataframe, axis_x_list, filters, key):
