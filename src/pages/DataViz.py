@@ -3,7 +3,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from src.utils.classes import Study
+from utils.classes import Study
 from datetime import date
 
 
