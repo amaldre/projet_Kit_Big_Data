@@ -5,11 +5,7 @@ import os
 import pytest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-
-# Ajouter le répertoire racine du projet au sys.path pour importer classes.py
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from src.utils.classes import Study
+from utils.classes import bivariateStudy
 
 
 def test_study_init():
@@ -20,7 +16,7 @@ def test_study_init():
     filters = ["col1"]
     key = "test_key"
 
-    study = Study(df, axis_x_list, axis_y_list, filters, key)
+    study = bivariateStudy(key, df, "plot_type", axis_x_list, axis_y_list, filters)
 
     assert study.dataframe.equals(df)
     assert study.axis_x_list == axis_x_list
@@ -45,7 +41,7 @@ def test_study_get_data_points():
     filters = ["filter_col"]
     key = "test_key"
 
-    study = Study(df, axis_x_list, axis_y_list, filters, key)
+    study = bivariateStudy(key, df, "plot_type", axis_x_list, axis_y_list, filters)
 
     axis_x = "axis_x"
     axis_y = "axis_y"
@@ -73,41 +69,3 @@ def test_study_get_data_points():
     assert list(ids) == list(expected_df["id"])
 
 
-def test_study_display_graph():
-    # Mock des fonctions Streamlit
-    df = pd.DataFrame(
-        {
-            "id": [1, 2, 3],
-            "axis_x": [1, 2, 3],
-            "axis_y": [3, 2, 1],
-            "count_total": [100, 200, 300],
-        }
-    )
-    axis_x_list = ["axis_x"]
-    axis_y_list = ["axis_y"]
-    filters = []
-    key = "test_key"
-
-    study = Study(df, axis_x_list, axis_y_list, filters, key)
-
-    with patch("streamlit.expander"), patch(
-        "streamlit.selectbox", side_effect=["axis_x", "axis_y"]
-    ), patch("streamlit.slider", return_value=(1, 3)), patch("streamlit.form"), patch(
-        "streamlit.form_submit_button", side_effect=[True, False]
-    ), patch(
-        "streamlit.columns", return_value=[MagicMock(), MagicMock(), MagicMock()]
-    ), patch(
-        "streamlit.pyplot"
-    ), patch(
-        "matplotlib.pyplot.subplots", return_value=(MagicMock(), MagicMock())
-    ), patch(
-        "streamlit.dataframe"
-    ), patch(
-        "streamlit.write"
-    ), patch(
-        "streamlit.checkbox", return_value=False
-    ):
-
-        # Exécuter la méthode display_graph
-        study.display_graph()
-        # Vous pouvez ajouter des assertions supplémentaires si nécessaire

@@ -6,14 +6,20 @@ import ast
 import nltk
 import re
 
+from utils.dbapi import DBapi
+
+db = DBapi()
+with db:
+    df = pd.DataFrame(db.get_percentage_documents(per=0.0005))
+
 # Variables globales pour simuler les données
 PATH_DATA = "../data/"
-RAW_RECIPE = "RAW_recipes.csv"
-RAW_INTERACTIONS = "RAW_interactions.csv"
-PP_RECIPES = "PP_recipes.csv"
+RAW_RECIPE = "RAW_recipes_sample.csv"
+RAW_INTERACTIONS = "RAW_interactions_sample.csv"
+
 
 # ---- Page Streamlit ----
-st.set_page_config(page_title="Explication du Prétraitement", layout="wide")
+st.set_page_config(page_title="Explication Prétraitement", layout="wide")
 
 # --- Titre et Introduction ---
 st.title("🌟 Explication du Prétraitement des Données")
@@ -25,13 +31,12 @@ ainsi que des visualisations pour mieux comprendre leur impact.
 )
 
 # --- Chargement des données ---
-st.header("1️⃣ Chargement des Données")
+st.header("Chargement des Données")
 st.write(
     """
 Les données brutes sont chargées à partir de fichiers CSV. Voici un aperçu des fichiers utilisés :
 - `RAW_recipes.csv` : Données des recettes brutes.
 - `RAW_interactions.csv` : Interactions des utilisateurs avec les recettes.
-- `PP_recipes.csv` : Données des recettes prétraitées.
 """
 )
 
@@ -48,24 +53,43 @@ def load_data(file_name):
 
 raw_recipes = load_data(RAW_RECIPE)
 raw_interactions = load_data(RAW_INTERACTIONS)
-pp_recipes = load_data(PP_RECIPES)
 
 # Afficher les données brutes si elles existent
 if not raw_recipes.empty:
-    st.write("Exemple de données brutes :")
+    st.write("Exemple de données brutes de RAW_recipe:")
     st.dataframe(raw_recipes.head(5))
 else:
-    st.warning("Fichier RAW_recipes.csv introuvable.")
+    st.warning("Fichier RAW_recipes_sample.csv introuvable.")
+
+
+# Afficher les données brutes si elles existent
+if not raw_recipes.empty:
+    st.write("Exemple de données brutes de RAW_interactions:")
+    st.dataframe(raw_interactions.head(5))
+else:
+    st.warning("Fichier RAW_interactions_sample.csv introuvable.")
+
 
 # --- Transformation des Données ---
 st.header("2️⃣ Transformation des Données")
 st.write(
     """
 Plusieurs transformations sont appliquées pour préparer les données :
-1. Conversion de certaines colonnes en listes (`tags`, `steps`, etc.).
-2. Fusion des datasets `RAW_recipes` et `RAW_interactions`.
-3. Nettoyage des descriptions et des noms.
-4. Suppression des valeurs aberrantes.
+1. Les datasets doivent être nétoyés.
+    Pour cela, les recettes avec des valeurs manquantes sont supprimées.
+    Les recettes avec des valeurs aberrantes sont également supprimées.
+    Notamment celles avec un temps de cuisson excessif ou un nombre de steps nul.
+    Les 'Description' manquantes sont remplies avec le contenu de 'Name' pour combler les vides.
+    
+2. Les données de RAW_interactions devaient être fusionnées avec RAW_recipes. Pour cela, les deux dataframes ont été merge sur la colonne `recipe_id`.
+Les colonnes de interactions ont été transformées en listes pour faire correspondre chaque recette avec ses interactions, ses commentaires, ses reviews, etc.
+
+3. Fusion des datasets `RAW_recipes` et `RAW_interactions`.
+
+4. Nettoyage des descriptions et des noms.
+   Dans le but de réaliser un clustering, les descriptions et les noms des recettes sont nettoyés et tokenisés.
+   Les stopwords sont supprimés des textes.
+
 """
 )
 
@@ -77,12 +101,12 @@ if not raw_recipes.empty:
     )
     st.write(
         "**Avant conversion de la colonne `submitted` :**",
-        raw_recipes["submitted"].dtype,
+        raw_recipes["tags"].dtype,
     )
-    st.write("**Après conversion :**", raw_recipes["submitted"].dtype)
+    st.write("**Après conversion :**", raw_recipes["tags"].dtype)
 
 # --- Nettoyage des Données ---
-st.header("3️⃣ Nettoyage des Données")
+st.header("1️⃣ Nettoyage des Données")
 st.write(
     """
 Les colonnes contenant des valeurs manquantes sont remplacées ou supprimées :
@@ -100,6 +124,18 @@ if not raw_recipes.empty:
     ax.set_title("Valeurs manquantes par colonne")
     ax.set_xlabel("Nombre de valeurs manquantes")
     st.pyplot(fig)
+
+st.header("2️⃣ Préparation à la fusion des Données")
+
+st.write(
+    """
+Les données de `RAW_interactions` sont fusionnées avec `RAW_recipes` :
+- Les deux datasets sont joints sur la colonne `recipe_id`.
+- Les colonnes de `RAW_interactions` sont transformées en listes.
+"""
+)
+
+st.header("3️⃣ Visualisation de la Fusion")
 
 # --- Suppression des Valeurs Aberrantes ---
 st.header("4️⃣ Suppression des Valeurs Aberrantes")
@@ -149,15 +185,4 @@ dot.node("E", "Tokenisation")
 dot.edges(["AB", "BC", "CD", "DE"])
 st.graphviz_chart(dot)
 
-# --- Téléchargement des Données ---
-st.header("📥 Télécharger les Données Prétraitées")
-st.write("Téléchargez les données prétraitées pour vos analyses.")
-if not pp_recipes.empty:
-    st.download_button(
-        label="Télécharger les données prétraitées",
-        data=pp_recipes.to_csv(index=False),
-        file_name="processed_data.csv",
-        mime="text/csv",
-    )
-else:
-    st.warning("Aucune donnée prétraitée disponible pour le téléchargement.")
+# TODO : Raconter mieux lhistoire du pretaitement

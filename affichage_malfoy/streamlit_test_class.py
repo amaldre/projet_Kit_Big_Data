@@ -17,53 +17,55 @@ from pathlib import Path
 
 from dbapi import DBapi
 
+# df_g['description'] = df_g['description'].fillna(df_g['name'])
+# df_g = df_g.dropna(subset=['name'])
+# df_g['contributor_id'] = df_g.contributor_id.astype('category')
+# df_g['recipe_id'] = df_g.recipe_id.astype('category')
+# df_g  = df_g.sort_values('minutes',ascending=False)
+# df_g = df_g.drop(df_g['minutes'].nlargest(2).index)
+# df_g  = df_g.sort_values('minutes',ascending=True)
+# idx = df_g.index[df_g['minutes'] < 2].tolist()
+# df_g = df_g.drop(idx)
+# df_g  = df_g.sort_values('n_steps',ascending=True)
+# df_g = df_g.drop(df_g['n_steps'].idxmax())
+# df_g  = df_g.sort_values('n_steps',ascending=True)
+# df_g = df_g.drop(df_g['steps'].idxmin())
+# df_g  = df_g.sort_values('n_ingredients',ascending=False)
+# df_g = df_g.drop(df_g['n_steps'].idxmax())
+# df_g  = df_g.sort_values('n_ingredients',ascending=True)
+# df_g['year'] = df_g['submitted'].dt.year
+# df_g['month'] = df_g['submitted'].dt.month
+# df_g['day'] = df_g['submitted'].dt.day
+# df_g['day_of_week'] = df_g['submitted'].dt.day_name()
+# df_g['submitted_by_week']=df_g['submitted'].dt.to_period('W').dt.to_timestamp()
+# df_g['submitted_by_month']=df_g['submitted'].dt.to_period('M').dt.to_timestamp()
+# df_g['n_comments'] = df_g['review'].apply(len)
+# df_g = df_g.sort_values(by='n_comments', ascending=False)
+
+# submissions_per_year = df_g['submitted'].value_counts().sort_index()
+# submissions_per_month = df_g['month'].value_counts().sort_index()
+
+# submissions_group_week = df_g['submitted_by_week'].value_counts().sort_index()
+# submissions_groupmonth = df_g['submitted_by_month'].value_counts().sort_index()
+
+# decomposition = sm.tsa.seasonal_decompose(submissions_group_week, model='additive', period=12)
+# trend = decomposition.trend
+# seasonal = decomposition.seasonal
+# residual = decomposition.resid
+
+
+# decomposition = sm.tsa.seasonal_decompose(submissions_groupmonth, model='additive', period=12)
+# trend = decomposition.trend
+# seasonal = decomposition.seasonal
+# residual = decomposition.resid
+
+# A afficher : 
+# Décrire pour nous notre notion de popularité ? La recette la plus commenté ? La plus noté ? La mieux noté ?
+# un mixte de la moyenne des notes et des commentaire ? Utilisation de la moyenne Bayessienne ? 
+# N-commentaires sur les TOP5 des recettes les plus populaire
+# Top users (meilleur contributeur, meilleur testeur, meilleure note sur les recettes proposées) ? 
+
 db_api = DBapi()
-
-
-
-df_g['description'] = df_g['description'].fillna(df_g['name'])
-df_g = df_g.dropna(subset=['name'])
-df_g['contributor_id'] = df_g.contributor_id.astype('category')
-df_g['recipe_id'] = df_g.recipe_id.astype('category')
-df_g  = df_g.sort_values('minutes',ascending=False)
-df_g = df_g.drop(df_g['minutes'].nlargest(2).index)
-df_g  = df_g.sort_values('minutes',ascending=True)
-idx = df_g.index[df_g['minutes'] < 2].tolist()
-df_g = df_g.drop(idx)
-df_g  = df_g.sort_values('n_steps',ascending=True)
-df_g = df_g.drop(df_g['n_steps'].idxmax())
-df_g  = df_g.sort_values('n_steps',ascending=True)
-df_g = df_g.drop(df_g['steps'].idxmin())
-df_g  = df_g.sort_values('n_ingredients',ascending=False)
-df_g = df_g.drop(df_g['n_steps'].idxmax())
-df_g  = df_g.sort_values('n_ingredients',ascending=True)
-df_g['year'] = df_g['submitted'].dt.year
-df_g['month'] = df_g['submitted'].dt.month
-df_g['day'] = df_g['submitted'].dt.day
-df_g['day_of_week'] = df_g['submitted'].dt.day_name()
-df_g['submitted_by_week']=df_g['submitted'].dt.to_period('W').dt.to_timestamp()
-df_g['submitted_by_month']=df_g['submitted'].dt.to_period('M').dt.to_timestamp()
-df_g['n_comments'] = df_g['review'].apply(len)
-df_g = df_g.sort_values(by='n_comments', ascending=False)
-
-submissions_per_year = df_g['submitted'].value_counts().sort_index()
-submissions_per_month = df_g['month'].value_counts().sort_index()
-
-submissions_group_week = df_g['submitted_by_week'].value_counts().sort_index()
-submissions_groupmonth = df_g['submitted_by_month'].value_counts().sort_index()
-
-decomposition = sm.tsa.seasonal_decompose(submissions_group_week, model='additive', period=12)
-trend = decomposition.trend
-seasonal = decomposition.seasonal
-residual = decomposition.resid
-
-
-decomposition = sm.tsa.seasonal_decompose(submissions_groupmonth, model='additive', period=12)
-trend = decomposition.trend
-seasonal = decomposition.seasonal
-residual = decomposition.resid
-
-
 
 st.set_page_config(
     page_title="Analyse de la Perte de Popularité de Food.com",

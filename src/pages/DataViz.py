@@ -3,8 +3,11 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from utils.classes import Study
 from datetime import date
+from utils.load_csv import load_numerical_df, load_trend
+from utils.classes import bivariateStudy
+import pandas as pd
+import ast
 
 
 st.set_page_config(layout="wide")
@@ -18,53 +21,57 @@ def import_df(df_path):
     recipes_df = pd.read_csv(df_path)
     return recipes_df
 
+
 @st.cache_data
 def merge_df(df1, df2, column):
     return pd.merge(df1, df2, on=column)
 
+
 if "graph" not in st.session_state:
     st.session_state["graph"] = []
 
+if "numerical_df" not in st.session_state:
+    st.session_state["numerical_df"] = None
+
+if "first_load_dataviz" not in st.session_state:
+    st.session_state["first_load_dataviz"] = True
+
+
+
+
+
 
 def main():
+    # nombre de recettes par années
+    axis_x_list = [
+        "minutes",
+        "n_steps",
+        "comment_count",
+        "ingredient_count",
+        "submitted",
+    ]
+    axis_y_list = ["comment_count", "mean_rating"]
+    filters = ["comment_count", "mean_rating", "submitted"]
 
-    print("début",len(st.session_state["graph"]))
-    if st.button("refresh"):
-        st.rerun()
+    if st.session_state["first_load_dataviz"] == True:
+        print("first load dataviz", st.session_state["first_load_dataviz"])
+        st.session_state["numerical_df"] =load_numerical_df()
+        st.session_state["first_load_dataviz"] = False
 
-    recipes_df = import_df("data/recipes_explicit_nutriments.csv")
-    mean_rating_df = import_df("data/mean_ratings.csv")
-    mean_rating_df.rename(columns={"recipe_id":"id"}, inplace=True)
-    idx_with_max_value = recipes_df["calories"].values.argmax()
-    recipes_df = recipes_df.drop(index=idx_with_max_value)
-    dataframe = merge_df(recipes_df,mean_rating_df,"id")
-    dataframe["submitted"] = pd.to_datetime(dataframe["submitted"]).dt.date
-    axis_x_list = ["count_total","mean_rating","submitted"]
-    axis_y_list = ["calories","n_steps","minutes","n_ingredients","mean_rating","count_total"]
-    filters = ["count_total","mean_rating","submitted"]
+    for i, graph in enumerate(st.session_state["graph"]):
 
-    
+        if graph.delete == True:
+            st.session_state["graph"].remove(graph)
+            print("remove", len(st.session_state["graph"]))
+        else:
+            graph.display_graph(free=True)
 
     if st.button("Add Graph"):
         name = f"graph {len(st.session_state["graph"]) + 1}"
-        study = Study(dataframe, axis_x_list, axis_y_list, filters, name)
+        study = bivariateStudy(dataframe=st.session_state["numerical_df"], axis_x_list=axis_x_list, axis_y_list=axis_y_list, filters=filters, key=name, plot_type = "scatter")
         st.session_state["graph"].append(study)
         print("add",len(st.session_state["graph"]))
-
-
-    
-
-    for i, graph in enumerate(st.session_state["graph"]):
-        
-        if graph.delete==True:
-            st.session_state["graph"].remove(graph)
-            print("remove",len(st.session_state["graph"]))
-        else:
-            graph.display_graph()
-            
-    
-    
-        
+        st.rerun()      
 
 if __name__ == "__main__":
     main()

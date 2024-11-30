@@ -2,9 +2,13 @@ from pymongo import MongoClient, errors
 import dotenv
 import os
 import logging
+import pandas as pd
 
 dotenv.load_dotenv()
 logging.basicConfig(level=logging.INFO)
+
+# TODO : Commentaires à avoir en liste : Importer la liste de tout les commentaires et
+# pas la liste des caractères des commentaires
 
 
 class DBapi:
@@ -48,6 +52,32 @@ class DBapi:
             except errors.PyMongoError as e:
                 logging.error(f"Erreur lors de la recherche des documents : {e}")
         return []
+
+    def find_by_columns(self, columns: list, nb=0):
+        """
+        Find documents by a value in a specific column, returning only specified columns, with an optional limit.
+        :param columns: List of columns to be included in the result.
+        :param value: Value to filter by (default is None, meaning no filter).
+        :param nb: Maximum number of documents to retrieve (default is 0, meaning no limit).
+        """
+        if self.client:
+            try:
+                # Constructing projection dynamically based on the list of columns
+                projection = {column: 1 for column in columns}
+                projection["_id"] = 0  # Exclude the '_id' field
+
+                # Filter: If value is None, select all documents
+                filter_query = {}  # Default filter selects all documents
+
+                # Fetch the documents and convert to DataFrame
+                documents = list(
+                    self.collection.find(filter_query, projection).limit(nb)
+                )
+                return pd.DataFrame(documents)
+            except errors.PyMongoError as e:
+                print(f"Error finding documents: {e}")
+                return pd.DataFrame()
+        return pd.DataFrame()
 
     def find_range_submitted(self, begin, end):
         """
@@ -122,6 +152,46 @@ class DBapi:
                 result = list(cursor)
                 logging.info(
                     f"{len(result)} documents trouvés pour {colonne} avec un pourcentage de {per}."
+                )
+                return result
+            except errors.PyMongoError as e:
+                logging.error(f"Erreur lors de la récupération des documents : {e}")
+        return []
+
+    def get_percentage_documents(self, colonnes=None, per=1):
+        """
+        Renvoie un pourcentage de documents aléatoires avec les colonnes spécifiées.
+
+        Args:
+            colonnes (list or None): Liste des colonnes à inclure dans le résultat.
+                                    Si None, toutes les colonnes sont incluses.
+            per (int): Pourcentage de documents à renvoyer entre 0 et 1.
+
+        Returns:
+            list: Liste des documents correspondant au critère.
+        """
+        if self.client:
+            try:
+
+                projection = {"_id": 0}
+                if colonnes:
+                    projection.update({col: 1 for col in colonnes})
+
+                # Créer l'agrégation
+                cursor = self.collection.aggregate(
+                    [
+                        {
+                            "$sample": {
+                                "size": int(per * self.collection.count_documents({}))
+                            }
+                        },
+                        {"$project": projection},
+                    ]
+                )
+
+                result = list(cursor)
+                logging.info(
+                    f"{len(result)} documents trouvés avec un pourcentage de {per}."
                 )
                 return result
             except errors.PyMongoError as e:
