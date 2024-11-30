@@ -8,7 +8,7 @@ from utils.load_csv import load_trend, load_numerical_df
 st.set_page_config(layout="wide")
 st.title("Analyse des data")
 
-if  "first_load" not in st.session_state:
+if "first_load" not in st.session_state:
     st.session_state["first_load"] = True
 
 if "locked_graphs" not in st.session_state:
@@ -27,7 +27,7 @@ def main():
 
     for graph in st.session_state["locked_graphs"]:
         graph.display_graph()
-    
+
 
 if __name__ == "__main__":
     main()
