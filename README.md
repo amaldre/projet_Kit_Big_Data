@@ -79,7 +79,7 @@ Utilisez également les bonnes structures de données.
 code.
 - [ ] PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
 la cohérence du code. Utilisez un formateur (par exemple black)
-  - [ ] Améliorer la note de 6/10 de pylint
+  - [ ] Améliorer la note de 6/10 de pylint -> 7.5/10
 - [ ] Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
 exceptions personnalisées lorsque nécessaire. Par exemple en cas de saisie
 incorrecte de l'utilisateur.

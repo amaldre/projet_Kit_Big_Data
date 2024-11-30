@@ -6,11 +6,17 @@ import ast
 import nltk
 import re
 
+from utils.dbapi import DBapi
+
+db = DBapi()
+
+df = pd.DataFrame(db.get_percentage_documents(per=0.05))
+
 # Variables globales pour simuler les données
 PATH_DATA = "../data/"
-RAW_RECIPE = "RAW_recipes.csv"
-RAW_INTERACTIONS = "RAW_interactions.csv"
-PP_RECIPES = "PP_recipes.csv"
+RAW_RECIPE = "RAW_recipes_sample.csv"
+RAW_INTERACTIONS = "RAW_interactions_sample.csv"
+
 
 # ---- Page Streamlit ----
 st.set_page_config(page_title="Explication du Prétraitement", layout="wide")
@@ -31,7 +37,6 @@ st.write(
 Les données brutes sont chargées à partir de fichiers CSV. Voici un aperçu des fichiers utilisés :
 - `RAW_recipes.csv` : Données des recettes brutes.
 - `RAW_interactions.csv` : Interactions des utilisateurs avec les recettes.
-- `PP_recipes.csv` : Données des recettes prétraitées.
 """
 )
 
@@ -48,7 +53,6 @@ def load_data(file_name):
 
 raw_recipes = load_data(RAW_RECIPE)
 raw_interactions = load_data(RAW_INTERACTIONS)
-pp_recipes = load_data(PP_RECIPES)
 
 # Afficher les données brutes si elles existent
 if not raw_recipes.empty:
@@ -149,15 +153,5 @@ dot.node("E", "Tokenisation")
 dot.edges(["AB", "BC", "CD", "DE"])
 st.graphviz_chart(dot)
 
-# --- Téléchargement des Données ---
-st.header("📥 Télécharger les Données Prétraitées")
-st.write("Téléchargez les données prétraitées pour vos analyses.")
-if not pp_recipes.empty:
-    st.download_button(
-        label="Télécharger les données prétraitées",
-        data=pp_recipes.to_csv(index=False),
-        file_name="processed_data.csv",
-        mime="text/csv",
-    )
-else:
-    st.warning("Aucune donnée prétraitée disponible pour le téléchargement.")
+# TODO : Faire un tout petit data set csv de 100/200 données brutes pour expliquer le pretaitement
+# TODO : Raconter mieux lhistoire du pretaitement

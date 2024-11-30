@@ -171,6 +171,9 @@ dataset/
 data/
 TP_EDA/
 
+!data/RAW_interactions_sample.csv
+!data/RAW_recipes_sample.csv
+
 #Models 
 models/
 
