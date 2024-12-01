@@ -55,4 +55,6 @@ jobs:
 
       # Étape 6 : Exécuter les tests avec pytest
       - name: Run tests
+        env: 
+          PYTHONPATH: ./src
         run: ./.venv/bin/pytest --cov=scripts --cov=src --cov-report term-missing tests/
