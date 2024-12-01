@@ -7,7 +7,7 @@ import time
 from collections import Counter
 import logging
 import statsmodels.api as sm
-
+import matplotlib.dates as mdates
 from pymongo import MongoClient, errors
 import dotenv
 import os
@@ -65,7 +65,6 @@ from dbapi import DBapi
 # N-commentaires sur les TOP5 des recettes les plus populaire
 # Top users (meilleur contributeur, meilleur testeur, meilleure note sur les recettes proposées) ? 
 
-db_api = DBapi()
 
 st.set_page_config(
     page_title="Analyse de la Perte de Popularité de Food.com",
@@ -83,30 +82,47 @@ Notre objectif est de comprendre les causes de ce déclin en examinant les **tre
 **Objectif final :** Identifier des leviers pour revitaliser Food.com et regagner sa communauté culinaire.
 """)
 
-st.subheader("📊 Évolution de la popularité des recettes au fil des ans")
-
-fig, ax = plt.subplots()
-submissions_per_year.plot(kind='line', title='Submitted')
-ax.set_xlabel('Année')
-ax.set_ylabel('Nombre de recettes')
-st.pyplot(fig)
-
-st.markdown("""
-Ce graphique illustre une tendance à la baisse constante de la popularité des recettes sur Food.com depuis 2010. 
-Une exploration des caractéristiques des recettes populaires est nécessaire pour mieux comprendre ce phénomène.
-""")
-
 st.subheader("✨ Est ce que les recettes les plus populaires étaient postées entre 2008 et 2010 ?")
 
-n_largest = df_g.nlargest(5, 'n_comments')
+client_DB = DBapi()
+with client_DB:
+    df_1 = client_DB.get_all_from('recipe_id')
+    df_2 = client_DB.get_all_from('date')
+    df_3 = client_DB.get_all_from('rating')
+    df_1 = pd.DataFrame(df_1)
+    df_2 = pd.DataFrame(df_2)
+    df_3 = pd.DataFrame(df_3)
 
-fig, ax = plt.subplots()
+top_com_df = pd.merge(df_1, df_2, on='recipe_id')
+top_com_df = pd.merge(top_com_df, df_3, on='recipe_id')
+
+# nombre de recettes par années
+# top_com_df = client_DB.find_by_columns(
+#     ["recipe_id", "date", "rating"]
+# )
+top_com_df["rating"] = top_com_df["rating"].apply(
+    lambda x: ast.literal_eval(x)
+)
+top_com_df["rating_count"] = top_com_df["rating"].apply(
+    len
+)
+top_com_df["rating_mean"] = top_com_df["rating"].apply(
+    lambda x: sum(x) / len(x) if len(x) > 0 else 0
+)
+
+n_largest = top_com_df.nlargest(5, 'rating_count')
+
+top_com_df["date"] = top_com_df["date"].apply(lambda x: [pd.to_datetime(date) for date in x])
+
 for i in range(len(n_largest)):
-    plt.hist(df_g.loc[n_largest.index[i]]['date'], bins=50, edgecolor='black', alpha=0.5)
+    plt.hist(top_com_df.loc[n_largest.index[i]]['date'], bins=50, edgecolor='black', alpha=0.5)
+
 plt.title('Top 5 Recettes commentées')
 plt.xlabel('Date')
 plt.ylabel('n_comments')
-st.pyplot(fig)
+ax = plt.gca()
+ax.xaxis.set_major_locator(mdates.YearLocator(2))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
 
 st.markdown("""
 Les recettes les plus populaires ont bien été postées entre 2008 et 2010, ce qui montre que l'intérêt pour le site a bien baissé avec le nombre de contributions.
