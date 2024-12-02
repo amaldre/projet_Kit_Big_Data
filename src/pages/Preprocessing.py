@@ -8,9 +8,9 @@ import re
 
 from utils.dbapi import DBapi
 
-db = DBapi()
-with db:
-    df = pd.DataFrame(db.get_percentage_documents(per=0.0005))
+# db = DBapi()
+# with db:
+#     df = pd.DataFrame(db.get_percentage_documents(per=0.0005))
 
 # Variables globales pour simuler les données
 PATH_DATA = "../data/"
@@ -60,6 +60,7 @@ if not raw_recipes.empty:
     st.dataframe(raw_recipes.head(5))
 else:
     st.warning("Fichier RAW_recipes_sample.csv introuvable.")
+    st.write(PATH_DATA + RAW_RECIPE)
 
 
 # Afficher les données brutes si elles existent
@@ -71,7 +72,7 @@ else:
 
 
 # --- Transformation des Données ---
-st.header("2️⃣ Transformation des Données")
+st.header(" Transformation des Données")
 st.write(
     """
 Plusieurs transformations sont appliquées pour préparer les données :
@@ -184,5 +185,26 @@ dot.node("D", "Suppression des Outliers")
 dot.node("E", "Tokenisation")
 dot.edges(["AB", "BC", "CD", "DE"])
 st.graphviz_chart(dot)
+
+st.header("7️⃣ Mise en place d'une base de donées")
+
+st.write(
+    """
+    Afin de déployer notre application, nous avons mis en place une base de données MongoDB.
+    Nous avons alors tenté d'utiliser MongoDB Atlas.
+    Pour cela nous avons réduit le nombre de colonnes de notre base en supprimant les colonnes inutiles.
+    Nous avons alors gardé uniquement les colonnes suivantes car la version gratuite de MongoDB Atlas nous limitait à 512 Mo de données :
+    - recipe_id
+    - name
+    - rating
+    - minutes
+    - ingredients
+    - n_steps
+    
+    Après avoir créer notre colection et insérer nos données, nous avons pu nous connecter à notre base de données via une classe python créer pour l'occasion..
+    Cependant, la version gratuite de MongoDB Atlas nous a limité dans le téléchargement de nos données. Le telechargement étant limité à 10 Go sur une période glissante de 7 jours, nous avons au cours de nos tests épuisé notre quota de téléchargement.
+    Nous avons donc abandonné l'utilisation de MongoDB Atlas pour une base de données locale réduite à 120Mo.
+    """
+)
 
 # TODO : Raconter mieux lhistoire du pretaitement
