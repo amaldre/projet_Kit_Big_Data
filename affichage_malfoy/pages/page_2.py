@@ -39,15 +39,10 @@ def main():
     if refresh_button:
         st.rerun()
 
-    recipes_df = import_df("../data/recipes_explicit_nutriments.csv")
-    mean_rating_df = import_df("../data/mean_ratings.csv")
-    mean_rating_df.rename(columns={"recipe_id":"id"}, inplace=True)
-    idx_with_max_value = recipes_df["calories"].values.argmax()
-    recipes_df = recipes_df.drop(index=idx_with_max_value)
-    dataframe = merge_df(recipes_df,mean_rating_df,"id")
+    dataframe = import_df("../data/cloud_df.csv")
 
-    axis_x_list = ["count_total","mean_rating","calories","total fat (%)","sugar (%)","sodium (%)","protein (%)","saturated fat (%)","carbohydrates (%)"]
-    filters = ["count_total","mean_rating","calories","total fat (%)","sugar (%)","sodium (%)","protein (%)","saturated fat (%)","carbohydrates (%)"]
+    axis_x_list = ["calories","mean_rating","comment_count","n_steps","ingredients_replaced","techniques"]
+    filters = ["calories","mean_rating","comment_count","n_steps"]
 
     if add_graph_button:
         name = f"{len(st.session_state["graph"]) + 1}"
