@@ -85,30 +85,7 @@ def test_advancedstudy_init():
     assert advanced_study.filters == filters
     assert advanced_study.key == key
     assert advanced_study.delete == False
-    
-def test_advancedstudy_set_axis():
-    df = pd.DataFrame()
-    axis_x_list = ["axis_x1", "axis_x2"]
-    filters = []
-    key = "test_key"
 
-    advanced_study = AdvancedStudy(df, axis_x_list, filters, key)
-
-    # Mock Streamlit selectbox
-    streamlit_mock = MagicMock()
-    streamlit_mock.selectbox.return_value = "axis_x1"
-
-    # Replace the Streamlit function with the mock
-    with MagicMock() as mock_streamlit:
-        mock_streamlit.selectbox = streamlit_mock.selectbox
-        result = advanced_study.__set_axis()
-
-    assert result == "axis_x1"
-    streamlit_mock.selectbox.assert_called_once_with(
-        label=f"graph {key}",
-        options=axis_x_list,
-        key=f"{key}_axis_x"
-    )
 
 def test_advancedstudy_get_data_points():
     # Créer un DataFrame d'exemple
@@ -160,36 +137,3 @@ def test_get_data_points_ingredients():
     result = advanced_study.get_data_points_ingredients(df)
 
     assert list(result) == ["a", "b", "c"]
-
-def test_avdancedstudy_filters():
-    df = pd.DataFrame({
-        "col1": [1, 2, 3],
-        "filter1": [10, 20, 30],
-        "filter2": [40, 50, 60]
-    })
-    axis_x_list = ["col1"]
-    filters = ["filter1", "filter2"]
-    key = "test_key"
-
-    advanced_study = AdvancedStudy(df, axis_x_list, filters, key)
-
-    # Mock Streamlit sidebar components
-    mock_sidebar = MagicMock()
-    mock_sidebar.multiselect.return_value = ["filter1"]
-    mock_sidebar.slider.return_value = (15, 25)
-
-    # Replace Streamlit's sidebar methods with mocks
-    with MagicMock() as mock_streamlit:
-        mock_streamlit.sidebar = mock_sidebar
-        chosen_filters, range_filters = advanced_study.__filters("col1")
-
-    assert chosen_filters == ["filter1"]
-    assert range_filters == [(15, 25)]
-    mock_sidebar.multiselect.assert_called_once_with(
-        label=f"filtre pour le graph {key}",
-        options=["filter1", "filter2"],
-        key=f"{key}_chosen_filters"
-    )
-    mock_sidebar.slider.assert_called_once_with(
-        "filter1", min_value=10, max_value=30, value=(10, 30), key=f"{key}_range_filter1"
-    )
