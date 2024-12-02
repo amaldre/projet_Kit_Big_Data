@@ -5,6 +5,8 @@ from shapely.geometry import Point
 import pandas as pd
 import numpy as np
 from streamlit_autorefresh import st_autorefresh
+import altair as alt
+
 
 # Titre de l'application
 st.title("Carte des États-Unis avec GeoJSON et Points Aléatoires")
@@ -30,7 +32,7 @@ def load_recipes_data(path):
 # Générer des points pour toutes les années
 @st.cache_data
 def generate_random_points(recettes_par_années, _gdf):
-    us_geometry = _gdf.unary_union
+    us_geometry = _gdf.union_all()
     data_points = []
 
     for idx, row in recettes_par_années.iterrows():
@@ -66,7 +68,7 @@ def generate_random_points(recettes_par_années, _gdf):
 # Charger les données
 geojson_path = "../data/us_states.geojson"  # Remplace par le chemin réel
 gdf = load_geojson(geojson_path)
-us_geometry = gdf.unary_union
+us_geometry = gdf.union_all()
 
 df_recette = load_recipes_data("../data/cloud_df.csv")
 
@@ -164,5 +166,25 @@ deck = pdk.Deck(
     initial_view_state=view_state,
 )
 
+st.write(" Un point représente 10 recettes.")
 # Afficher la carte
 st.pydeck_chart(deck)
+
+recettes_par_années["is_current_year"] = (
+    recettes_par_années["année"] == st.session_state.année
+)
+
+chart = (
+    alt.Chart(recettes_par_années)
+    .mark_bar()
+    .encode(
+        x=alt.X("année:O", title="Année"),
+        y=alt.Y("nombre_recettes:Q", title="Nombre de recettes"),
+        color=alt.condition(
+            alt.datum.is_current_year, alt.value("orange"), alt.value("steelblue")
+        ),
+    )
+    .properties(width=600, height=400, title="Nombre de recettes par année")
+)
+
+st.altair_chart(chart, use_container_width=True)

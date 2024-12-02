@@ -1,0 +1,30 @@
+body {
+    background-color: #003285;
+    color :#e76d00;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #e76d00;
+    font-size: 2.5em;
+}
+
+.stMarkdown h1 {
+    color: #e76d00;
+    font-size: 2.5em;
+}
+
+.stMarkdown {
+    color: #f9d3b2; /* Gris foncé */
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+.stTitle {
+    color: #e76d00;
+}
+
+.stSidebar {
+    background-color: #2b334b;
+    color: #f9d3b2;
+}
