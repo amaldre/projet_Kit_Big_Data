@@ -7,6 +7,7 @@ import numpy as np
 from streamlit_autorefresh import st_autorefresh
 import altair as alt
 
+
 def load_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -14,11 +15,10 @@ def load_css(file_name):
 
 load_css("style.css")
 
-# Titre de l'application
-st.title("Carte des États-Unis avec GeoJSON et Points Aléatoires")
+
+st.title("Carte Data Food.com au cours des années")
 
 
-# Charger les données GeoJSON
 @st.cache_data
 def load_geojson(path):
     gdf = gpd.read_file(path)
@@ -26,7 +26,6 @@ def load_geojson(path):
     return gdf
 
 
-# Charger les données de recettes
 @st.cache_data
 def load_recipes_data(path):
     df = pd.read_csv(path)
@@ -35,7 +34,6 @@ def load_recipes_data(path):
     return df
 
 
-# Générer des points pour toutes les années
 @st.cache_data
 def generate_random_points(recettes_par_années, _gdf):
     us_geometry = _gdf.union_all()
@@ -71,8 +69,19 @@ def generate_random_points(recettes_par_années, _gdf):
     return df_points
 
 
-# Charger les données
-geojson_path = "../data/us_states.geojson"  # Remplace par le chemin réel
+st.write(
+    """
+        Cette carte illustre le défi majeur auquel le site est confronté : 
+        la diminution de sa base d'utilisateurs. 
+        Les points sur la carte ne représentent pas les localisations réelles des utilisateurs, 
+        mais servent uniquement de visualisation symbolique. Chaque point correspond à 10 recettes soumises, 
+        mettant en lumière les tendances d'engagement des utilisateurs au fil du temps. 
+        Cette représentation permet d'identifier visuellement les périodes de croissance et 
+        de déclin pour mieux orienter les efforts de reconquête et d'amélioration.
+    """
+)
+
+geojson_path = "../data/us_states.geojson"
 gdf = load_geojson(geojson_path)
 us_geometry = gdf.union_all()
 
@@ -158,23 +167,54 @@ scatter_layer = pdk.Layer(
     pickable=True,
 )
 
-# Vue initiale
+text_data = pd.DataFrame(
+    {"latitude": [49], "longitude": [-70], "text": [str(st.session_state.année)]}
+)
+
+text_layer = pdk.Layer(
+    "TextLayer",
+    data=text_data,
+    get_position=["longitude", "latitude"],
+    get_text="text",
+    get_size=24,
+    get_color=[255, 140, 0],
+    get_angle=0,
+    get_text_anchor='"start"',
+    get_alignment_baseline='"top"',
+)
+
 view_state = pdk.ViewState(
-    latitude=37.0902,  # Centre approximatif des États-Unis
+    latitude=37.0902,
     longitude=-95.7129,
     zoom=3,
     pitch=0,
 )
 
-# Ajouter les couches à Pydeck
-deck = pdk.Deck(
-    layers=[geo_layer, scatter_layer],
-    initial_view_state=view_state,
-)
+with st.container():
 
-st.write(" Un point représente 10 recettes.")
-# Afficher la carte
-st.pydeck_chart(deck)
+    st.markdown(
+        f"""
+        <style>
+        .year-overlay {{
+            position: absolute;
+            top: 20px;  /* Adjust as needed */
+            right: 50px; /* Adjust as needed */
+            font-size: 48px;
+            color: orange;
+            z-index: 9999;
+            pointer-events: none;  /* Allow map interactions */
+        }}
+        </style>
+        <div class="year-overlay">{st.session_state.année}</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    deck = pdk.Deck(
+        layers=[geo_layer, scatter_layer],
+        initial_view_state=view_state,
+    )
+    st.pydeck_chart(deck)
 
 recettes_par_années["is_current_year"] = (
     recettes_par_années["année"] == st.session_state.année
