@@ -24,6 +24,10 @@ h1 {
     color: #e76d00;
 }
 
+h1:hover {
+        color: #f9d3b2;
+    }
+
 .stSidebar {
     background-color: #2b334b;
     color: #f9d3b2;
