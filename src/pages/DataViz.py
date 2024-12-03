@@ -18,17 +18,17 @@ def load_css(file_name):
     try:
         with open(file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-        logger.info(f"Le fichier CSS {file_name} a été chargé avec succès.")
+        logger.info(f"Le fichier CSS {file_name} a ete charge avec succes.")
     except Exception as e:
         logger.error(f"Erreur lors du chargement du fichier CSS {file_name}: {e}")
-        st.error(f"Une erreur est survenue lors du chargement du fichier CSS. Veuillez vérifier le fichier.")
+        st.error(f"Une erreur est survenue lors du chargement du fichier CSS. Veuillez verifier le fichier.")
 
 # Charger le CSS
 load_css("style.css")
 
 st.title("DataViz")
 
-st.markdown("Dans cette page, parcourez librement les données")
+st.markdown("Dans cette page, parcourez librement les donnees")
 
 # Initialisation de la session
 if "graph" not in st.session_state:
@@ -37,13 +37,13 @@ if "graph" not in st.session_state:
 if "recipes_df" not in st.session_state:
     try:
         st.session_state["recipes_df"] = load_df("data/cloud_df.csv")
-        logger.info("Les données de recettes ont été chargées avec succès.")
+        logger.info("Les donnees de recettes ont ete chargees avec succes.")
     except Exception as e:
-        logger.error(f"Erreur lors du chargement des données depuis le fichier CSV: {e}")
-        st.error("Une erreur est survenue lors du chargement des données. Veuillez vérifier le fichier.")
+        logger.error(f"Erreur lors du chargement des donnees depuis le fichier CSV: {e}")
+        st.error("Une erreur est survenue lors du chargement des donnees. Veuillez verifier le fichier.")
 
 def main():
-    # Définition des variables
+    # Definition des variables
     axis_x_list = [
         "minutes",
         "n_steps",
@@ -59,7 +59,7 @@ def main():
         try:
             if graph.delete:
                 st.session_state["graph"].remove(graph)
-                logger.info(f"Graphique supprimé. Nombre de graphiques restants: {len(st.session_state['graph'])}")
+                logger.info(f"Graphique supprime. Nombre de graphiques restants: {len(st.session_state['graph'])}")
             else:
                 graph.display_graph(free=True)
         except Exception as e:
@@ -72,7 +72,7 @@ def main():
             name = f"graph {len(st.session_state['graph']) + 1}"
             study = bivariateStudy(dataframe=st.session_state["recipes_df"], axis_x_list=axis_x_list, axis_y_list=axis_y_list, filters=filters, key=name, plot_type="scatter")
             st.session_state["graph"].append(study)
-            logger.info(f"Graphique ajouté. Nombre de graphiques actuels: {len(st.session_state['graph'])}")
+            logger.info(f"Graphique ajoute. Nombre de graphiques actuels: {len(st.session_state['graph'])}")
             st.rerun()
         except Exception as e:
             logger.error(f"Erreur lors de l'ajout d'un graphique: {e}")
@@ -82,5 +82,5 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        logger.critical(f"Erreur critique dans l'exécution de l'application: {e}")
+        logger.critical(f"Erreur critique dans l'execution de l'application: {e}")
         st.error("Une erreur critique est survenue dans l'application.")

@@ -12,7 +12,7 @@ def load_css(file_name):
     try:
         with open(file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-            logger.info(f"CSS chargé depuis {file_name}.")
+            logger.info(f"CSS charge depuis {file_name}.")
     except FileNotFoundError as e:
         logger.error(f"Le fichier CSS {file_name} est introuvable : {e}")
         st.error("Le fichier de style CSS est introuvable.")
@@ -21,17 +21,17 @@ def load_css(file_name):
         st.error("Une erreur est survenue lors du chargement du style.")
 
 def load_data():
-    """Charge les données dans la session Streamlit."""
+    """Charge les donnees dans la session Streamlit."""
     try:
         if "recipes_df" not in st.session_state:
             st.session_state["recipes_df"] = load_df("data/cloud_df.csv")
-            logger.info("Données chargées avec succès dans la session Streamlit.")
+            logger.info("Donnees chargees avec succes dans la session Streamlit.")
     except FileNotFoundError as e:
-        logger.error(f"Le fichier de données est introuvable : {e}")
-        st.error("Le fichier de données est introuvable.")
+        logger.error(f"Le fichier de donnees est introuvable : {e}")
+        st.error("Le fichier de donnees est introuvable.")
     except Exception as e:
-        logger.exception(f"Erreur lors du chargement des données : {e}")
-        st.error("Une erreur est survenue lors du chargement des données.")
+        logger.exception(f"Erreur lors du chargement des donnees : {e}")
+        st.error("Une erreur est survenue lors du chargement des donnees.")
 
 def main():
     """Fonction principale de l'application Streamlit."""
@@ -48,7 +48,7 @@ def main():
     try:
         if st.session_state["first_load"]:
             trend = compute_trend(st.session_state["recipes_df"])
-            logger.info("Tendance calculée avec succès.")
+            logger.info("Tendance calculee avec succes.")
 
             nb_recette_par_annee_study = bivariateStudy(
                 dataframe=trend,
@@ -68,7 +68,7 @@ def main():
             min_popular_recipes = bivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="2",
-                name="Durée recettes populaires",
+                name="Duree recettes populaires",
                 axis_x="minutes",
                 axis_y="comment_count",
                 filters=['mean_rating'],
@@ -83,15 +83,15 @@ def main():
             st.session_state["locked_graphs"].append(min_popular_recipes)
 
             st.session_state["first_load"] = False
-            logger.info("Graphiques initialisés avec succès.")
+            logger.info("Graphiques initialises avec succes.")
         
         for graph in st.session_state["locked_graphs"]:
             graph.display_graph()
-            logger.info(f"Graphique affiché : {graph.name}")
+            logger.info(f"Graphique affiche : {graph.name}")
 
     except Exception as e:
         logger.exception(f"Erreur dans la fonction principale : {e}")
-        st.error("Une erreur est survenue lors de l'exécution de l'application.")
+        st.error("Une erreur est survenue lors de l'execution de l'application.")
 
 if __name__ == "__main__":
     main()

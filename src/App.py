@@ -16,7 +16,7 @@ def load_css(file_name):
     try:
         with open(file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-            logger.info(f"CSS chargé avec succès depuis '{file_name}'.")
+            logger.info(f"CSS charge avec succes depuis '{file_name}'.")
     except FileNotFoundError:
         error_message = f"Le fichier CSS '{file_name}' est introuvable."
         logger.error(error_message)
@@ -28,19 +28,19 @@ def load_css(file_name):
 
 def initialize_recipes_df(session_key, file_path):
     """
-    Initialise le DataFrame dans l'état de session de Streamlit.
+    Initialise le DataFrame dans l'etat de session de Streamlit.
     """
     if session_key not in st.session_state:
         try:
             st.session_state[session_key] = load_df(file_path)
-            logger.info(f"DataFrame chargé avec succès depuis '{file_path}'.")
+            logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
         except FileNotFoundError:
             error_message = f"Le fichier CSV '{file_path}' est introuvable."
             logger.error(error_message)
             st.error(error_message)
             st.session_state[session_key] = pd.DataFrame()  # Charger un DataFrame vide en cas d'erreur
         except pd.errors.ParserError:
-            error_message = "Erreur lors du traitement du fichier CSV. Veuillez vérifier son format."
+            error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
             logger.error(error_message)
             st.error(error_message)
             st.session_state[session_key] = pd.DataFrame()
@@ -53,7 +53,7 @@ def initialize_recipes_df(session_key, file_path):
 # Charger les styles CSS
 load_css("style.css")
 
-# Initialiser les données dans l'état de session
+# Initialiser les donnees dans l'etat de session
 initialize_recipes_df("recipes_df", "../data/cloud_df.csv")
 
 # Configuration de l'application Streamlit
