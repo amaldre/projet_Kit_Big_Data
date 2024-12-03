@@ -9,6 +9,17 @@ h1 {
     font-size: 2.5em;
 }
 
+.stMain {
+    background-color: #161c25;
+    color: #2b334b;
+}
+
+
+.stAppHeader {
+    background-color: #161c25;
+
+}
+
 .stMarkdown h1 {
     color: #e76d00;
     font-size: 2.5em;
