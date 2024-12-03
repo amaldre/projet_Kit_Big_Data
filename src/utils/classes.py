@@ -255,12 +255,12 @@ class bivariateStudy:
 
 class AdvancedStudy:
 
-    def __init__(self, dataframe, axis_x_list, filters, key):
+    def __init__(self, dataframe, axis_x=None, axis_x_list=None, filters=None, key=None):
         # Attributs de la classe
         self.dataframe = dataframe
         self.axis_x_list = axis_x_list
         self.filters = filters
-        self.axis_x = None
+        self.axis_x = axis_x
         self.range_axis_x = None
         self.key = key
         self.delete = False
@@ -395,6 +395,34 @@ class AdvancedStudy:
         with st.expander("The 10 recipes with the most comments (with current filters)"):
             st.dataframe(display_df,hide_index=True)
 
+    def graph_bar_ingredients_annee(self, recipes_id, annee_cible):
+
+        df_filtre = self.dataframe[self.dataframe["submitted"].dt.year == annee_cible]
+        l_ingredient = list(df_filtre.ingredients_replaced)
+        list_ingredient = []
+        for item in l_ingredient: 
+            # item = ast.literal_eval(item)
+            for i in item: 
+                list_ingredient.append(i)
+        element_counts_ing = Counter(list_ingredient)
+        top_five = element_counts_ing.most_common(10)
+        list_ing = []
+        for i in range (len(top_five)):
+            list_ing.append(top_five[i][0])
+        count_ing = []
+        for ing in list_ing:
+            count_ing.append(element_counts_ing[ing])
+
+        col = st.columns([1,3,1])
+        with col[1]:
+            fig, ax = plt.subplots(figsize=(10,6))
+            sns.barplot(x=list_ing, y=count_ing)
+            st.pyplot(fig)
+        display_df = df_filtre[df_filtre['recipe_id'].isin(recipes_id)]
+        display_df = display_df.sort_values(by="comment_count",ascending=False)[:10]
+        with st.expander("The 10 recipes with the most comments (with current filters)"):
+            st.dataframe(display_df,hide_index=True)
+
     def graph_bar_techniques(self, recipes_id):
 
         l_techniques = list(self.dataframe.techniques)
@@ -456,6 +484,21 @@ class AdvancedStudy:
                         delete_graph_button = st.form_submit_button(label="Delete graph")
                     if draw_histogram_button:
                         self.graph_bar_techniques(recipes_id)
+                    if delete_graph_button:
+                        self.delete = True
+                        print("delete",self.delete)
+                        st.rerun()
+
+                elif self.axis_x == 'ingredients_by_year':
+                    recipes_id = self.get_data_points_ingredients(self.dataframe)
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        draw_histogram_button = st.form_submit_button(label="Draw Bar")
+                    with col2:
+                        delete_graph_button = st.form_submit_button(label="Delete graph")
+                    if draw_histogram_button:
+                        annee_cible = st.number_input("Year", min_value=1999, max_value=2018, value=2018)
+                        self.graph_bar_ingredients_annee(recipes_id, annee_cible)
                     if delete_graph_button:
                         self.delete = True
                         print("delete",self.delete)

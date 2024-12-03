@@ -46,12 +46,12 @@ def main():
     if refresh_button:
         st.rerun()
 
-    axis_x_list = ["calories","mean_rating","comment_count","n_steps","ingredients_replaced","techniques"]
+    axis_x_list = ["calories","mean_rating","comment_count","n_steps","ingredients_replaced","techniques","ingredients_by_year"]
     filters = ["calories","mean_rating","comment_count","n_steps"]
 
     if add_graph_button:
         name = f"{len(st.session_state["graph_advanced"]) + 1}"
-        study = AdvancedStudy(st.session_state["recipes_df"], axis_x_list, filters, name)
+        study = AdvancedStudy(st.session_state["recipes_df"],axis_x=None, axis_x_list=axis_x_list, filters=filters, key=name)
         st.session_state["graph_advanced"].append(study)
         print("add",len(st.session_state["graph_advanced"]))
 
