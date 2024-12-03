@@ -6,8 +6,9 @@ from logging_config import setup_logging
 from utils.load_csv import load_df
 
 # Initialiser le logger
-setup_logging()  # Configuration 
+setup_logging()  # Configuration
 logger = logging.getLogger(os.path.basename(__file__))
+
 
 def load_css(file_name):
     """
@@ -22,9 +23,12 @@ def load_css(file_name):
         logger.error(error_message)
         st.error(error_message)
     except Exception as e:
-        error_message = f"Une erreur inattendue s'est produite lors du chargement du CSS : {e}"
+        error_message = (
+            f"Une erreur inattendue s'est produite lors du chargement du CSS : {e}"
+        )
         logger.exception(error_message)
         st.error(error_message)
+
 
 def initialize_recipes_df(session_key, file_path):
     """
@@ -38,17 +42,22 @@ def initialize_recipes_df(session_key, file_path):
             error_message = f"Le fichier CSV '{file_path}' est introuvable."
             logger.error(error_message)
             st.error(error_message)
-            st.session_state[session_key] = pd.DataFrame()  # Charger un DataFrame vide en cas d'erreur
+            st.session_state[session_key] = (
+                pd.DataFrame()
+            )  # Charger un DataFrame vide en cas d'erreur
         except pd.errors.ParserError:
             error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
             logger.error(error_message)
             st.error(error_message)
             st.session_state[session_key] = pd.DataFrame()
         except Exception as e:
-            error_message = f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
+            error_message = (
+                f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
+            )
             logger.exception(error_message)
             st.error(error_message)
             st.session_state[session_key] = pd.DataFrame()
+
 
 # Charger les styles CSS
 load_css("style.css")
@@ -61,4 +70,47 @@ st.title("Mange ta main")
 
 st.markdown(
     "Page d'intro expliquant le projet et le but de l'application i.e. son fil rouge "
+)
+
+
+import streamlit as st
+
+# Embed CSS for the wave animation
+st.markdown(
+    """
+    <style>
+    @keyframes wave {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .wave-container {
+      position: fixed;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .wave {
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(to right, #3498db, #8e44ad);
+      animation: wave 4s linear infinite;
+      opacity: 0.5;
+      border-radius: 50%;
+    }
+    </style>
+    <div class="wave-container">
+      <div class="wave"></div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
