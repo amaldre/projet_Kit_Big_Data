@@ -7,6 +7,12 @@ import numpy as np
 from streamlit_autorefresh import st_autorefresh
 import altair as alt
 
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+load_css("style.css")
 
 # Titre de l'application
 st.title("Carte des États-Unis avec GeoJSON et Points Aléatoires")

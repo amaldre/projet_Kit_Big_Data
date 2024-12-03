@@ -11,6 +11,14 @@ from utils.load_csv import load_df
 
 
 st.set_page_config(layout="wide")
+
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+
+load_css("style.css")
+
 st.title("DataViz")
 
 st.markdown("Dans cette page, parcourez librement les données")
