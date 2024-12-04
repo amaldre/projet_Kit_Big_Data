@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import logging
 from logging_config import setup_logging
-from utils.load_csv import load_df
+from utils.load_csv import initialize_recipes_df
 
 # Initialiser le logger
 setup_logging()  # Configuration
@@ -30,35 +30,6 @@ def load_css(file_name):
         st.error(error_message)
 
 
-def initialize_recipes_df(session_key, file_path):
-    """
-    Initialise le DataFrame dans l'etat de session de Streamlit.
-    """
-    if session_key not in st.session_state:
-        try:
-            st.session_state[session_key] = load_df(file_path)
-            logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
-        except FileNotFoundError:
-            error_message = f"Le fichier CSV '{file_path}' est introuvable."
-            logger.error(error_message)
-            st.error(error_message)
-            st.session_state[session_key] = (
-                pd.DataFrame()
-            )  # Charger un DataFrame vide en cas d'erreur
-        except pd.errors.ParserError:
-            error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
-            logger.error(error_message)
-            st.error(error_message)
-            st.session_state[session_key] = pd.DataFrame()
-        except Exception as e:
-            error_message = (
-                f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
-            )
-            logger.exception(error_message)
-            st.error(error_message)
-            st.session_state[session_key] = pd.DataFrame()
-
-
 # Charger les styles CSS
 load_css("style.css")
 
@@ -72,8 +43,6 @@ st.markdown(
     "Page d'intro expliquant le projet et le but de l'application i.e. son fil rouge "
 )
 
-
-import streamlit as st
 
 # Embed CSS for the wave animation
 st.markdown(

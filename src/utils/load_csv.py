@@ -3,6 +3,11 @@ import os
 import ast
 from utils.dbapi import DBapi
 import statsmodels.api as sm
+import streamlit as st
+import logging
+
+logger = logging.getLogger(os.path.basename(__file__))
+
 
 def load_csv(file_path):
     """
@@ -33,9 +38,39 @@ def load_df(file_path):
     df["techniques_count"] = df["techniques"].apply(len)
 
     df["submitted"] = pd.to_datetime(df["submitted"])
-    print(df['submitted'].dtype)
+    print(df["submitted"].dtype)
 
     return df
+
+
+@st.cache_data
+def initialize_recipes_df(session_key, file_path):
+    """
+    Initialise le DataFrame dans l'etat de session de Streamlit.
+    """
+    if session_key not in st.session_state:
+        try:
+            st.session_state[session_key] = load_df(file_path)
+            logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
+        except FileNotFoundError:
+            error_message = f"Le fichier CSV '{file_path}' est introuvable."
+            logger.error(error_message)
+            st.error(error_message)
+            st.session_state[session_key] = (
+                pd.DataFrame()
+            )  # Charger un DataFrame vide en cas d'erreur
+        except pd.errors.ParserError:
+            error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
+            logger.error(error_message)
+            st.error(error_message)
+            st.session_state[session_key] = pd.DataFrame()
+        except Exception as e:
+            error_message = (
+                f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
+            )
+            logger.exception(error_message)
+            st.error(error_message)
+            st.session_state[session_key] = pd.DataFrame()
 
 
 # df = load_df("../data/processed_data.csv")
@@ -48,19 +83,25 @@ def load_df(file_path):
 # print(df["date"].head())S
 
 
-
 def compute_trend(nb_recette_par_annee_df):
 
-
     # nombre de recettes par années
-    print(nb_recette_par_annee_df['submitted'].dtype)
-    nb_recette_par_annee_df['year'] = nb_recette_par_annee_df['submitted'].dt.year
-    nb_recette_par_annee_df['month'] = nb_recette_par_annee_df['submitted'].dt.month
-    nb_recette_par_annee_df['submitted_by_month']=nb_recette_par_annee_df['submitted'].dt.to_period('M').dt.to_timestamp()
-    submissions_groupmonth = nb_recette_par_annee_df['submitted_by_month'].value_counts().sort_index()
-    decomposition = sm.tsa.seasonal_decompose(submissions_groupmonth, model='additive', period=12)
-    trend = pd.DataFrame({
-    'Date': decomposition.trend.index,   # X-axis: Time or index
-    'Trend': decomposition.trend.values  # Y-axis: Trend values
-    })
+    print(nb_recette_par_annee_df["submitted"].dtype)
+    nb_recette_par_annee_df["year"] = nb_recette_par_annee_df["submitted"].dt.year
+    nb_recette_par_annee_df["month"] = nb_recette_par_annee_df["submitted"].dt.month
+    nb_recette_par_annee_df["submitted_by_month"] = (
+        nb_recette_par_annee_df["submitted"].dt.to_period("M").dt.to_timestamp()
+    )
+    submissions_groupmonth = (
+        nb_recette_par_annee_df["submitted_by_month"].value_counts().sort_index()
+    )
+    decomposition = sm.tsa.seasonal_decompose(
+        submissions_groupmonth, model="additive", period=12
+    )
+    trend = pd.DataFrame(
+        {
+            "Date": decomposition.trend.index,  # X-axis: Time or index
+            "Trend": decomposition.trend.values,  # Y-axis: Trend values
+        }
+    )
     return trend

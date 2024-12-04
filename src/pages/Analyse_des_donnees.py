@@ -3,9 +3,10 @@ import logging
 import streamlit as st
 from utils.classes import bivariateStudy
 from pandas import Timestamp
-from utils.load_csv import compute_trend, load_df
+from utils.load_csv import compute_trend, load_df, initialize_recipes_df
 
 logger = logging.getLogger(os.path.basename(__file__))
+
 
 def load_css(file_name):
     """Charge le fichier CSS pour la mise en page Streamlit."""
@@ -20,24 +21,12 @@ def load_css(file_name):
         logger.exception(f"Erreur lors du chargement du CSS : {e}")
         st.error("Une erreur est survenue lors du chargement du style.")
 
-def load_data():
-    """Charge les donnees dans la session Streamlit."""
-    try:
-        if "recipes_df" not in st.session_state:
-            st.session_state["recipes_df"] = load_df("data/cloud_df.csv")
-            logger.info("Donnees chargees avec succes dans la session Streamlit.")
-    except FileNotFoundError as e:
-        logger.error(f"Le fichier de donnees est introuvable : {e}")
-        st.error("Le fichier de donnees est introuvable.")
-    except Exception as e:
-        logger.exception(f"Erreur lors du chargement des donnees : {e}")
-        st.error("Une erreur est survenue lors du chargement des donnees.")
 
 def afficher_texte(graph):
     """Affiche un texte dans l'application Streamlit."""
     if graph.name == "Moyenne du nombre de recettes au cours du temps":
         st.write(
-        """
+            """
         **Observations :**
         - Une forte croissance des contributions est visible entre 2000 et 2008, culminant à une activité maximale autour de 2008.
         - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro vers 2016-2018.
@@ -51,7 +40,7 @@ def afficher_texte(graph):
         )
     elif graph.name == "Duree recettes populaires":
         st.write(
-        """
+            """
         **Observations :**
         - La majorité des recettes populaires sont des recettes courtes, avec une durée de préparation inférieure à 100 minutes.
         - Les recettes populaires ont tendance à avoir un nombre de commentaires plus élevé, avec une concentration autour de 1000 commentaires.
@@ -62,11 +51,12 @@ def afficher_texte(graph):
         """
         )
 
+
 def main():
     """Fonction principale de l'application Streamlit."""
     st.title("Analyse des data")
     load_css("style.css")
-    load_data()
+    initialize_recipes_df("recipes_df", "../../data/cloud_df.csv")
 
     if "first_load" not in st.session_state:
         st.session_state["first_load"] = True
@@ -87,10 +77,13 @@ def main():
                 axis_y="Trend",
                 plot_type="plot",
                 default_values={
-                    "Date": (Timestamp('1999-08-01 00:00:00'), Timestamp('2018-12-1 00:00:00')),
+                    "Date": (
+                        Timestamp("1999-08-01 00:00:00"),
+                        Timestamp("2018-12-1 00:00:00"),
+                    ),
                     "Trend": (3, 2268),
-                    "chosen_filters": []
-                }
+                    "chosen_filters": [],
+                },
             )
             st.session_state["locked_graphs"].append(nb_recette_par_annee_study)
 
@@ -100,20 +93,20 @@ def main():
                 name="Duree recettes populaires",
                 axis_x="minutes",
                 axis_y="comment_count",
-                filters=['mean_rating'],
+                filters=["mean_rating"],
                 plot_type="scatter",
                 default_values={
                     "minutes": (1, 279),
                     "comment_count": (100, 1613),
                     "mean_rating": (4, 5),
-                    "chosen_filters": ['mean_rating']
-                }
+                    "chosen_filters": ["mean_rating"],
+                },
             )
             st.session_state["locked_graphs"].append(min_popular_recipes)
 
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
-        
+
         for graph in st.session_state["locked_graphs"]:
             graph.display_graph()
             afficher_texte(graph)
@@ -122,6 +115,7 @@ def main():
     except Exception as e:
         logger.exception(f"Erreur dans la fonction principale : {e}")
         st.error("Une erreur est survenue lors de l'execution de l'application.")
+
 
 if __name__ == "__main__":
     main()
