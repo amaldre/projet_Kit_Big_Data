@@ -1,7 +1,7 @@
 import os
 import logging
 import streamlit as st
-from utils.classes import bivariateStudy
+from utils.bivariateStudy import bivariateStudy
 from pandas import Timestamp
 from utils.load_csv import compute_trend, load_df, initialize_recipes_df
 
@@ -56,7 +56,7 @@ def main():
     """Fonction principale de l'application Streamlit."""
     st.title("Analyse des data")
     load_css("style.css")
-    initialize_recipes_df("recipes_df", "../../data/cloud_df.csv")
+    initialize_recipes_df("recipes_df", "../data/cloud_df.csv", st.session_state)
 
     if "first_load" not in st.session_state:
         st.session_state["first_load"] = True

@@ -3,11 +3,33 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import logging
+import streamlit.components.v1 as components
+import html
+
 
 logger = logging.getLogger(os.path.basename(__file__))
 
 # Parametrage de Streamlit
 st.set_page_config(page_title="Explication Pretraitement", layout="wide")
+
+PATH_DATA = "../data/bertopic_chart/"
+TOPICS_CSV = "topics_model.csv"
+
+
+@st.cache_data
+def load_data(file_name):
+    path = os.path.join(PATH_DATA, file_name)
+    try:
+        if os.path.exists(path):
+            logger.info(f"Chargement des donnees depuis {path}")
+            return pd.read_csv(path)
+        else:
+            logger.warning(f"Fichier introuvable : {path}")
+            return pd.DataFrame()  # Placeholder si le fichier est manquant
+    except Exception as e:
+        logger.error(f"Erreur lors du chargement du fichier {file_name} : {e}")
+        return pd.DataFrame()
+
 
 def load_css(file_name):
     try:
@@ -16,7 +38,10 @@ def load_css(file_name):
         logger.info(f"Le fichier CSS {file_name} a ete charge avec succes.")
     except Exception as e:
         logger.error(f"Erreur lors du chargement du fichier CSS {file_name}: {e}")
-        st.error(f"Une erreur est survenue lors du chargement du fichier CSS. Veuillez verifier le fichier.")
+        st.error(
+            f"Une erreur est survenue lors du chargement du fichier CSS. Veuillez verifier le fichier."
+        )
+
 
 # Charger le CSS
 load_css("style.css")
@@ -35,12 +60,14 @@ st.header("1️⃣ Chargement des donnees")
 st.write(
     """
          A la suite du pre traitement ou les donnees ont ete netoyees, tokenisees et ou les stop words ont ete supprimes,
-         nous pouvons charger les differentes descriptions des recettes pour les analyser.
+         nous pouvons charger les differentes descriptions et noms des recettes pour les analyser.
          Pour cela nous recuperons les donnees du fichier csv et nous les transformons en Liste de String.
+         Après une analyse et des test de clusterings sur les descriptions, nous preferons finalement utilisé BERTopic sur 
+         la colonne *name*, plus representative des recettes. 
     """
 )
 
-st.header("2️⃣ Realisation du Clustering avec BERTopic")
+st.header("2️⃣Realisation du Clustering avec BERTopic")
 
 st.write(
     """
@@ -49,69 +76,85 @@ st.write(
         Ensuite, nous realisons le Clustering pour identifier les differents types de cuisine.
         Pour cela, BERTopic utilise HDBSCAN. Nous parametrons ce dernier pour faire des clusters de taille minimum 100. 
         De plus, BERTopic utilise UMAP pour la reduction de dimension.
+        Nous reduissons ensuite les ~300 topics obtenus à 150 en regroupant les topics les plus proches en dimension réduites (5)
     """
 )
 
 st.write(
     """
         Afin d'obtenir les meilleurs resultats possibles et apres plusieurs essais,
-        nous avons decide de fournir à BERTopic une 'topic_seeds' avec des mots cles generes par chatGPT. 
+        nous avons decide de fournir à BERTopic une 'topic_seeds' avec des mots clés générés par chatGPT.
+        Ces mots clés sont des types de plats ou de cuisine qui permettent à BERTopic de mieux identifier les clusters. 
     """
 )
 
-def create_scrolling_banner(texte: str):
-    try:
-        scrolling_banner = (
-            """
-        <style>
-        .scrolling-banner {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #f0f2f6; /* Couleur de fond du bandeau */
-            overflow: hidden;
-            height: 50px; /* Hauteur du bandeau */
-            z-index: 9999; /* Assure que le bandeau reste au-dessus des autres elements */
-        }
+topics_csv = load_data(TOPICS_CSV)
 
-        .scrolling-banner h1 {
-            position: absolute;
-            width: 100%;
-            height: 50px;
-            line-height: 50px;
-            margin: 0;
-            font-size: 24px;
-            color: #4CAF50; /* Couleur du texte */
-            text-align: center;
-            transform: translateX(100%);
-            animation: scroll-left 10s linear infinite;
-        }
 
-        /* Animation pour le defilement du texte */
-        @keyframes scroll-left {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
-        }
-        </style>
+# Afficher les données brutes si elles existent
+if not topics_csv.empty:
+    st.write("Exemple des Topics obtenus:")
+    st.dataframe(topics_csv.head(10))
+else:
+    st.warning("Fichier topic_model.csv introuvable.")
+    logger.warning("topic_model.csv introuvable.")
 
-        <div class="scrolling-banner">
-            <h1>"""
-            + texte
-            + """</h1>
-        </div>
-        """
-        )
-        logger.info("Banniere defilante creee avec succes.")
-        return scrolling_banner
-    except Exception as e:
-        logger.error(f"Erreur lors de la creation de la banniere defilante: {e}")
-        st.error("Une erreur est survenue lors de la creation de la banniere defilante.")
 
-# Affichage de la banniere defilante
-scrolling_banner = create_scrolling_banner("Texte à faire defiler")
-st.components.v1.html(scrolling_banner, height=60)
+st.header("3️⃣ Analyse des topics")
 
+st.write(
+    """
+         Une visualisation des topics obtenus est disponible ci-dessous.
+         Cette representation 2D permet de visualiser les clusters.
+         On remarque que des groupes distincs se forment. 
+         
+        - Dans le coin bas droit se retrouves les recettes sucrées,
+        - Au centre on retrouve les fruits, les agrumes, certaines épices et sirops.
+        - Les recettes salées se retrouve à l'opposé, dans le coin haut gauche.
+        - On retrouve des recettes de viandes, de poissons, de légumes, d'épices et de nombreux types de sauces. 
+        - Les recettes de types tartes, quiches, pizzas se toutes dans le même coin.
+        - De même pour les recettes à base de légumes qui se retrouvent dans le coin bas gauche.
+         
+         """
+)
+
+
+with open(
+    "../data/bertopic_chart/visualization_topics.html", "r", encoding="utf-8"
+) as f:
+    html_string = f.read()
+
+
+escaped_html = html.escape(html_string)
+
+
+iframe_code = f"""
+    <iframe srcdoc="{escaped_html}" width="700" height="700" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
+"""
+
+st.components.v1.html(iframe_code, height=715, width=715)
+
+
+st.header("4️⃣ Visualisation sous formes d'arbres hierarchiques")
+
+
+st.write(
+    """
+    Voici la visualisation des clusters obtenus avec BERTopic.
+    Le pan (outils en haut à droite) permet de se déplacer dans la visualisation.
+    """
+)
+
+with open("../data/bertopic_chart/visualization.html", "r", encoding="utf-8") as f:
+    html_string = f.read()
+
+# Échapper les guillemets du contenu HTML
+
+escaped_html = html.escape(html_string)
+
+# Créer le code HTML de l'iframe avec des styles pour les bords arrondis
+iframe_code = f"""
+    <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
+"""
+
+st.components.v1.html(iframe_code, height=820)
