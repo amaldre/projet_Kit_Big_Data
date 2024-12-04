@@ -80,16 +80,12 @@ code.
 - [ ] PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
 la cohérence du code. Utilisez un formateur (par exemple black)
   - [ ] Améliorer la note de 6/10 de pylint -> 7.5/10
-- [ ] Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
+- [X] Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
 exceptions personnalisées lorsque nécessaire. Par exemple en cas de saisie
 incorrecte de l'utilisateur.
-- [ ] Logger : utilisez le module logging pour enregistrer les actions de l'utilisateur et les
+- [X] Logger : utilisez le module logging pour enregistrer les actions de l'utilisateur et les
 événements importants dans un fichier de log. Créer un fichier de log pour le debug,
 et un autre pour les erreurs (ERROR et CRITICAL). 
--> J'ai crée le logging_config. Maintenant dans chaque module du dossier src il faut faire :
-import logging
-logger = logging.getLogger(__name__)
-Puis ensuite je placer des lignes logger.info, logger.error, logger.debug à des endroits stratégiques dans les fonctions.
 - [X] Sécurité : assurez-vous (un minimum) que les bibliothèques que vous utilisez sont
 connues et n'ont pas de vulnérabilités de sécurité évidentes. Si vous autorisez une
 entrée utilisateur, ne pas utiliser la fonction `eval`, évitez les mots de passe/token en
