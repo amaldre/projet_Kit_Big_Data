@@ -6,6 +6,7 @@ import ast
 import time
 from collections import Counter
 import logging
+from utils.univariateStudy import univariateStudy
 from utils.classes import AdvancedStudy
 from utils.load_csv import load_df
 import os
@@ -97,6 +98,7 @@ def main():
 
     # Bouton pour ajouter un graphique
     if add_graph_button:
+<<<<<<< HEAD
         try:
             name = f"{len(st.session_state['graph_advanced']) + 1}"
             study = AdvancedStudy(
@@ -113,6 +115,14 @@ def main():
         except Exception as e:
             logger.error(f"Erreur lors de l'ajout d'un graphique: {e}")
             st.error("Une erreur est survenue lors de l'ajout d'un graphique.")
+=======
+        name = f"{len(st.session_state["graph_advanced"]) + 1}"
+        study = AdvancedStudy(st.session_state["recipes_df"],axis_x=None, axis_x_list=axis_x_list, filters=filters, key=name)
+        # self, key, dataframe, plot_type, axis_x_list=None, filters=None,  axis_x=None, name = None, default_values=None)
+        # study = univariateStudy(key=name, dataframe=st.session_state["recipes_df"], plot_type="normal", axis_x_list=axis_x_list, filters=filters)
+        st.session_state["graph_advanced"].append(study)
+        print("add",len(st.session_state["graph_advanced"]))
+>>>>>>> a70a6f1 (classe mono)
 
     # Affichage des graphiques existants
     for i, graph in enumerate(st.session_state["graph_advanced"]):

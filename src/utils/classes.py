@@ -428,7 +428,7 @@ class AdvancedStudy:
         l_techniques = list(self.dataframe.techniques)
         list_techniques = []
         for item in l_techniques: 
-            # item = ast.literal_eval(item)
+            item = ast.literal_eval(item)
             for i in item: 
                 list_techniques.append(i)
         element_counts_tech = Counter(list_techniques)
