@@ -106,6 +106,8 @@ def main():
 
         st.header("2️⃣ Définition d'une recette de populaire") 
 
+        
+
         st.header("3️⃣ Caractéristiques des recettes populaires")
         
         explanation_graph_2="""
