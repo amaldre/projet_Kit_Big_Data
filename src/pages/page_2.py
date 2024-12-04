@@ -33,6 +33,7 @@ load_css("style.css")
 
 st.title("Data Visualiser")
 
+st.markdown("Dans cette page, parcourez librement les données avec des graphiques monovariés.")
 
 @st.cache_data
 def import_df(df_path):
