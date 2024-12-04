@@ -1,5 +1,5 @@
 body {
-    background-color: #ffcf99;
+    background-color: #ebcdac;
     color :#e76d00;
     font-family: Arial, sans-serif;
 }
@@ -10,13 +10,13 @@ h1 {
 }
 
 .stMain {
-    background-color: #ffcf99;
+    background-color: #ebcdac;
     color: #55381f;
 }
 
 
 .stAppHeader {
-    background-color: #ffcf99;
+    background-color: #ebcdac;
 
 }
 
@@ -44,4 +44,8 @@ h1:hover {
     color: #55381f;
 }
 
+.stHeading {
+    background-color: #ebcdac;
+    color: #55381f !important; 
+}
 

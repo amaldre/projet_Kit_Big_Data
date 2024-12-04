@@ -229,3 +229,62 @@ chart = (
 )
 
 st.altair_chart(chart, use_container_width=True)
+
+
+def create_scrolling_banner(texte: str):
+    try:
+        scrolling_banner = (
+            """
+        <style>
+        .scrolling-banner {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #f0f2f6; /* Couleur de fond du bandeau */
+            overflow: hidden;
+            height: 50px; /* Hauteur du bandeau */
+            z-index: 9999; /* Assure que le bandeau reste au-dessus des autres elements */
+        }
+
+        .scrolling-banner h1 {
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            margin: 0;
+            font-size: 24px;
+            color: #4CAF50; /* Couleur du texte */
+            text-align: center;
+            transform: translateX(100%);
+            animation: scroll-left 10s linear infinite;
+        }
+
+        /* Animation pour le defilement du texte */
+        @keyframes scroll-left {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+        </style>
+
+        <div class="scrolling-banner">
+            <h1>"""
+            + texte
+            + """</h1>
+        </div>
+        """
+        )
+        logger.info("Banniere defilante creee avec succes.")
+        return scrolling_banner
+    except Exception as e:
+        logger.error(f"Erreur lors de la creation de la banniere defilante: {e}")
+        st.error(
+            "Une erreur est survenue lors de la creation de la banniere defilante."
+        )
+
+
+scrolling_banner = create_scrolling_banner("Texte à faire defiler")
+st.components.v1.html(scrolling_banner, height=60)
