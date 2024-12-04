@@ -3,3 +3,5 @@
 !cloud_df.csv
 !us_states.geojson
 !.gitignore
+!RAW_recipes_sample.csv
+!RAW_interactions_sample.csv
