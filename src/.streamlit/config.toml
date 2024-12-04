@@ -1,0 +1,9 @@
+[theme]
+primaryColor = "#e76d00"  # Couleur principale pour les éléments interactifs
+backgroundColor = "#ebcdac"  # Couleur de fond de l'application
+secondaryBackgroundColor = "#a1815b"  # Couleur de fond de la barre latérale
+textColor = "#55381f"  # Couleur par défaut du texte
+font = "sans serif"  # Police globale
+
+[server]
+runOnSave = true

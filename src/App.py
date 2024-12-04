@@ -11,11 +11,11 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 def load_css(file_name):
-  """Load a CSS file into the markdown file .
+    """Load a CSS file into the markdown file .
 
-  :param file_name: [The name of the CSS file to load] 
-  :type file_name: [str]
-  """
+    :param file_name: [The name of the CSS file to load]
+    :type file_name: [str]
+    """
     try:
         with open(file_name) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
