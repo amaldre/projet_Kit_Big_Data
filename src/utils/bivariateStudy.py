@@ -3,8 +3,13 @@ import math
 import matplotlib.pyplot as plt
 import logging
 import pandas as pd
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 
-
+leS = LinearSegmentedColormap.from_list('truncated_bone', ['#000000', '#00070C', '#010E19', '#011625', '#021F34', '#032641', '#032744', '#032846','#042A49', '#042B4B', '#042E50', '#063459', '#073C65', '#09426E', '#0B4A7A', '#114F81', '#285183', '#395385', '#515688', '#63588A', '#795B8D', '#8C5D90', '#A35F93', '#B56295', '#BF6C98', '#C4759A', '#C9819C', '#CD8A9E', '#D497A0', '#D89FA2', '#DEACA3', '#E3B5A6', '#EAC6AF', '#F3DDC2', '#FDFBDC', '#FFFFE9', '#FFFFF8', '#FFFFFF'], N=256)
+leS.set_bad(color='gray')
 
 # Créez un logger spécifique pour ce module
 logger = logging.getLogger(__name__)
@@ -19,7 +24,7 @@ logging.basicConfig(
 
 class bivariateStudy:
 
-    def __init__(self, key, dataframe, plot_type, axis_x_list=None, axis_y_list=None, filters=None,  axis_x=None, axis_y=None, name = None, default_values=None):
+    def __init__(self, key, dataframe, plot_type, axis_x_list=None, axis_y_list=None, filters=None,  axis_x=None, axis_y=None, name = None, default_values=None, log_axis_x=False, log_axis_y=False):
         # Attributs de la classe
         self.dataframe = dataframe 
         self.axis_x_list = axis_x_list
@@ -42,6 +47,8 @@ class bivariateStudy:
         self.chosen_filters=None
         self.range_filters=None
         self.iteration = 1
+        self.log_axis_x = log_axis_x
+        self.log_axis_x = log_axis_y
 
         # Log l'initialisation de l'objet
         logger.info("Instance de Study créée avec key='%s'", self.key)
@@ -157,12 +164,23 @@ class bivariateStudy:
             # Create a figure
             fig= plt.figure(figsize=(10,6))
             plt.title(self.name)
-            plt.xlabel(self.axis_x)
-            plt.ylabel(self.axis_y)
+            if self.log_axis_x:
+                plt.xlabel("log "+self.axis_x)
+                x = np.log(x)
+            else:
+                plt.xlabel(self.axis_x)
+            if self.log_axis_y:
+                plt.ylabel("log "+self.axis_y)
+                y = np.log(y)
+            else:
+                plt.ylabel(self.axis_y)
             if self.plot_type == "scatter":
                 plt.scatter(x, y, s=1)                
             elif self.plot_type == "plot":
                 plt.plot(x, y)
+            elif self.plot_type == "density map":
+                hb = plt.hexbin(x, y, gridsize=100, cmap=leS, mincnt=1, norm=LogNorm())
+                plt.colorbar(hb, shrink=1, aspect=40, pad=0.02)
             st.pyplot(fig)
             st.write(f"number of data points : {len(x)}") 
 
@@ -188,64 +206,129 @@ class bivariateStudy:
                     graph_container = st.empty()  
                     with graph_container.expander("**filters**", expanded=free):
                         if free==True:
-                            self.axis_x, self.axis_y = self.__set_axis()
-                        self.range_axis_x = self.__set_range_axis(self.axis_x)
-                        self.range_axis_y = self.__set_range_axis(self.axis_y)
+                            axis_x, axis_y = self.__set_axis()
+                        
+                        self.range_axis_x = self.__set_range_axis(axis_x)
+                        self.range_axis_y = self.__set_range_axis(axis_y)
+
                         if self.filters != None :
-                            st.write("extra_filters")
-                            chosen_filters, range_filters = self.__filters(self.axis_x, self.axis_y)
-                            self.chosen_filters=chosen_filters
-                            self.range_filters=range_filters
-                    
+                                st.write("extra_filters")
+                                chosen_filters, range_filters = self.__filters(axis_x, axis_y)
+                                self.chosen_filters=chosen_filters
+                                self.range_filters=range_filters
+                        
                     
                         with st.form(self.key, border=False):
-                            col = st.columns(3)
-                            place_button = 0
-                            with col[place_button]:
-                                if st.form_submit_button(label="Draw graph"):
-                                    self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
+                            pos = 0
+                            col = st.columns(2)
+                            with col[pos]:
+                                if np.issubdtype(self.dataframe[axis_x].dtype, np.number):
+                                    self.log_axis_x = st.checkbox("log axis_x", key=("log axis_x"+self.key+str(self.iteration)), value = self.log_axis_x)
+                                    pos+=1
+                            with col[pos]:
+                                if np.issubdtype(self.dataframe[axis_y].dtype, np.number):
+                                    self.log_axis_y = st.checkbox("log axis_y", key=("log axis_y"+self.key+str(self.iteration)), value = self.log_axis_x)
+
+                            
+                            
+                            if free == False :
+                                col = st.columns(3)
+                                with col[0]:
+                                    if st.form_submit_button(label="Draw graph"):
+                                        self.axis_x = axis_x 
+                                        self.axis_y = axis_y
+                                        self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
+                                                                        self.axis_x, 
+                                                                        self.axis_y, 
+                                                                        self.range_axis_x, 
+                                                                        self.range_axis_y, 
+                                                                        chosen_filters,
+                                                                        range_filters)   
+                                    
+
+                                if self.default_values_save != None:
+                                    with col[1]:       
+                                        if st.form_submit_button(label="Reset graph"):
+                                            self.default_values = self.default_values_save
+                                            self.axis_x = axis_x 
+                                            self.axis_y = axis_y
+                                            print(self.default_values)
+                                            range_filters_save = [self.default_values_save[filter] for filter in self.default_values_save["chosen_filters"]]
+                                            self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
                                                                     self.axis_x, 
                                                                     self.axis_y, 
-                                                                    self.range_axis_x, 
-                                                                    self.range_axis_y, 
-                                                                    chosen_filters,
-                                                                    range_filters)   
-                                place_button+=1
+                                                                    self.default_values_save[self.axis_x], 
+                                                                    self.default_values_save[self.axis_y], 
+                                                                    self.default_values_save["chosen_filters"],
+                                                                    range_filters_save
+                                                                    )
+                                            self.iteration += 1
+                                            graph_container.empty()
+                                            st.rerun()
 
+                            else:
+                                col = st.columns(3)
+                                with col[0]: 
+                                    if st.form_submit_button(label="Draw plot"):
+                                            self.axis_x = axis_x 
+                                            self.axis_y = axis_y
+                                            self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
+                                                                            self.axis_x, 
+                                                                            self.axis_y, 
+                                                                            self.range_axis_x, 
+                                                                            self.range_axis_y, 
+                                                                            chosen_filters,
+                                                                            range_filters)  
+                                            self.plot_type = "plot" 
+                                    
+                                
+                                with col[1]: 
+                                    if st.form_submit_button(label="Draw scatter"):
+                                            self.axis_x = axis_x 
+                                            self.axis_y = axis_y
+                                            self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
+                                                                            self.axis_x, 
+                                                                            self.axis_y, 
+                                                                            self.range_axis_x, 
+                                                                            self.range_axis_y, 
+                                                                            chosen_filters,
+                                                                            range_filters)  
+                                            self.plot_type = "scatter" 
 
-                            if free == True:
-                                with col[place_button]:       
+                                with col[2]: 
+                                    if st.form_submit_button(label="Draw density"):
+                                            self.axis_x = axis_x 
+                                            self.axis_y = axis_y
+                                            self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
+                                                                            self.axis_x, 
+                                                                            self.axis_y, 
+                                                                            self.range_axis_x, 
+                                                                            self.range_axis_y, 
+                                                                            chosen_filters,
+                                                                            range_filters)  
+                                            self.plot_type = "density map" 
+                                    
+
+                                col2 = st.columns(3)
+                            
+                                with col2[0]:       
                                     if st.form_submit_button(label="Save graph"):
                                         self.save_graph()
-                                place_button+=1
 
-                                with col[place_button]:      
+
+                                with col2[1]:      
                                     if st.form_submit_button(label=f"Delete graph"):
                                         self.delete = True
                                         logger.info("Graphique supprimé pour l'instance avec key='%s'", self.key)
                                         st.rerun()
 
                                
-                            elif free != True and self.default_values_save != None:
-                                with col[place_button]:       
-                                    if st.form_submit_button(label="Reset graph"):
-                                        self.default_values = self.default_values_save
-                                        print(self.default_values)
-                                        range_filters_save = [self.default_values_save[filter] for filter in self.default_values_save["chosen_filters"]]
-                                        self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
-                                                                self.axis_x, 
-                                                                self.axis_y, 
-                                                                self.default_values_save[self.axis_x], 
-                                                                self.default_values_save[self.axis_y], 
-                                                                self.default_values_save["chosen_filters"],
-                                                                range_filters_save
-                                                                )
-                                        self.iteration += 1
-                                        graph_container.empty()
-                                        st.rerun()
+                            
                             
                     if self.first_draw == True:
                         print("here")
+                        self.axis_x = axis_x 
+                        self.axis_y = axis_y
                         self.x, self.y, self.recipes_id = self.get_data_points(self.dataframe, 
                                                             self.axis_x, 
                                                             self.axis_y, 
@@ -254,7 +337,7 @@ class bivariateStudy:
                                                             chosen_filters,
                                                             range_filters)
                         self.first_draw = False
-                        
+                    
                     self.__draw_plot(self.x, self.y, self.recipes_id)
                     
                                             

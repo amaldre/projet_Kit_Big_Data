@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from datetime import date
-from utils.classes import bivariateStudy
+from utils.bivariateStudy import bivariateStudy
+from utils.univariateStudy import univariateStudy
+import pandas as pd
 import ast
 from utils.load_csv import load_df
 import logging
@@ -45,42 +47,63 @@ if "recipes_df" not in st.session_state:
 def main():
     # Definition des variables
     axis_x_list = [
+        "calories",
         "minutes",
         "n_steps",
-        "comments_count",
+        "comment_count",
         "ingredient_count",
         "submitted",
     ]
     axis_y_list = ["comment_count", "mean_rating"]
     filters = ["comment_count", "mean_rating", "submitted"]
+    axis_x_univar = ["calories", 
+                     "ingredients_replaced",
+                     "techniques",
+                     "minutes",
+                     "n_steps",
+                     "comment_count",
+                     "ingredient_count",
+                     "submitted",
+                     ]
 
     # Affichage des graphiques existants
     for i, graph in enumerate(st.session_state["graph"]):
-        try:
             if graph.delete:
                 st.session_state["graph"].remove(graph)
                 logger.info(f"Graphique supprime. Nombre de graphiques restants: {len(st.session_state['graph'])}")
             else:
                 graph.display_graph(free=True)
+        
+
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        try:
+            if st.button("Add univariate graph"):
+                name = f"graph {len(st.session_state["graph"]) + 1}"
+                study = univariateStudy(dataframe=st.session_state["recipes_df"], axis_x_list=axis_x_univar, filters=filters, key=name, plot_type = "normal")
+                st.session_state["graph"].append(study)
+                print("add",len(st.session_state["graph"]))
+                st.rerun()
         except Exception as e:
             logger.error(f"Erreur lors de l'affichage ou de la suppression d'un graphique: {e}")
             st.error(f"Une erreur est survenue lors de l'affichage ou de la suppression d'un graphique.")
-
-    # Ajout d'un graphique
-    if st.button("Add Graph"):
+             
+    with col2:
         try:
-            name = f"graph {len(st.session_state['graph']) + 1}"
-            study = bivariateStudy(dataframe=st.session_state["recipes_df"], axis_x_list=axis_x_list, axis_y_list=axis_y_list, filters=filters, key=name, plot_type="scatter")
-            st.session_state["graph"].append(study)
-            logger.info(f"Graphique ajoute. Nombre de graphiques actuels: {len(st.session_state['graph'])}")
-            st.rerun()
+            if st.button("Add bivariate graph"):
+                name = f"graph {len(st.session_state["graph"]) + 1}"
+                study = bivariateStudy(dataframe=st.session_state["recipes_df"], axis_x_list=axis_x_list , axis_y_list=axis_y_list, filters=filters, key=name, plot_type = "scatter")
+                st.session_state["graph"].append(study)
+                print("add",len(st.session_state["graph"]))
+                st.rerun()
         except Exception as e:
-            logger.error(f"Erreur lors de l'ajout d'un graphique: {e}")
-            st.error(f"Une erreur est survenue lors de l'ajout du graphique.")
+                logger.error(f"Erreur lors de l'affichage ou de la suppression d'un graphique: {e}")
+                st.error(f"Une erreur est survenue lors de l'affichage ou de la suppression d'un graphique.")
+                
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        logger.critical(f"Erreur critique dans l'execution de l'application: {e}")
-        st.error("Une erreur critique est survenue dans l'application.")
+    
+    main()
+    

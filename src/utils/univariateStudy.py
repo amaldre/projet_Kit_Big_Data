@@ -171,7 +171,6 @@ class univariateStudy:
         l_elts = list(df[axis_x])
         list_elts = []
         for item in l_elts: 
-            item = ast.literal_eval(item)
             for i in item: 
                 list_elts.append(i)
         element_counts_elts = Counter(list_elts)
@@ -206,37 +205,53 @@ class univariateStudy:
     
     # Pour les differents types de graphes
     def graph_normal(self, x):
-            fig, ax = plt.subplots(figsize=(10,6))
-            ax.plot(x, marker='o', markersize=0.5)
-            st.pyplot(fig)
-            st.write(f"number of recipes : {len(x)}")
+        fig, ax = plt.subplots(figsize=(10,6))
+        ax.plot(x, marker='o', markersize=0.5)
+        ax.set_title(self.name)
+        ax.set_ylabel("number of recipes")
+        ax.set_xlabel(self.axis_x)
+        st.pyplot(fig)
+        st.write(f"number of recipes : {len(x)}")
         
     
     def graph_boxplot(self, x):
-            fig, ax = plt.subplots(figsize=(10,6))
-            sns.boxplot(data=x, ax=ax)
-            st.pyplot(fig)
-            st.write(f"number of recipes : {len(x)}")
+        fig, ax = plt.subplots(figsize=(10,6))
+        sns.boxplot(data=x, ax=ax)
+        ax.set_title(self.name)
+        ax.set_ylabel("number of recipes")
+        ax.set_xlabel(self.axis_x)
+        st.pyplot(fig)
+        st.write(f"number of recipes in the graph: {len(x)}")
         
     
     def graph_density(self, x):
-            fig, ax = plt.subplots(figsize=(10,6))
-            sns.kdeplot(data=x, ax=ax)
-            st.pyplot(fig)
-            st.write(f"number of recipes : {len(x)}")
+        fig, ax = plt.subplots(figsize=(10,6))
+        sns.kdeplot(data=x, ax=ax)
+        ax.set_title(self.name)
+        ax.set_ylabel("number of recipes")
+        ax.set_xlabel(self.axis_x)
+        st.pyplot(fig)
+        st.write(f"number of recipes in the graph: {len(x)}")
         
             
     def graph_histogram(self, x):
-            fig, ax = plt.subplots(figsize=(10,6))
-            sns.histplot(data=x, ax=ax)
-            st.pyplot(fig)
-            st.write(f"number of recipes : {len(x)}")
+        fig, ax = plt.subplots(figsize=(10,6))
+        sns.histplot(data=x, ax=ax)
+        ax.set_title(self.name)
+        ax.set_ylabel("number of recipes")
+        ax.set_xlabel(self.axis_x)
+        st.pyplot(fig)
+        st.write(f"number of recipes in the graph: {len(x)}")
         
 
     def graph_bar_elts(self, nb_elts_display, count_elts):
-            fig, ax = plt.subplots(figsize=(10,6))
-            sns.barplot(x=nb_elts_display, y=count_elts)
-            st.pyplot(fig)
+        fig, ax = plt.subplots(figsize=(10,6))
+        sns.barplot(x=nb_elts_display, y=count_elts)
+        ax.set_title(self.name)
+        ax.set_ylabel("number of recipes")
+        ax.set_xlabel(self.axis_x)
+        st.pyplot(fig)
+        st.write(f"number of recipes in the graph: {sum(count_elts)}")
 
 
     def __draw_graph(self, x, y, recipes_id):
@@ -270,21 +285,22 @@ class univariateStudy:
                 graph_container = st.empty()  
                 with graph_container.expander("**filters**", expanded=free):
                     if free==True:
-                        self.axis_x  = self.__set_axis()
-                    self.range_axis_x = self.__set_range_axis(self.axis_x)
+                        axis_x  = self.__set_axis()
+                    self.range_axis_x = self.__set_range_axis(axis_x)
                     if self.filters != None :
                         st.write("extra_filters")
-                        chosen_filters, range_filters = self.__filters(self.axis_x)
+                        chosen_filters, range_filters = self.__filters(axis_x)
                         self.chosen_filters=chosen_filters
                         self.range_filters=range_filters
                 
                 with st.form(self.key, border=False):
 
-                    if self.axis_x == 'ingredients_replaced':
+                    if axis_x == 'ingredients_replaced':
                         col1, col2 = st.columns(2)
                         with col1:
                             if st.form_submit_button(label="Draw Bar"):
-                                recipes_id = self.get_data_points_ingredients(self, self.df, self.axis_x, self.range_axis_x, chosen_filters, range_filters)
+                                self.axis_x = axis_x
+                                self.x, self.y, self.recipes_id = self.get_data_points_ingredients(self.dataframe, self.axis_x, self.range_axis_x, chosen_filters, range_filters)
                                 self.plot_type = "bar_ingredients"
 
                         with col2:
@@ -296,8 +312,8 @@ class univariateStudy:
                         col1, col2 = st.columns(2)
                         with col1:
                             if st.form_submit_button(label="Draw Bar"):
-                                recipes_id = self.get_data_points_ingredients(self.dataframe)
-                                self.graph_bar_techniques(recipes_id)
+                                self.axis_x = axis_x
+                                self.x, self.y, self.recipes_id = self.get_data_points_ingredients(self.dataframe, self.axis_x, self.range_axis_x, chosen_filters, range_filters)
                                 self.plot_type = "bar_techniques"
 
                         with col2:
@@ -310,6 +326,7 @@ class univariateStudy:
                             col1, col2, col3, col4= st.columns(4)
                             with col1:
                                 if st.form_submit_button(label="Draw graph"):
+                                    self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(self.dataframe, 
                                                                 self.axis_x,
                                                                 self.range_axis_x,
@@ -318,6 +335,7 @@ class univariateStudy:
                                     self.plot_type = "normal"
                             with col2:
                                 if st.form_submit_button(label="Draw Box Plot"):
+                                    self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(self.dataframe, 
                                                                 self.axis_x,
                                                                 self.range_axis_x,
@@ -327,6 +345,7 @@ class univariateStudy:
 
                             with col3:
                                 if st.form_submit_button(label="Draw Density Plot"):
+                                    self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(self.dataframe, 
                                                                 self.axis_x,
                                                                 self.range_axis_x,
@@ -336,6 +355,7 @@ class univariateStudy:
 
                             with col4:
                                 if st.form_submit_button(label="Draw Histogram"):
+                                    self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(self.dataframe, 
                                                                 self.axis_x,
                                                                 self.range_axis_x,
@@ -368,6 +388,7 @@ class univariateStudy:
                                     
                             with col2:       
                                 if st.form_submit_button(label="Reset graph"):
+                                    self.axis_x = axis_x
                                     self.default_values = self.default_values_save
                                     print(self.default_values)
                                     range_filters_save = [self.default_values_save[filter] for filter in self.default_values_save["chosen_filters"]]
@@ -383,12 +404,13 @@ class univariateStudy:
 
                 
                 if self.first_draw == True:
+                        self.axis_x = axis_x
                         self.x, self.recipes_id = self.get_data_points(self.dataframe, 
                                                             self.axis_x, 
                                                             self.range_axis_x, 
                                                             chosen_filters,
                                                             range_filters)
-                        self.first_draw == False
+                        self.first_draw = False
                 
                 self.__draw_graph(self.x, self.y, self.recipes_id)
                 
