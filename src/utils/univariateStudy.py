@@ -308,7 +308,7 @@ class univariateStudy:
                                 self.delete = True
                                 st.rerun()
 
-                    elif self.axis_x == 'techniques':
+                    elif axis_x == 'techniques':
                         col1, col2 = st.columns(2)
                         with col1:
                             if st.form_submit_button(label="Draw Bar"):

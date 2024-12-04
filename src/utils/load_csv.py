@@ -28,9 +28,10 @@ def load_df(file_path):
     df = load_csv(file_path)
     print(df.head())
     df["ingredients_replaced"] = df["ingredients_replaced"].apply(ast.literal_eval)
-    print("1")
     df["ingredient_count"] = df["ingredients_replaced"].apply(len)
-    print("2")
+    df["techniques"] = df["techniques"].apply(ast.literal_eval)
+    df["techniques_count"] = df["techniques"].apply(len)
+
     df["submitted"] = pd.to_datetime(df["submitted"])
     print(df['submitted'].dtype)
 
