@@ -5,4 +5,6 @@
 !.gitignore
 !RAW_recipes_sample.csv
 !RAW_interactions_sample.csv
-!bertopic_chart/*
+!bertopic_chart/topics_model.csv
+!bertopic_chart/visualization.html
+!bertopic_chart/visualization_topics.html
