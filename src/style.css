@@ -1,5 +1,5 @@
 body {
-    background-color: #003285;
+    background-color: #ffcf99;
     color :#e76d00;
     font-family: Arial, sans-serif;
 }
@@ -10,13 +10,13 @@ h1 {
 }
 
 .stMain {
-    background-color: #161c25;
-    color: #f9d3b2;
+    background-color: #ffcf99;
+    color: #55381f;
 }
 
 
 .stAppHeader {
-    background-color: #161c25;
+    background-color: #ffcf99;
 
 }
 
@@ -26,7 +26,7 @@ h1 {
 }
 
 .stMarkdown {
-    color: #f9d3b2; /* Gris foncé */
+    color: #55381f; /* Gris foncé */
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
 }
@@ -36,12 +36,12 @@ h1 {
 }
 
 h1:hover {
-        color: #f9d3b2;
+        color: #55381f;
     }
 
 .stSidebar {
-    background-color: #2b334b;
-    color: #f9d3b2;
+    background-color: #a1815b;
+    color: #55381f;
 }
 
 
