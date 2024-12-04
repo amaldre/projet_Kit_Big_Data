@@ -283,9 +283,7 @@ class univariateStudy:
     def __draw_graph(self, x, y, recipes_id):
         col = st.columns([1, 3, 1])
         with col[1]:
-            if self.plot_type == "normal":
-                self.graph_normal(x)
-            elif self.plot_type == "boxplot":
+            if self.plot_type == "boxplot":
                 self.graph_boxplot(x)
             elif self.plot_type == "density":
                 self.graph_density(x)
@@ -316,7 +314,7 @@ class univariateStudy:
             ax.set_ylabel("number of recipes")
         st.pyplot(fig)
 
-    def display_graph(self, free=False):
+    def display_graph(self, free=False, explanation=None):
         self.default_values = self.default_values_save
         logger.info("Affichage du graphique pour l'instance avec key='%s'", self.key)
         chosen_filters = []
@@ -388,19 +386,9 @@ class univariateStudy:
 
                     else:
                         if free == True:
-                            col1, col2, col3, col4 = st.columns(4)
+                            col1, col2, col3= st.columns(3)
+                                
                             with col1:
-                                if st.form_submit_button(label="Draw graph"):
-                                    self.axis_x = axis_x
-                                    self.x, self.recipes_id = self.get_data_points(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
-                                    )
-                                    self.plot_type = "normal"
-                            with col2:
                                 if st.form_submit_button(label="Draw Box Plot"):
                                     self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(
@@ -412,7 +400,7 @@ class univariateStudy:
                                     )
                                     self.plot_type = "boxplot"
 
-                            with col3:
+                            with col2:
                                 if st.form_submit_button(label="Draw Density Plot"):
                                     self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(
@@ -424,7 +412,7 @@ class univariateStudy:
                                     )
                                     self.plot_type = "density"
 
-                            with col4:
+                            with col3:
                                 if st.form_submit_button(label="Draw Histogram"):
                                     self.axis_x = axis_x
                                     self.x, self.recipes_id = self.get_data_points(
@@ -436,7 +424,7 @@ class univariateStudy:
                                     )
                                     self.plot_type = "histogram"
 
-                            col1, col2, _, _ = st.columns(4)
+                            col1, col2, _ = st.columns(3)
                             with col1:
                                 if st.form_submit_button(label="Save graph"):
                                     self.save_graph()
@@ -493,3 +481,5 @@ class univariateStudy:
                     self.first_draw = False
 
                 self.__draw_graph(self.x, self.y, self.recipes_id)
+                if explanation != None:
+                    st.write(explanation)

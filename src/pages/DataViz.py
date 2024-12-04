@@ -8,7 +8,7 @@ from utils.bivariateStudy import bivariateStudy
 from utils.univariateStudy import univariateStudy
 import pandas as pd
 import ast
-from utils.load_csv import load_df
+from utils.load_csv import initialize_recipes_df
 import logging
 import os
 
@@ -37,12 +37,8 @@ if "graph" not in st.session_state:
     st.session_state["graph"] = []
 
 if "recipes_df" not in st.session_state:
-    try:
-        st.session_state["recipes_df"] = load_df("data/cloud_df.csv")
-        logger.info("Les donnees de recettes ont ete chargees avec succes.")
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement des donnees depuis le fichier CSV: {e}")
-        st.error("Une erreur est survenue lors du chargement des donnees. Veuillez verifier le fichier.")
+    st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
+
 
 def main():
     # Definition des variables
@@ -82,7 +78,7 @@ def main():
         try:
             if st.button("Add univariate graph"):
                 name = f"graph {len(st.session_state["graph"]) + 1}"
-                study = univariateStudy(dataframe=st.session_state["recipes_df"], axis_x_list=axis_x_univar, filters=filters, key=name, plot_type = "normal")
+                study = univariateStudy(dataframe=st.session_state["recipes_df"], axis_x_list=axis_x_univar, filters=filters, key=name, plot_type = "density")
                 st.session_state["graph"].append(study)
                 print("add",len(st.session_state["graph"]))
                 st.rerun()

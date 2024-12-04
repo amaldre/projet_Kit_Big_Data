@@ -44,33 +44,37 @@ def load_df(file_path):
 
 
 @st.cache_data
-def initialize_recipes_df(session_key, file_path, _session_state):
+def initialize_recipes_df(file_path):
     """
     Initialise le DataFrame dans l'etat de session de Streamlit.
     """
-    if session_key not in _session_state:
-        try:
-            _session_state[session_key] = load_df(file_path)
-            logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
-        except FileNotFoundError:
-            error_message = f"Le fichier CSV '{file_path}' est introuvable."
-            logger.error(error_message)
-            st.error(error_message)
-            _session_state[session_key] = (
-                pd.DataFrame()
-            )  # Charger un DataFrame vide en cas d'erreur
-        except pd.errors.ParserError:
-            error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
-            logger.error(error_message)
-            st.error(error_message)
-            _session_state[session_key] = pd.DataFrame()
-        except Exception as e:
-            error_message = (
-                f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
-            )
-            logger.exception(error_message)
-            st.error(error_message)
-            _session_state[session_key] = pd.DataFrame()
+    
+    try:
+        dataframe = load_df(file_path)
+        logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
+        return dataframe
+    except FileNotFoundError:
+        error_message = f"Le fichier CSV '{file_path}' est introuvable."
+        logger.error(error_message)
+        st.error(error_message)
+        dataframe = (
+            pd.DataFrame()
+        )  # Charger un DataFrame vide en cas d'erreur
+        return dataframe
+    except pd.errors.ParserError:
+        error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
+        logger.error(error_message)
+        st.error(error_message)
+        dataframe = pd.DataFrame()
+        return dataframe
+    except Exception as e:
+        error_message = (
+            f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
+        )
+        logger.exception(error_message)
+        st.error(error_message)
+        dataframe = pd.DataFrame()
+        return dataframe
 
 
 # df = load_df("../data/processed_data.csv")

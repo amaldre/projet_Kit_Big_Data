@@ -307,7 +307,7 @@ class bivariateStudy:
                 st.dataframe(display_df, hide_index=True)
 
     # Affichage pour les graphes d'intérêt à navigation limité
-    def display_graph(self, free=False):
+    def display_graph(self, free=False, explanation=None):
         self.default_values = self.default_values_save
         logger.info("Affichage du graphique pour l'instance avec key='%s'", self.key)
         chosen_filters = []
@@ -483,3 +483,5 @@ class bivariateStudy:
                     self.first_draw = False
 
                 self.__draw_plot(self.x, self.y, self.recipes_id)
+                if explanation != None:
+                    st.write(explanation)

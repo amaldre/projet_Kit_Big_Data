@@ -36,7 +36,9 @@ def load_css(file_name):
 load_css("style.css")
 
 # Initialiser les donnees dans l'etat de session
-initialize_recipes_df("recipes_df", "../data/cloud_df.csv", st.session_state)
+if "recipes_df" not in st.session_state:
+    st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
+
 
 # Configuration de l'application Streamlit
 st.title("Mange ta main")
