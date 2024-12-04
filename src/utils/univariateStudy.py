@@ -3,6 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import logging
 import pandas as pd
+import numpy as np
 import seaborn as sns 
 from collections import Counter
 import ast
@@ -19,7 +20,7 @@ logging.basicConfig(
 class univariateStudy:
 
 
-    def __init__(self, key, dataframe, plot_type, axis_x_list=None, filters=None,  axis_x=None, name = None, default_values=None):
+    def __init__(self, key, dataframe, plot_type, axis_x_list=None, filters=None,  axis_x=None, name = None, default_values=None, log_axis_x=False, log_axis_y=False):
         # Attributs de la classe
         self.dataframe = dataframe 
         self.axis_x_list = axis_x_list
@@ -39,6 +40,8 @@ class univariateStudy:
         self.chosen_filters=None
         self.range_filters=None
         self.iteration = 1
+        self.log_axis_x =log_axis_x
+        self.log_axis_y =log_axis_y
 
     def __del__(self):
         return
@@ -206,51 +209,36 @@ class univariateStudy:
     # Pour les differents types de graphes
     def graph_normal(self, x):
         fig, ax = plt.subplots(figsize=(10,6))
-        ax.plot(x, marker='o', markersize=0.5)
-        ax.set_title(self.name)
-        ax.set_ylabel("number of recipes")
-        ax.set_xlabel(self.axis_x)
-        st.pyplot(fig)
+        ax.plot(x, range(len(x)), marker='o', markersize=0.5)
+        self.axis_graph(fig, ax)
         st.write(f"number of recipes : {len(x)}")
         
     
     def graph_boxplot(self, x):
         fig, ax = plt.subplots(figsize=(10,6))
-        sns.boxplot(data=x, ax=ax)
-        ax.set_title(self.name)
-        ax.set_ylabel("number of recipes")
-        ax.set_xlabel(self.axis_x)
-        st.pyplot(fig)
+        sns.boxplot(data=x, ax=ax, orient='h')
+        self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
         
     
     def graph_density(self, x):
         fig, ax = plt.subplots(figsize=(10,6))
         sns.kdeplot(data=x, ax=ax)
-        ax.set_title(self.name)
-        ax.set_ylabel("number of recipes")
-        ax.set_xlabel(self.axis_x)
-        st.pyplot(fig)
+        self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
         
             
     def graph_histogram(self, x):
         fig, ax = plt.subplots(figsize=(10,6))
         sns.histplot(data=x, ax=ax)
-        ax.set_title(self.name)
-        ax.set_ylabel("number of recipes")
-        ax.set_xlabel(self.axis_x)
-        st.pyplot(fig)
+        self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
         
 
     def graph_bar_elts(self, nb_elts_display, count_elts):
         fig, ax = plt.subplots(figsize=(10,6))
         sns.barplot(x=nb_elts_display, y=count_elts)
-        ax.set_title(self.name)
-        ax.set_ylabel("number of recipes")
-        ax.set_xlabel(self.axis_x)
-        st.pyplot(fig)
+        self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {sum(count_elts)}")
 
 
@@ -272,7 +260,20 @@ class univariateStudy:
         with st.expander("The 10 recipes with the most comments (with current filters)"):
             st.dataframe(display_df,hide_index=True)
           
+    def axis_graph(self, fig, ax):
+        ax.set_title(self.name)
+        if self.log_axis_x:
+            ax.set_xlabel("log "+self.axis_x)
+            ax.set_xscale('log')
+        else:
+            ax.set_xlabel(self.axis_x)
 
+        if self.log_axis_y:
+            ax.set_ylabel("log "+"number of recipes")
+            ax.set_yscale('log')
+        else:
+            ax.set_ylabel("number of recipes")
+        st.pyplot(fig)
 
     def display_graph(self, free=False):                        
         self.default_values=self.default_values_save
@@ -294,6 +295,14 @@ class univariateStudy:
                         self.range_filters=range_filters
                 
                 with st.form(self.key, border=False):
+                    pos = 0
+                    col = st.columns(2)
+                    with col[pos]:
+                        if np.issubdtype(self.dataframe[axis_x].dtype, np.number):
+                            self.log_axis_x = st.checkbox("log axis_x", key=("log axis_x"+self.key+str(self.iteration)), value = self.log_axis_x)
+                            pos+=1
+                    with col[pos]:
+                        self.log_axis_y = st.checkbox("log axis_y", key=("log axis_y"+self.key+str(self.iteration)), value = self.log_axis_x)
 
                     if axis_x == 'ingredients_replaced':
                         col1, col2 = st.columns(2)
