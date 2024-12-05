@@ -168,6 +168,18 @@ def delete_outliers_minutes(data: pd):
     return data
 
 
+def delete_outliers_calories(data: pd):
+    """Delete Recipe over 300 000 calories (outliers)
+
+    :param data: dataframe des recettes
+    :type data: pd
+    :return: dataframe des recettes sans les recettes avec plus de 300 000 calories
+    :rtype: pd.dataframe
+    """
+    data = data[data["calories"] > 300000]
+    return data
+
+
 def delete_outliers_steps(data: pd):
     """ "
     Delete Recipe with 0 steps
@@ -349,6 +361,21 @@ def processed_ingredient(data: pd):
     return data
 
 
+def delete_unwanted_columns(data: pd, columns: list):
+    """Delete the unwanted columns
+
+    :param data: The data in a pandas dataframe
+    :type data: pd
+    :param columns: list of columns to delete
+    :type columns: list
+
+    :return: The data in a pandas dataframe without the unwanted columns
+    :rtype: pd.dataframe
+    """
+    data.drop(columns, axis=1, inplace=True)
+    return data
+
+
 def save_data(data: pd, path: str):
     """Save the data to the path
 
@@ -402,12 +429,28 @@ def preprocess():
 
     df = delete_outliers_minutes(df)
     df = delete_outliers_steps(df)
+    df = delete_outliers_calories(df)
 
     stopwords = get_stopwords()
     df = clean_colonne(df, "description", stopwords)
     df = clean_colonne(df, "name", stopwords)
 
     df = processed_ingredient(df)
+
+    # supression des colonnes inutiles
+    unwated_columns = [
+        "i",
+        "name_tokens",
+        "ingredient_tokens",
+        "steps_tokens",
+        "techniques",
+        "ingredient_ids",
+        "tags",
+        "nutrition",
+        "steps",
+        "ingredients",
+    ]
+    df = delete_unwanted_columns(df, unwated_columns)
 
     save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))

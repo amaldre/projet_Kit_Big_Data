@@ -13,8 +13,19 @@ logger = logging.getLogger(__name__)
 
 class univariateStudy:
 
-
-    def __init__(self, key, dataframe, plot_type, axis_x_list=None, filters=None,  axis_x=None, name = None, default_values=None, log_axis_x=False, log_axis_y=False):
+    def __init__(
+        self,
+        key,
+        dataframe,
+        plot_type,
+        axis_x_list=None,
+        filters=None,
+        axis_x=None,
+        name=None,
+        default_values=None,
+        log_axis_x=False,
+        log_axis_y=False,
+    ):
         # Attributs de la classe
         self.dataframe = dataframe
         self.axis_x_list = axis_x_list
@@ -34,8 +45,8 @@ class univariateStudy:
         self.chosen_filters = None
         self.range_filters = None
         self.iteration = 1
-        self.log_axis_x =log_axis_x
-        self.log_axis_y =log_axis_y
+        self.log_axis_x = log_axis_x
+        self.log_axis_y = log_axis_y
 
     def __del__(self):
         return
@@ -252,14 +263,14 @@ class univariateStudy:
 
     # Pour les differents types de graphes
     def graph_normal(self, x):
-        fig, ax = plt.subplots(figsize=(10,6))
-        ax.plot(x, range(len(x)), marker='o', markersize=0.5)
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(x, range(len(x)), marker="o", markersize=0.5)
         self.axis_graph(fig, ax)
         st.write(f"number of recipes : {len(x)}")
 
     def graph_boxplot(self, x):
-        fig, ax = plt.subplots(figsize=(10,6))
-        sns.boxplot(data=x, ax=ax, orient='h')
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.boxplot(data=x, ax=ax, orient="h")
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
 
@@ -295,25 +306,27 @@ class univariateStudy:
                 or self.plot_type == "bar_techniques"
             ):
                 self.graph_bar_elts(x, y)
-        display_df = self.dataframe[self.dataframe['recipe_id'].isin(recipes_id)]
-        display_df = display_df.sort_values(by="comment_count",ascending=False)[:10]
-        with st.expander("The 10 recipes with the most comments (with current filters)"):
-            st.dataframe(display_df,hide_index=True)
-          
+        display_df = self.dataframe[self.dataframe["recipe_id"].isin(recipes_id)]
+        display_df = display_df.sort_values(by="comment_count", ascending=False)[:10]
+        with st.expander(
+            "The 10 recipes with the most comments (with current filters)"
+        ):
+            st.dataframe(display_df, hide_index=True)
+
     def axis_graph(self, fig, ax):
         ax.set_title(self.name)
         if self.log_axis_x:
-            ax.set_xlabel("log "+self.axis_x)
-            ax.set_xscale('log')
+            ax.set_xlabel("log " + self.axis_x)
+            ax.set_xscale("log")
         else:
             ax.set_xlabel(self.axis_x)
 
         if self.log_axis_y:
-            ax.set_ylabel("log "+"number of recipes")
-            ax.set_yscale('log')
+            ax.set_ylabel("log " + "number of recipes")
+            ax.set_yscale("log")
         else:
             ax.set_ylabel("number of recipes")
-        ax.grid(True, which='both', linestyle='-', linewidth=0.7, alpha=0.7)
+        ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
         st.pyplot(fig)
 
     def display_graph(self, free=False, explanation=None):
@@ -340,13 +353,21 @@ class univariateStudy:
                     col = st.columns(2)
                     with col[pos]:
                         if np.issubdtype(self.dataframe[axis_x].dtype, np.number):
-                            self.log_axis_x = st.checkbox("log axis_x", key=("log axis_x"+self.key+str(self.iteration)), value = self.log_axis_x)
-                            pos+=1
+                            self.log_axis_x = st.checkbox(
+                                "log axis_x",
+                                key=("log axis_x" + self.key + str(self.iteration)),
+                                value=self.log_axis_x,
+                            )
+                            pos += 1
                         else:
                             self.log_axis_x = False
                     with col[pos]:
-                        self.log_axis_y = st.checkbox("log axis_y", key=("log axis_y"+self.key+str(self.iteration)), value = self.log_axis_x)
-                    if axis_x == 'ingredients_replaced':
+                        self.log_axis_y = st.checkbox(
+                            "log axis_y",
+                            key=("log axis_y" + self.key + str(self.iteration)),
+                            value=self.log_axis_x,
+                        )
+                    if axis_x == "ingredients_replaced":
                         col1, col2 = st.columns(2)
                         with col1:
                             if st.form_submit_button(label="Draw Bar"):
@@ -390,8 +411,8 @@ class univariateStudy:
 
                     else:
                         if free == True:
-                            col1, col2, col3= st.columns(3)
-                                
+                            col1, col2, col3 = st.columns(3)
+
                             with col1:
                                 if st.form_submit_button(label="Draw Box Plot"):
                                     self.axis_x = axis_x
