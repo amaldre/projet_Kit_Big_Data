@@ -12,7 +12,14 @@ logger = logging.getLogger(os.path.basename(__file__))
 def load_csv(file_path):
     """
     Load a csv file from a given path and return a pandas dataframe
+
+    :param file_path: The path to the csv file to load
+    :type file_path: str
+    :raises FileNotFoundError: If the file is not found
+    :return: The loaded csv file as a pandas dataframe
+    :rtype: pd.DataFrame
     """
+
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
     return pd.read_csv(file_path)
@@ -44,6 +51,10 @@ def load_css(file_name):
 def transform_date_list(date_list):
     """
     Transform a list of dates in string format to a list of datetime objects
+
+
+    :return: The list of dates as datetime objects
+    :rtype: list
     """
     date_list = date_list.split(", ")[1:-2]
     return [pd.to_datetime(date) for date in date_list]
@@ -52,6 +63,12 @@ def transform_date_list(date_list):
 def load_df(file_path):
     """
     Load a csv file from a given path and return a pandas dataframe, change the columns to the correct type
+
+
+    :param file_path: The path to the csv file to load
+    :type file_path: str
+    :return: The loaded csv file as a pandas dataframe
+    :rtype: pd.DataFrame
     """
     df = load_csv(file_path)
     print(df.head())
@@ -85,6 +102,12 @@ def load_data(PATH_DATA, file_name):
 def initialize_recipes_df(file_path):
     """
     Initialise le DataFrame dans l'etat de session de Streamlit.
+
+
+    :param file_path: path to the CSV file
+    :type file_path: str
+    :return: The loaded csv file as a pandas dataframe
+    :rtype: pd.DataFrame
     """
 
     try:
@@ -115,17 +138,15 @@ def initialize_recipes_df(file_path):
         return dataframe
 
 
-# df = load_df("../data/processed_data.csv")
-
-# print(df.columns)
-# print(type(df["date"][0]))  # Devrait afficher <class 'list'>
-# print(type(df["submitted"][0]))  # Devrait afficher <class 'Timestamp'>
-# print(type(df["date"][0][0]))  # Devrait afficher <class 'Timestamp'>
-
-# print(df["date"].head())S
-
-
 def compute_trend(nb_recette_par_annee_df):
+    """
+    Compute the trend of the number of recipes submitted per month
+
+    :param nb_recette_par_annee_df: The dataframe containing the number of recipes submitted per year
+    :type nb_recette_par_annee_df: pd.DataFrame
+    :return: The trend of the number of recipes submitted per month
+    :rtype: pd.DataFrame
+    """
 
     # nombre de recettes par années
     print(nb_recette_par_annee_df["submitted"].dtype)
