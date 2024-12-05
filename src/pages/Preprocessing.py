@@ -7,6 +7,7 @@ import nltk
 import re
 from utils.dbapi import DBapi
 import logging
+from utils.load_csv import load_data, load_css
 
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -25,18 +26,6 @@ try:
 except Exception as e:
     logger.error(f"Erreur lors de la configuration de la page : {e}")
     st.error("Une erreur s'est produite lors de la configuration de la page.")
-
-
-def load_css(file_name):
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except FileNotFoundError:
-        logger.warning(f"Fichier CSS introuvable : {file_name}")
-        st.error("Impossible de charger le style. Le fichier CSS est introuvable.")
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement du CSS : {e}")
-        st.error("Une erreur s'est produite lors du chargement du style.")
 
 
 load_css("style.css")
@@ -61,24 +50,8 @@ Les données brutes sont chargées à partir de fichiers CSV. Voici un aperçu d
 )
 
 
-# Exemple de chargement fictif
-@st.cache_data
-def load_data(file_name):
-    path = os.path.join(PATH_DATA, file_name)
-    try:
-        if os.path.exists(path):
-            logger.info(f"Chargement des donnees depuis {path}")
-            return pd.read_csv(path)
-        else:
-            logger.warning(f"Fichier introuvable : {path}")
-            return pd.DataFrame()  # Placeholder si le fichier est manquant
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement du fichier {file_name} : {e}")
-        return pd.DataFrame()
-
-
-raw_recipes = load_data(RAW_RECIPE)
-raw_interactions = load_data(RAW_INTERACTIONS)
+raw_recipes = load_data(PATH_DATA, RAW_RECIPE)
+raw_interactions = load_data(PATH_DATA, RAW_INTERACTIONS)
 
 # Afficher les données brutes si elles existent
 if not raw_recipes.empty:

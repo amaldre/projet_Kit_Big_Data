@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import logging
 import streamlit.components.v1 as components
 import html
+from utils.load_csv import load_data, load_css
 
 
 logger = logging.getLogger(os.path.basename(__file__))
@@ -14,33 +15,6 @@ st.set_page_config(page_title="Explication Pretraitement", layout="wide")
 
 PATH_DATA = "../data/bertopic_chart/"
 TOPICS_CSV = "topics_model.csv"
-
-
-@st.cache_data
-def load_data(file_name):
-    path = os.path.join(PATH_DATA, file_name)
-    try:
-        if os.path.exists(path):
-            logger.info(f"Chargement des donnees depuis {path}")
-            return pd.read_csv(path)
-        else:
-            logger.warning(f"Fichier introuvable : {path}")
-            return pd.DataFrame()  # Placeholder si le fichier est manquant
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement du fichier {file_name} : {e}")
-        return pd.DataFrame()
-
-
-def load_css(file_name):
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-        logger.info(f"Le fichier CSS {file_name} a ete charge avec succes.")
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement du fichier CSS {file_name}: {e}")
-        st.error(
-            f"Une erreur est survenue lors du chargement du fichier CSS. Veuillez verifier le fichier."
-        )
 
 
 # Charger le CSS
@@ -88,7 +62,7 @@ st.write(
     """
 )
 
-topics_csv = load_data(TOPICS_CSV)
+topics_csv = load_data(PATH_DATA, TOPICS_CSV)
 
 
 # Afficher les données brutes si elles existent

@@ -67,6 +67,21 @@ def load_df(file_path):
 
 
 @st.cache_data
+def load_data(PATH_DATA, file_name):
+    path = os.path.join(PATH_DATA, file_name)
+    try:
+        if os.path.exists(path):
+            logger.info(f"Chargement des donnees depuis {path}")
+            return pd.read_csv(path)
+        else:
+            logger.warning(f"Fichier introuvable : {path}")
+            return pd.DataFrame()  # Placeholder si le fichier est manquant
+    except Exception as e:
+        logger.error(f"Erreur lors du chargement du fichier {file_name} : {e}")
+        return pd.DataFrame()
+
+
+@st.cache_data
 def initialize_recipes_df(file_path):
     """
     Initialise le DataFrame dans l'etat de session de Streamlit.

@@ -21,7 +21,9 @@ if "locked_graphs" not in st.session_state:
 
 
 def main():
-    """Fonction principale de l'application Streamlit."""
+    """
+    Fonction principale de la page Analyse des données.
+    """
     st.title("Analyse des data")
     load_css("style.css")
 
