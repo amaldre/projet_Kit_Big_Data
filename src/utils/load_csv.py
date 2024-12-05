@@ -18,6 +18,29 @@ def load_csv(file_path):
     return pd.read_csv(file_path)
 
 
+def load_css(file_name):
+    """
+    Load a CSS file into the markdown file
+
+    :param file_name: The name of the CSS file to load
+    :type file_name: str
+    """
+    try:
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+            logger.info(f"CSS charge avec succes depuis '{file_name}'.")
+    except FileNotFoundError:
+        error_message = f"Le fichier CSS '{file_name}' est introuvable."
+        logger.error(error_message)
+        st.error(error_message)
+    except Exception as e:
+        error_message = (
+            f"Une erreur inattendue s'est produite lors du chargement du CSS : {e}"
+        )
+        logger.exception(error_message)
+        st.error(error_message)
+
+
 def transform_date_list(date_list):
     """
     Transform a list of dates in string format to a list of datetime objects
@@ -48,7 +71,7 @@ def initialize_recipes_df(file_path):
     """
     Initialise le DataFrame dans l'etat de session de Streamlit.
     """
-    
+
     try:
         dataframe = load_df(file_path)
         logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
@@ -57,12 +80,12 @@ def initialize_recipes_df(file_path):
         error_message = f"Le fichier CSV '{file_path}' est introuvable."
         logger.error(error_message)
         st.error(error_message)
-        dataframe = (
-            pd.DataFrame()
-        )  # Charger un DataFrame vide en cas d'erreur
+        dataframe = pd.DataFrame()  # Charger un DataFrame vide en cas d'erreur
         return dataframe
     except pd.errors.ParserError:
-        error_message = "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
+        error_message = (
+            "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
+        )
         logger.error(error_message)
         st.error(error_message)
         dataframe = pd.DataFrame()

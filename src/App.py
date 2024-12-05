@@ -3,35 +3,13 @@ import streamlit as st
 import pandas as pd
 import logging
 from logging_config import setup_logging
-from utils.load_csv import initialize_recipes_df
+from utils.load_csv import initialize_recipes_df, load_css
 
 st.set_page_config(layout="wide")
 
 # Initialiser le logger
 setup_logging()  # Configuration
 logger = logging.getLogger(os.path.basename(__file__))
-
-
-def load_css(file_name):
-    """Load a CSS file into the markdown file .
-
-    :param file_name: [The name of the CSS file to load]
-    :type file_name: [str]
-    """
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-            logger.info(f"CSS charge avec succes depuis '{file_name}'.")
-    except FileNotFoundError:
-        error_message = f"Le fichier CSS '{file_name}' est introuvable."
-        logger.error(error_message)
-        st.error(error_message)
-    except Exception as e:
-        error_message = (
-            f"Une erreur inattendue s'est produite lors du chargement du CSS : {e}"
-        )
-        logger.exception(error_message)
-        st.error(error_message)
 
 
 # Charger les styles CSS
