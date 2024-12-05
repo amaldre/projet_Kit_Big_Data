@@ -269,6 +269,7 @@ class univariateStudy:
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes : {len(x)}")
+        return True
 
     def graph_boxplot(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -277,6 +278,7 @@ class univariateStudy:
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
+        return True
 
     def graph_density(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -285,6 +287,7 @@ class univariateStudy:
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
+        return True
 
     def graph_histogram(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -293,6 +296,7 @@ class univariateStudy:
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
+        return True
 
     def graph_bar_elts(self, nb_elts_display, count_elts):
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -301,6 +305,7 @@ class univariateStudy:
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {sum(count_elts)}")
+        return True
 
     def __draw_graph(self, x, y, recipes_id):
         col = st.columns([1, 3, 1])
@@ -322,6 +327,7 @@ class univariateStudy:
             "The 10 recipes with the most comments (with current filters)"
         ):
             st.dataframe(display_df, hide_index=True)
+            return True
 
     def axis_graph(self, fig, ax):
         ax.set_title(self.name)
@@ -338,6 +344,7 @@ class univariateStudy:
             ax.set_ylabel("number of recipes")
         ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
         st.pyplot(fig, clear_figure=True)
+        return True
 
     def display_graph(self, free=False, explanation=None):
         self.default_values = self.default_values_save
@@ -520,3 +527,4 @@ class univariateStudy:
                 self.__draw_graph(self.x, self.y, self.recipes_id)
                 if explanation != None:
                     st.write(explanation)
+                return True
