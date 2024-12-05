@@ -5,6 +5,8 @@ import logging
 from logging_config import setup_logging
 from utils.load_csv import initialize_recipes_df
 
+st.set_page_config(layout="wide")
+
 # Initialiser le logger
 setup_logging()  # Configuration
 logger = logging.getLogger(os.path.basename(__file__))
