@@ -33,6 +33,9 @@ if "recipes_df" not in st.session_state:
 
 
 def main():
+    """
+    Main function of the page DataViz. It allows to display and delete graphs.
+    """
     # Definition des variables
     axis_x_list = [
         "calories",

@@ -34,7 +34,6 @@ if "locked_graphs" not in st.session_state:
     st.session_state["locked_graphs"] = []
 
 
-
 def main():
     """
     Fonction principale de la page Analyse des données.
@@ -88,7 +87,6 @@ def main():
         st.header("1️⃣ Analyse de la fréquentation du site")
 
         explanation_graph_1 = """
-        explanation_graph_1 = """
         **Observations :**
         - Une forte croissance des contributions est visible entre 2000 et 2008, culminant à une activité maximale autour de 2008.
         - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro vers 2016-2018.
@@ -102,19 +100,11 @@ def main():
         st.session_state["locked_graphs"][0].display_graph(
             explanation=explanation_graph_1
         )
-        st.session_state["locked_graphs"][0].display_graph(
-            explanation=explanation_graph_1
-        )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][0].name}")
 
         st.header("2️⃣ Définition d'une recette de populaire")
-        st.header("2️⃣ Définition d'une recette de populaire")
-
-        
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
-
-        explanation_graph_2 = """
 
         explanation_graph_2 = """
         **Observations :**
@@ -125,10 +115,6 @@ def main():
         - Les recettes courtes pourraient être **plus populaires** car elles sont **plus faciles et rapides à réaliser**.
         - Les recettes populaires génèrent plus de commentaires, ce qui peut indiquer un **engagement plus fort de la part des utilisateurs**.
         """
-
-        st.session_state["locked_graphs"][1].display_graph(
-            explanation=explanation_graph_2
-        )
 
         st.session_state["locked_graphs"][1].display_graph(
             explanation=explanation_graph_2
