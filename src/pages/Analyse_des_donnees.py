@@ -2,6 +2,7 @@ import os
 import logging
 import streamlit as st
 from utils.bivariateStudy import bivariateStudy
+from utils.univariateStudy import univariateStudy
 from pandas import Timestamp
 from utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
 
@@ -64,9 +65,27 @@ def main():
             )
             st.session_state["locked_graphs"].append(nb_recette_par_annee_study)
 
-            min_popular_recipes = bivariateStudy(
+            nb_recette_temps_study = univariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="2",
+                name="Nombre de recettes en fonction du temps",
+                axis_x="submitted" , 
+                filters=[], 
+                plot_type="histogram", 
+                log_axis_x=False, 
+                log_axis_y=False, 
+                default_values={
+                    "submitted": 
+                    (Timestamp('1999-08-06 00:00:00'), 
+                     Timestamp('2018-12-04 00:00:00')), 
+                     "chosen_filters":[]
+                     },
+            )
+            st.session_state["locked_graphs"].append(nb_recette_temps_study)
+
+            min_popular_recipes = bivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="3",
                 name="Duree recettes populaires",
                 axis_x="minutes",
                 axis_y="comment_count",
@@ -102,6 +121,12 @@ def main():
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][0].name}")
 
+        st.session_state["locked_graphs"][1].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][1].name}")
+
+
         st.header("2️⃣ Définition d'une recette de populaire")
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
@@ -116,10 +141,10 @@ def main():
         - Les recettes populaires génèrent plus de commentaires, ce qui peut indiquer un **engagement plus fort de la part des utilisateurs**.
         """
 
-        st.session_state["locked_graphs"][1].display_graph(
+        st.session_state["locked_graphs"][2].display_graph(
             explanation=explanation_graph_2
         )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][1].name}")
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][2].name}")
 
     except Exception as e:
         logger.exception(f"Erreur dans la fonction principale : {e}")

@@ -245,4 +245,174 @@ def test_filters_univariate():
     assert chosen_filters == ["numeric_col"]
     assert range_filters == [(10, 50)]
 
+def test_graph_normal():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+        }
+    )
+    plot_type = "plot_type"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    x = df[axis_x].values
+
+    result = study.graph_normal(x)
+    assert result == True
+
+def test_graph_boxplot():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+        }
+    )
+    plot_type = "plot_type"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    x = df[axis_x].values
+
+    result = study.graph_boxplot(x)
+    assert result == True
+
+def test_density():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+        }
+    )
+    plot_type = "plot_type"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    x = df[axis_x].values
+
+    result = study.graph_density(x)
+    assert result == True
+
+def test_graph_histogram():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+        }
+    )
+    plot_type = "plot_type"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    x = df[axis_x].values
+
+    result = study.graph_histogram(x)
+    assert result == True
+
+def test_graph_bar_elts():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+        }
+    )
+    plot_type = "bar_ingredients"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    nb_elts_display = ["ingredient1", "ingredient2", "ingredient3"]
+    count_elts = [10, 20, 30]
+
+    result = study.graph_bar_elts(nb_elts_display, count_elts)
+    assert result == True
+
+def test_draw_graph():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+            "comment_count": [10, 20, 30, 40, 50],
+        }
+    )
+    plot_type = "boxplot"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    x = df[axis_x].values
+    y = None
+    recipes_id = df["recipe_id"].values
+
+    result = study._univariateStudy__draw_graph(x, y, recipes_id)
+
+    assert result == True
+
+def test_axis_graph():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+        }
+    )
+    plot_type = "plot_type"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    fig, ax = plt.subplots()
+    result = study.axis_graph(fig, ax)
+    assert result == True
+
+def test_display_graph():
+    # Créer un DataFrame d'exemple
+    df = pd.DataFrame(
+        {
+            "recipe_id": [1, 2, 3, 4, 5],
+            "axis_x": [1, 2, 3, 4, 5],
+            "comment_count": [10, 20, 30, 40, 50],
+        }
+    )
+    plot_type = "boxplot"
+    axis_x_list = ["axis_x"]
+    filters = ["axis_x"]
+    axis_x = "axis_x"
+    key = "test_key"
+
+    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+
+    result = study.display_graph()
+    assert result == True
 

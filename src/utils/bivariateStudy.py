@@ -125,7 +125,7 @@ class bivariateStudy:
             f'axis_x="{self.axis_x}", axis_y="{self.axis_y}", filters={self.chosen_filters}, plot_type="{self.plot_type}", \
                 log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, '
             + "default_values={"
-            + f'{self.axis_x}": {self.range_axis_x},\
+            + f'"{self.axis_x}": {self.range_axis_x}, \
                 "{self.axis_y}": {self.range_axis_y}, '
             + range_filters
             + f'"chosen_filters":{self.chosen_filters}'
@@ -133,6 +133,7 @@ class bivariateStudy:
         )
 
         st.write(output)
+        return True
 
     def __set_axis(self):
         axis_x = st.selectbox(
@@ -313,10 +314,9 @@ class bivariateStudy:
             fig.patch.set_alpha(0)
 
             st.pyplot(fig)
-            st.write(f"number of data points : {len(x)}")
+            st.write(f"number of recipes : {len(x)}")
 
         if "recipe_id" in self.dataframe.columns:
-            st.write(f"number of data point : {len(self.x)}")
             with st.expander(f"Dataframe best {self.axis_y}"):
                 display_df = self.dataframe[
                     self.dataframe["recipe_id"].isin(recipes_id)
@@ -325,6 +325,7 @@ class bivariateStudy:
                     :10
                 ]
                 st.dataframe(display_df, hide_index=True)
+        return True
 
     # Affichage pour les graphes d'intérêt à navigation limité
     def display_graph(self, free=False, explanation=None):
@@ -346,7 +347,7 @@ class bivariateStudy:
                     self.range_axis_x = self.__set_range_axis(axis_x)
                     self.range_axis_y = self.__set_range_axis(axis_y)
 
-                    if self.filters != None:
+                    if self.filters != None and len(self.filters) > 0:
                         st.write("extra_filters")
                         chosen_filters, range_filters = self.__filters(axis_x, axis_y)
                         self.chosen_filters = chosen_filters
@@ -509,3 +510,5 @@ class bivariateStudy:
 
                 if explanation != None:
                     st.write(explanation)
+
+        return True

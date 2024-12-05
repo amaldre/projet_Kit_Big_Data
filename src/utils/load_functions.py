@@ -48,18 +48,6 @@ def load_css(file_name):
         st.error(error_message)
 
 
-def transform_date_list(date_list):
-    """
-    Transform a list of dates in string format to a list of datetime objects
-
-
-    :return: The list of dates as datetime objects
-    :rtype: list
-    """
-    date_list = date_list.split(", ")[1:-2]
-    return [pd.to_datetime(date) for date in date_list]
-
-
 def load_df(file_path):
     """
     Load a csv file from a given path and return a pandas dataframe, change the columns to the correct type
@@ -148,6 +136,17 @@ def compute_trend(nb_recette_par_annee_df):
     :rtype: pd.DataFrame
     """
 
+    if nb_recette_par_annee_df.empty:
+        return pd.DataFrame()
+
+    if "submitted" in nb_recette_par_annee_df.columns:
+        nb_recette_par_annee_df["submitted"] = pd.to_datetime(
+            nb_recette_par_annee_df["submitted"], errors="coerce"
+        )
+
+    if nb_recette_par_annee_df["submitted"].isnull().all():
+        return pd.DataFrame()
+
     # nombre de recettes par années
     print(nb_recette_par_annee_df["submitted"].dtype)
     nb_recette_par_annee_df["year"] = nb_recette_par_annee_df["submitted"].dt.year
@@ -158,6 +157,10 @@ def compute_trend(nb_recette_par_annee_df):
     submissions_groupmonth = (
         nb_recette_par_annee_df["submitted_by_month"].value_counts().sort_index()
     )
+
+    if len(submissions_groupmonth) < 12:
+        return pd.DataFrame()
+
     decomposition = sm.tsa.seasonal_decompose(
         submissions_groupmonth, model="additive", period=12
     )

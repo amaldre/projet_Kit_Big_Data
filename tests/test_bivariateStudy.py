@@ -200,3 +200,76 @@ def test_filters():
 
     assert chosen_filters == ["filter_col1"]
     assert range_filters == [[10, 50]]
+
+def test_save_graph():
+    df = pd.DataFrame(
+        {
+            "col1": [1, 2, 3, 4, 5],
+            "col2": [5, 4, 3, 2, 1],
+            "recipe_id": [101, 102, 103, 104, 105]
+        }
+    )
+    plot_type = "scatter"
+    axis_x_list = ["col1", "col2"]
+    axis_y_list = ["col1", "col2"]
+    filters = ["col1", "col2"]
+    axis_x = "col1"
+    axis_y = "col2"
+    key = "test_key"
+
+    study = bivariateStudy(key, df, plot_type, axis_x_list, axis_y_list, filters, axis_x, axis_y)
+
+    with patch("streamlit.button") as mock_button:
+        mock_button.return_value = True
+        result = study.save_graph()
+
+    assert result == True
+
+def test_draw_plot():
+    df = pd.DataFrame(
+        {
+            "col1": [1, 2, 3, 4, 5],
+            "col2": [5, 4, 3, 2, 1],
+            "recipe_id": [101, 102, 103, 104, 105]
+        }
+    )
+    plot_type = "scatter"
+    axis_x_list = ["col1", "col2"]
+    axis_y_list = ["col1", "col2"]
+    filters = ["col1", "col2"]
+    axis_x = "col1"
+    axis_y = "col2"
+    key = "test_key"
+
+    study = bivariateStudy(key, df, plot_type, axis_x_list, axis_y_list, filters, axis_x, axis_y)
+
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([5, 4, 3, 2, 1])
+    recipes_id = np.array([101, 102, 103, 104, 105])
+
+    result = study._bivariateStudy__draw_plot(x, y, recipes_id)
+
+    assert result == True
+
+def test_display_graph():
+    df = pd.DataFrame(
+        {
+            "col1": [1, 2, 3, 4, 5],
+            "col2": [5, 4, 3, 2, 1],
+            "filter_col": [10, 20, 30, 40, 50],
+            "recipe_id": [101, 102, 103, 104, 105]
+        }
+    )
+    plot_type = "scatter"
+    axis_x_list = ["col1"]
+    axis_y_list = ["col2"]
+    filters = ["filter_col"]
+    axis_x = "col1"
+    axis_y = "col2"
+    key = "test_key"
+
+    study = bivariateStudy(key, df, plot_type, axis_x_list, axis_y_list, filters, axis_x, axis_y)
+
+    result = study.display_graph(free=True)
+
+    assert result == True
