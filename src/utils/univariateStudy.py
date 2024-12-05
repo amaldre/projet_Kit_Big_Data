@@ -289,9 +289,9 @@ class univariateStudy:
     def graph_histogram(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.histplot(data=x, ax=ax, bins=25)
-        self.axis_graph(fig, ax)
         fig.patch.set_alpha(0)
         ax.set_facecolor((0, 0, 0, 0))
+        self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
 
     def graph_bar_elts(self, nb_elts_display, count_elts):

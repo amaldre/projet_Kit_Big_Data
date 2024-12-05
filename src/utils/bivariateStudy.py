@@ -125,7 +125,7 @@ class bivariateStudy:
             f'axis_x="{self.axis_x}", axis_y="{self.axis_y}", filters={self.chosen_filters}, plot_type="{self.plot_type}", \
                 log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, '
             + "default_values={"
-            + f'{self.axis_x}": {self.range_axis_x},\
+            + f'"{self.axis_x}": {self.range_axis_x}, \
                 "{self.axis_y}": {self.range_axis_y}, '
             + range_filters
             + f'"chosen_filters":{self.chosen_filters}'
@@ -313,10 +313,9 @@ class bivariateStudy:
             fig.patch.set_alpha(0)
 
             st.pyplot(fig)
-            st.write(f"number of data points : {len(x)}")
+            st.write(f"number of recipes : {len(x)}")
 
         if "recipe_id" in self.dataframe.columns:
-            st.write(f"number of data point : {len(self.x)}")
             with st.expander(f"Dataframe best {self.axis_y}"):
                 display_df = self.dataframe[
                     self.dataframe["recipe_id"].isin(recipes_id)
