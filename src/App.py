@@ -1,3 +1,7 @@
+"""
+Ce fichier sert  à configurer la page d'accueil de l'application Streamlit.
+"""
+
 import os
 import streamlit as st
 import pandas as pd
