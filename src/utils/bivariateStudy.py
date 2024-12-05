@@ -273,32 +273,45 @@ class bivariateStudy:
     def __draw_plot(self, x, y, recipes_id):
         col = st.columns([1, 3, 1])
         with col[1]:
-            # Create a figure
-            fig = plt.figure(figsize=(10, 6))
-            plt.title(self.name)
+
+            fig, ax = plt.subplots(figsize=(10, 6))
+
+            ax.set_title(self.name)
             if self.log_axis_x:
-                plt.xlabel("log " + self.axis_x)
+                ax.set_xlabel("log " + self.axis_x)
                 x = np.log(x)
             else:
-                plt.xlabel(self.axis_x)
+                ax.set_xlabel(self.axis_x)
             if self.log_axis_y:
-                plt.ylabel("log " + self.axis_y)
+                ax.set_ylabel("log " + self.axis_y)
                 y = np.log(y)
             else:
-                plt.ylabel(self.axis_y)
+                ax.set_ylabel(self.axis_y)
+
             if self.plot_type == "scatter":
-                plt.scatter(x, y, s=1)
+                ax.scatter(x, y, s=1)
             elif self.plot_type == "plot":
-                plt.plot(x, y)
+                ax.plot(x, y)
             elif self.plot_type == "density map":
-                print(type(x[0]))
                 if self.axis_x == "submitted":
                     x = x.astype(np.int64) // 10**9
-                    plt.xticks(ticks=np.linspace(min(x), max(x), 5),
-                    labels=pd.to_datetime(np.linspace(min(x), max(x), 5), unit='s').strftime('%Y-%m-%d'))
-                hb = plt.hexbin(x, y, gridsize=300, cmap=leS, mincnt=1, norm=LogNorm())
-                plt.colorbar(hb, shrink=1, aspect=40, pad=0.02)
-            plt.grid(True, which='both', linestyle='-', linewidth=0.7, alpha=0.7)
+                    ax.set_xticks(np.linspace(min(x), max(x), 5))
+                    ax.set_xticklabels(
+                        pd.to_datetime(
+                            np.linspace(min(x), max(x), 5), unit="s"
+                        ).strftime("%Y-%m-%d")
+                    )
+                hb = ax.hexbin(
+                    x, y, gridsize=300, cmap="viridis", mincnt=1, norm=LogNorm()
+                )
+                fig.colorbar(hb, shrink=1, aspect=40, pad=0.02)
+
+            ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
+
+            # Fond transparent
+            ax.set_facecolor((0, 0, 0, 0))
+            fig.patch.set_alpha(0)
+
             st.pyplot(fig)
             st.write(f"number of data points : {len(x)}")
 
@@ -493,5 +506,6 @@ class bivariateStudy:
                     self.first_draw = False
 
                 self.__draw_plot(self.x, self.y, self.recipes_id)
+
                 if explanation != None:
                     st.write(explanation)

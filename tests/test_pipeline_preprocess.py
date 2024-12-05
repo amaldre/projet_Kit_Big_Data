@@ -365,6 +365,7 @@ def test_save_data(tmp_path):
 
 
 from scripts.pipeline_preprocess import save_data_json
+from scripts.pipeline_preprocess import explicit_nutriments
 
 
 def test_save_data_json(tmp_path):
@@ -376,3 +377,37 @@ def test_save_data_json(tmp_path):
 
     result_df = pd.read_json(test_json_path, lines=True)
     pd.testing.assert_frame_equal(result_df, test_df)
+    def test_explicit_nutriments_valid():
+        data = pd.DataFrame({
+            "nutrition": ["[100, 10, 5, 200, 15, 3, 50]", "[200, 20, 10, 400, 30, 6, 100]"]
+        })
+        result = explicit_nutriments(data.copy())
+        
+        expected = pd.DataFrame({
+            "nutrition": ["[100, 10, 5, 200, 15, 3, 50]", "[200, 20, 10, 400, 30, 6, 100]"],
+            "calories": ["100", "200"],
+            "total fat (%)": ["10", "20"],
+            "sugar (%)": ["5", "10"],
+            "sodium (%)": ["200", "400"],
+            "protein (%)": ["15", "30"],
+            "saturated fat (%)": ["3", "6"],
+            "carbohydrates (%)": ["50", "100"]
+        })
+        
+        pd.testing.assert_frame_equal(result, expected)
+
+    def test_explicit_nutriments_missing_column():
+        data = pd.DataFrame({
+            "other_column": ["value1", "value2"]
+        })
+        
+        with pytest.raises(ValueError, match="The 'nutrition' column is missing from the data."):
+            explicit_nutriments(data)
+
+    def test_explicit_nutriments_invalid_format():
+        data = pd.DataFrame({
+            "nutrition": ["invalid_format"]
+        })
+        
+        with pytest.raises(ValueError, match="Error processing 'nutrition' column:"):
+            explicit_nutriments(data)
