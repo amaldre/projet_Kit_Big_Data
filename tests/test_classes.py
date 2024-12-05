@@ -98,7 +98,7 @@ def univariate_study_instance(sample_dataframe):
         plot_type="normal",
         axis_x_list=["axis_x", "filter1", "datetime_column", "ingredients_replaced"],
         filters=["filter1", "filter2"],
-        default_values={"axis_x": [10, 50]},
+        default_values={"axis_x": [10, 50], "chosen_filters": []},
     )
 
 def test_initialization(univariate_study_instance):
@@ -140,7 +140,7 @@ def test_get_data_points_ingredients(univariate_study_instance):
         [],
         [],
     )
-    assert len(elements) == 5
+    assert len(elements) == 3
     assert isinstance(elements[0], str)
 
 def test_graph_methods(univariate_study_instance):
@@ -231,6 +231,7 @@ def test_display_graph(mock_empty, mock_button, mock_multiselect, mock_slider, m
         dataframe=data,
         plot_type="normal",
         axis_x_list=["axis1", "axis2"],
+        axis_x="axis1",
         filters=["axis1", "axis2"],
         default_values={"axis1": [1, 5], "chosen_filters": ["axis2"], "axis2": [10, 50]},
     )
