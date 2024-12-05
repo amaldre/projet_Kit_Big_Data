@@ -8,7 +8,7 @@ from utils.bivariateStudy import bivariateStudy
 from utils.univariateStudy import univariateStudy
 import pandas as pd
 import ast
-from utils.load_csv import initialize_recipes_df, load_css
+from utils.load_functions import initialize_recipes_df, load_css
 import logging
 import os
 

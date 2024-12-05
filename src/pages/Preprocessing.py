@@ -7,7 +7,7 @@ import nltk
 import re
 from utils.dbapi import DBapi
 import logging
-from utils.load_csv import load_data, load_css
+from utils.load_functions import load_data, load_css
 import html
 
 

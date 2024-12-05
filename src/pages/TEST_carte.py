@@ -8,7 +8,7 @@ from streamlit_autorefresh import st_autorefresh
 import altair as alt
 import logging
 import os
-from utils.load_csv import load_css
+from utils.load_functions import load_css
 
 logger = logging.getLogger(os.path.basename(__file__))
 

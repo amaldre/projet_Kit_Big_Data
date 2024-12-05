@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import logging
 from logging_config import setup_logging
-from utils.load_csv import initialize_recipes_df, load_css
+from utils.load_functions import initialize_recipes_df, load_css
 
 st.set_page_config(layout="wide")
 
