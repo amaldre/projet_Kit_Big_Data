@@ -3,7 +3,7 @@ import logging
 import streamlit as st
 from utils.bivariateStudy import bivariateStudy
 from pandas import Timestamp
-from utils.load_csv import compute_trend, load_df, initialize_recipes_df
+from utils.load_csv import compute_trend, load_df, initialize_recipes_df, load_css
 
 st.set_page_config(layout="wide")
 
@@ -24,9 +24,6 @@ def load_css(file_name):
         st.error("Une erreur est survenue lors du chargement du style.")
 
 
-
-
-
 if "recipes_df" not in st.session_state:
     st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
 
@@ -36,13 +33,12 @@ if "first_load" not in st.session_state:
 if "locked_graphs" not in st.session_state:
     st.session_state["locked_graphs"] = []
 
+
+
 def main():
     """Fonction principale de l'application Streamlit."""
     st.title("Analyse des data")
     load_css("style.css")
-    
-
-    
 
     try:
         if st.session_state["first_load"]:
@@ -87,10 +83,10 @@ def main():
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
 
-
         st.header("1️⃣ Analyse de la fréquentation du site")
 
-        explanation_graph_1="""
+        explanation_graph_1 = """
+        explanation_graph_1 = """
         **Observations :**
         - Une forte croissance des contributions est visible entre 2000 et 2008, culminant à une activité maximale autour de 2008.
         - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro vers 2016-2018.
@@ -101,16 +97,24 @@ def main():
           2. **Fatigue des contributeurs** : Les créateurs pourraient avoir perdu intérêt ou ne pas être suffisamment motivés pour continuer à enrichir la plateforme.
           3. **Manque d'innovation** : Si le site n'a pas évolué pour répondre aux nouvelles attentes des utilisateurs (fonctionnalités modernes, gamification, etc.), il aurait pu perdre de l'engagement.
         """
-        st.session_state["locked_graphs"][0].display_graph(explanation=explanation_graph_1)
+        st.session_state["locked_graphs"][0].display_graph(
+            explanation=explanation_graph_1
+        )
+        st.session_state["locked_graphs"][0].display_graph(
+            explanation=explanation_graph_1
+        )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][0].name}")
 
-        st.header("2️⃣ Définition d'une recette de populaire") 
+        st.header("2️⃣ Définition d'une recette de populaire")
+        st.header("2️⃣ Définition d'une recette de populaire")
 
         
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
-        
-        explanation_graph_2="""
+
+        explanation_graph_2 = """
+
+        explanation_graph_2 = """
         **Observations :**
         - La majorité des recettes populaires sont des recettes courtes, avec une durée de préparation inférieure à 100 minutes.
         - Les recettes populaires ont tendance à avoir un nombre de commentaires plus élevé, avec une concentration autour de 1000 commentaires.
@@ -119,8 +123,14 @@ def main():
         - Les recettes courtes pourraient être **plus populaires** car elles sont **plus faciles et rapides à réaliser**.
         - Les recettes populaires génèrent plus de commentaires, ce qui peut indiquer un **engagement plus fort de la part des utilisateurs**.
         """
-    
-        st.session_state["locked_graphs"][1].display_graph(explanation=explanation_graph_2)
+
+        st.session_state["locked_graphs"][1].display_graph(
+            explanation=explanation_graph_2
+        )
+
+        st.session_state["locked_graphs"][1].display_graph(
+            explanation=explanation_graph_2
+        )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][1].name}")
 
     except Exception as e:

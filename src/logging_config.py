@@ -4,6 +4,13 @@ from logging.handlers import RotatingFileHandler
 
 
 def setup_logging(log_level=logging.INFO):
+    """
+    Setup logging
+
+    :param log_level: defaults to logging.INFO
+    :type log_level: optional
+    """
+
     logging_config = {
         "version": 1,
         "disable_existing_loggers": False,
