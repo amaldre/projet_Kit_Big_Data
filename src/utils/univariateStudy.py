@@ -69,7 +69,7 @@ class univariateStudy:
                 )
 
         output = (
-            f'axis_x="{self.axis_x}" , filters={self.chosen_filters}, plot_type="{self.plot_type}", \
+            f'axis_x="{self.axis_x}", plot_type="{self.plot_type}", \
                 log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, '
             + "default_values={"
             + f'"{self.axis_x}": {self.range_axis_x}, '
@@ -341,158 +341,160 @@ class univariateStudy:
                 with graph_container.expander("**filters**", expanded=free):
                     if free == True:
                         axis_x = self.__set_axis()
+                    else:
+                        axis_x = self.axis_x
                     self.range_axis_x = self.__set_range_axis(axis_x)
-                    if self.filters != None:
+                    if self.filters != None and len(self.filters) > 0:
                         st.write("extra_filters")
                         chosen_filters, range_filters = self.__filters(axis_x)
                         self.chosen_filters = chosen_filters
                         self.range_filters = range_filters
 
-                with st.form(self.key, border=False):
-                    pos = 0
-                    col = st.columns(2)
-                    with col[pos]:
-                        if np.issubdtype(self.dataframe[axis_x].dtype, np.number):
-                            self.log_axis_x = st.checkbox(
-                                "log axis_x",
-                                key=("log axis_x" + self.key + str(self.iteration)),
+                    with st.form(self.key, border=False):
+                        pos = 0
+                        col = st.columns(2)
+                        with col[pos]:
+                            if np.issubdtype(self.dataframe[axis_x].dtype, np.number):
+                                self.log_axis_x = st.checkbox(
+                                    "log axis_x",
+                                    key=("log axis_x" + self.key + str(self.iteration)),
+                                    value=self.log_axis_x,
+                                )
+                                pos += 1
+                            else:
+                                self.log_axis_x = False
+                        with col[pos]:
+                            self.log_axis_y = st.checkbox(
+                                "log axis_y",
+                                key=("log axis_y" + self.key + str(self.iteration)),
                                 value=self.log_axis_x,
                             )
-                            pos += 1
-                        else:
-                            self.log_axis_x = False
-                    with col[pos]:
-                        self.log_axis_y = st.checkbox(
-                            "log axis_y",
-                            key=("log axis_y" + self.key + str(self.iteration)),
-                            value=self.log_axis_x,
-                        )
-                    if axis_x == "ingredients_replaced":
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            if st.form_submit_button(label="Draw Bar"):
-                                self.axis_x = axis_x
-                                self.x, self.y, self.recipes_id = (
-                                    self.get_data_points_ingredients(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
-                                    )
-                                )
-                                self.plot_type = "bar_ingredients"
-
-                        with col2:
-                            if st.form_submit_button(label="Delete graph"):
-                                self.delete = True
-                                st.rerun()
-
-                    elif axis_x == "techniques":
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            if st.form_submit_button(label="Draw Bar"):
-                                self.axis_x = axis_x
-                                self.x, self.y, self.recipes_id = (
-                                    self.get_data_points_ingredients(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
-                                    )
-                                )
-                                self.plot_type = "bar_techniques"
-
-                        with col2:
-                            if st.form_submit_button(label="Delete graph"):
-                                self.delete = True
-                                st.rerun()
-
-                    else:
-                        if free == True:
-                            col1, col2, col3 = st.columns(3)
-
+                        if axis_x == "ingredients_replaced":
+                            col1, col2 = st.columns(2)
                             with col1:
-                                if st.form_submit_button(label="Draw Box Plot"):
+                                if st.form_submit_button(label="Draw Bar"):
                                     self.axis_x = axis_x
-                                    self.x, self.recipes_id = self.get_data_points(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
+                                    self.x, self.y, self.recipes_id = (
+                                        self.get_data_points_ingredients(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
                                     )
-                                    self.plot_type = "boxplot"
-
-                            with col2:
-                                if st.form_submit_button(label="Draw Density Plot"):
-                                    self.axis_x = axis_x
-                                    self.x, self.recipes_id = self.get_data_points(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
-                                    )
-                                    self.plot_type = "density"
-
-                            with col3:
-                                if st.form_submit_button(label="Draw Histogram"):
-                                    self.axis_x = axis_x
-                                    self.x, self.recipes_id = self.get_data_points(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
-                                    )
-                                    self.plot_type = "histogram"
-
-                            col1, col2, _ = st.columns(3)
-                            with col1:
-                                if st.form_submit_button(label="Save graph"):
-                                    self.save_graph()
+                                    self.plot_type = "bar_ingredients"
 
                             with col2:
                                 if st.form_submit_button(label="Delete graph"):
                                     self.delete = True
-                                    print("delete", self.delete)
+                                    st.rerun()
+
+                        elif axis_x == "techniques":
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                if st.form_submit_button(label="Draw Bar"):
+                                    self.axis_x = axis_x
+                                    self.x, self.y, self.recipes_id = (
+                                        self.get_data_points_ingredients(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
+                                    )
+                                    self.plot_type = "bar_techniques"
+
+                            with col2:
+                                if st.form_submit_button(label="Delete graph"):
+                                    self.delete = True
                                     st.rerun()
 
                         else:
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                if st.form_submit_button(label="Draw graph"):
-                                    self.x, self.recipes_id = self.get_data_points(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.range_axis_x,
-                                        chosen_filters,
-                                        range_filters,
-                                    )
+                            if free == True:
+                                col1, col2, col3 = st.columns(3)
 
-                            with col2:
-                                if st.form_submit_button(label="Reset graph"):
-                                    self.axis_x = axis_x
-                                    self.default_values = self.default_values_save
-                                    print(self.default_values)
-                                    range_filters_save = [
-                                        self.default_values_save[filter]
-                                        for filter in self.default_values_save[
-                                            "chosen_filters"
+                                with col1:
+                                    if st.form_submit_button(label="Draw Box Plot"):
+                                        self.axis_x = axis_x
+                                        self.x, self.recipes_id = self.get_data_points(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
+                                        self.plot_type = "boxplot"
+
+                                with col2:
+                                    if st.form_submit_button(label="Draw Density Plot"):
+                                        self.axis_x = axis_x
+                                        self.x, self.recipes_id = self.get_data_points(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
+                                        self.plot_type = "density"
+
+                                with col3:
+                                    if st.form_submit_button(label="Draw Histogram"):
+                                        self.axis_x = axis_x
+                                        self.x, self.recipes_id = self.get_data_points(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
+                                        self.plot_type = "histogram"
+
+                                col1, col2, _ = st.columns(3)
+                                with col1:
+                                    if st.form_submit_button(label="Save graph"):
+                                        self.save_graph()
+
+                                with col2:
+                                    if st.form_submit_button(label="Delete graph"):
+                                        self.delete = True
+                                        print("delete", self.delete)
+                                        st.rerun()
+
+                            else:
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    if st.form_submit_button(label="Draw graph"):
+                                        self.x, self.recipes_id = self.get_data_points(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
+
+                                with col2:
+                                    if st.form_submit_button(label="Reset graph"):
+                                        self.axis_x = axis_x
+                                        self.default_values = self.default_values_save
+                                        print(self.default_values)
+                                        range_filters_save = [
+                                            self.default_values_save[filter]
+                                            for filter in self.default_values_save[
+                                                "chosen_filters"
+                                            ]
                                         ]
-                                    ]
-                                    self.x, self.recipes_id = self.get_data_points(
-                                        self.dataframe,
-                                        self.axis_x,
-                                        self.default_values_save[self.axis_x],
-                                        self.default_values_save["chosen_filters"],
-                                        range_filters_save,
-                                    )
-                                    self.iteration += 1
-                                    graph_container.empty()
-                                    st.rerun()
+                                        self.x, self.recipes_id = self.get_data_points(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.default_values_save[self.axis_x],
+                                            self.default_values_save["chosen_filters"],
+                                            range_filters_save,
+                                        )
+                                        self.iteration += 1
+                                        graph_container.empty()
+                                        st.rerun()
 
                 if self.first_draw == True:
                     self.axis_x = axis_x

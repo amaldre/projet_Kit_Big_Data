@@ -333,7 +333,7 @@ class bivariateStudy:
                     self.range_axis_x = self.__set_range_axis(axis_x)
                     self.range_axis_y = self.__set_range_axis(axis_y)
 
-                    if self.filters != None:
+                    if self.filters != None and len(self.filters) > 0:
                         st.write("extra_filters")
                         chosen_filters, range_filters = self.__filters(axis_x, axis_y)
                         self.chosen_filters = chosen_filters
