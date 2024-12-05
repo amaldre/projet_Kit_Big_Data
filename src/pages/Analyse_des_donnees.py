@@ -10,6 +10,20 @@ st.set_page_config(layout="wide")
 logger = logging.getLogger(os.path.basename(__file__))
 
 
+def load_css(file_name):
+    """Charge le fichier CSS pour la mise en page Streamlit."""
+    try:
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+            logger.info(f"CSS charge depuis {file_name}.")
+    except FileNotFoundError as e:
+        logger.error(f"Le fichier CSS {file_name} est introuvable : {e}")
+        st.error("Le fichier de style CSS est introuvable.")
+    except Exception as e:
+        logger.exception(f"Erreur lors du chargement du CSS : {e}")
+        st.error("Une erreur est survenue lors du chargement du style.")
+
+
 if "recipes_df" not in st.session_state:
     st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
 
@@ -18,6 +32,7 @@ if "first_load" not in st.session_state:
 
 if "locked_graphs" not in st.session_state:
     st.session_state["locked_graphs"] = []
+
 
 
 def main():
@@ -71,6 +86,7 @@ def main():
         st.header("1️⃣ Analyse de la fréquentation du site")
 
         explanation_graph_1 = """
+        explanation_graph_1 = """
         **Observations :**
         - Une forte croissance des contributions est visible entre 2000 et 2008, culminant à une activité maximale autour de 2008.
         - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro vers 2016-2018.
@@ -84,11 +100,17 @@ def main():
         st.session_state["locked_graphs"][0].display_graph(
             explanation=explanation_graph_1
         )
+        st.session_state["locked_graphs"][0].display_graph(
+            explanation=explanation_graph_1
+        )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][0].name}")
 
         st.header("2️⃣ Définition d'une recette de populaire")
+        st.header("2️⃣ Définition d'une recette de populaire")
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
+
+        explanation_graph_2 = """
 
         explanation_graph_2 = """
         **Observations :**
@@ -99,6 +121,10 @@ def main():
         - Les recettes courtes pourraient être **plus populaires** car elles sont **plus faciles et rapides à réaliser**.
         - Les recettes populaires génèrent plus de commentaires, ce qui peut indiquer un **engagement plus fort de la part des utilisateurs**.
         """
+
+        st.session_state["locked_graphs"][1].display_graph(
+            explanation=explanation_graph_2
+        )
 
         st.session_state["locked_graphs"][1].display_graph(
             explanation=explanation_graph_2
