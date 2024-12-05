@@ -20,6 +20,14 @@ st.title("Carte Data Food.com au cours des années")
 
 @st.cache_data
 def load_geojson(path):
+    """
+    Load a GeoJSON file
+
+    :param path: path of the GeoJSON file
+    :type path: str
+    :return: GeoDataFrame containing the GeoJSON data
+    :rtype: gpd.GeoDataFrame
+    """
     try:
         gdf = gpd.read_file(path)
         gdf["geometry"] = gdf["geometry"].simplify(0.2, preserve_topology=True)
@@ -33,6 +41,14 @@ def load_geojson(path):
 
 @st.cache_data
 def load_recipes_data(path):
+    """
+    Loads the submitted recursees and returns a dataframe
+
+    :param path: path to the csv file
+    :type path: str
+    :return: DataFrame containing the recipes data
+    :rtype: pd.DataFrame
+    """
     try:
         df = pd.read_csv(path)
         df["submitted"] = pd.to_datetime(df["submitted"], errors="coerce")
@@ -47,6 +63,16 @@ def load_recipes_data(path):
 
 @st.cache_data
 def generate_random_points(recettes_par_années, _gdf):
+    """
+    Generate random points within the US states geometry based on the number of recipes submitted each year
+
+    :param recettes_par_ann: DataFrame containing the number of recipes submitted each year
+    :type recettes_par_ann: pd.DataFrame
+    :param _gdf: GeoDataFrame containing the US states geometry
+    :type _gdf: gpd.GeoDataFrame
+    :return: DataFrame containing the random points
+    :rtype: pd.DataFrame
+    """
     try:
         us_geometry = _gdf.union_all()
         data_points = []
@@ -224,6 +250,14 @@ st.altair_chart(chart, use_container_width=True)
 
 
 def create_scrolling_banner(texte: str):
+    """
+    Create a scrolling banner with the specified text
+
+    :param texte: text to display in the scrolling banner
+    :type texte: str
+    :return: HTML code for the scrolling banner
+    :rtype: str
+    """
     try:
         scrolling_banner = (
             """
