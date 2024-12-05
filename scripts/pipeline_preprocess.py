@@ -20,8 +20,8 @@ def load_nltk_resources():
 PATH_DATA = "../data/"
 RAW_RECIPE = "RAW_recipes.csv"
 RAW_INTERACTIONS = "RAW_interactions.csv"
-PROCESSED_DATA = "processed_data.csv"
-PROCESSED_DATA_JSON = "processed_data.json"
+PROCESSED_DATA = "clean_recipe_df.csv"
+PROCESSED_DATA_JSON = "clean_recipe_df.json"
 PP_RECIPES = "PP_recipes.csv"
 
 
@@ -176,7 +176,7 @@ def delete_outliers_calories(data: pd):
     :return: dataframe des recettes sans les recettes avec plus de 300 000 calories
     :rtype: pd.dataframe
     """
-    data = data[data["calories"] > 300000]
+    data = data[data["calories"] < 300000]
     return data
 
 
@@ -396,6 +396,102 @@ def save_data_json(data: pd, path: str):
     data.to_json(path, orient="records", lines=True)
 
 
+def change_techniques_to_words(data: pd):
+    """Change the techniques list of bool to words
+
+    :param data: The data in a pandas dataframe
+    :type data: pd
+    :return: The data in a pandas dataframe with the techniques as words
+    :rtype: pd.dataframe
+    """
+    TECHNIQUES_LIST = [
+        "bake",
+        "barbecue",
+        "blanch",
+        "blend",
+        "boil",
+        "braise",
+        "brine",
+        "broil",
+        "caramelize",
+        "combine",
+        "crock pot",
+        "crush",
+        "deglaze",
+        "devein",
+        "dice",
+        "distill",
+        "drain",
+        "emulsify",
+        "ferment",
+        "freez",
+        "fry",
+        "grate",
+        "griddle",
+        "grill",
+        "knead",
+        "leaven",
+        "marinate",
+        "mash",
+        "melt",
+        "microwave",
+        "parboil",
+        "pickle",
+        "poach",
+        "pour",
+        "pressure cook",
+        "puree",
+        "refrigerat",
+        "roast",
+        "saute",
+        "scald",
+        "scramble",
+        "shred",
+        "simmer",
+        "skillet",
+        "slow cook",
+        "smoke",
+        "smooth",
+        "soak",
+        "sous-vide",
+        "steam",
+        "stew",
+        "strain",
+        "tenderize",
+        "thicken",
+        "toast",
+        "toss",
+        "whip",
+        "whisk",
+    ]
+    data["techniques"] = data["techniques"].apply(
+        lambda x: [tech for tech, val in zip(TECHNIQUES_LIST, x) if val == 1]
+    )
+    return data
+
+
+def explicit_nutriments(data):
+    if "nutrition" not in data.columns:
+        raise ValueError("The 'nutrition' column is missing from the data.")
+
+    try:
+        data[
+            [
+                "calories",
+                "total fat (%)",
+                "sugar (%)",
+                "sodium (%)",
+                "protein (%)",
+                "saturated fat (%)",
+                "carbohydrates (%)",
+            ]
+        ] = pd.DataFrame(data["nutrition"].to_list(), index=data.index)
+    except Exception as e:
+        raise ValueError(f"Error processing 'nutrition' column: {e}")
+
+    return data
+
+
 def preprocess():
     """
     Preprocess the data by loading, cleaning, and saving it
@@ -429,7 +525,6 @@ def preprocess():
 
     df = delete_outliers_minutes(df)
     df = delete_outliers_steps(df)
-    df = delete_outliers_calories(df)
 
     stopwords = get_stopwords()
     df = clean_colonne(df, "description", stopwords)
@@ -437,20 +532,39 @@ def preprocess():
 
     df = processed_ingredient(df)
 
+    df = change_techniques_to_words(df)
+
+    df = explicit_nutriments(df)
+
     # supression des colonnes inutiles
     unwated_columns = [
-        "i",
-        "name_tokens",
         "ingredient_tokens",
-        "steps_tokens",
-        "techniques",
-        "ingredient_ids",
-        "tags",
+        "ingredients_processed",
+        "ingredients",
+        "cleaned_name",
+        "description",
+        "cleaned_description",
         "nutrition",
         "steps",
-        "ingredients",
+        "n_ingredients",
+        "i",
+        "name_tokens",
+        "steps_tokens",
+        "ingredient_ids",
+        "tags",
+        "review",
+        "total fat (%)",
+        "sugar (%)",
+        "sodium (%)",
+        "protein (%)",
+        "saturated fat (%)",
+        "carbohydrates (%)",
+        "calorie_level",
+        "rating",
     ]
     df = delete_unwanted_columns(df, unwated_columns)
+
+    df = delete_outliers_calories(df)
 
     save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))
