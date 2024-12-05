@@ -98,7 +98,7 @@ class bivariateStudy:
         self.range_filters = None
         self.iteration = 1
         self.log_axis_x = log_axis_x
-        self.log_axis_x = log_axis_y
+        self.log_axis_y = log_axis_y
 
         # Log l'initialisation de l'objet
         logger.info("Instance de Study creee avec key='%s'", self.key)
@@ -122,7 +122,8 @@ class bivariateStudy:
                 )
 
         output = (
-            f'axis_x="{self.axis_x}", axis_y="{self.axis_y}", filters={self.chosen_filters}, plot_type="{self.plot_type}", '
+            f'axis_x="{self.axis_x}", axis_y="{self.axis_y}", filters={self.chosen_filters}, plot_type="{self.plot_type}", \
+                log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, '
             + "default_values={"
             + f'{self.axis_x}": {self.range_axis_x},\
                 "{self.axis_y}": {self.range_axis_y}, '
@@ -290,8 +291,14 @@ class bivariateStudy:
             elif self.plot_type == "plot":
                 plt.plot(x, y)
             elif self.plot_type == "density map":
-                hb = plt.hexbin(x, y, gridsize=100, cmap=leS, mincnt=1, norm=LogNorm())
+                print(type(x[0]))
+                if self.axis_x == "submitted":
+                    x = x.astype(np.int64) // 10**9
+                    plt.xticks(ticks=np.linspace(min(x), max(x), 5),
+                    labels=pd.to_datetime(np.linspace(min(x), max(x), 5), unit='s').strftime('%Y-%m-%d'))
+                hb = plt.hexbin(x, y, gridsize=300, cmap=leS, mincnt=1, norm=LogNorm())
                 plt.colorbar(hb, shrink=1, aspect=40, pad=0.02)
+            plt.grid(True, which='both', linestyle='-', linewidth=0.7, alpha=0.7)
             st.pyplot(fig)
             st.write(f"number of data points : {len(x)}")
 
@@ -343,14 +350,17 @@ class bivariateStudy:
                                     value=self.log_axis_x,
                                 )
                                 pos += 1
+                            else:
+                                self.log_axis_x = False
                         with col[pos]:
                             if np.issubdtype(self.dataframe[axis_y].dtype, np.number):
                                 self.log_axis_y = st.checkbox(
                                     "log axis_y",
                                     key=("log axis_y" + self.key + str(self.iteration)),
-                                    value=self.log_axis_x,
+                                    value=self.log_axis_y,
                                 )
-
+                            else:
+                                self.log_axis_y = False
                         if free == False:
                             col = st.columns(3)
                             with col[0]:

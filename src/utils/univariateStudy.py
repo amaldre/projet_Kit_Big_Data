@@ -58,7 +58,8 @@ class univariateStudy:
                 )
 
         output = (
-            f'axis_x="{self.axis_x}" , filters={self.chosen_filters}, plot_type="{self.plot_type}" , '
+            f'axis_x="{self.axis_x}" , filters={self.chosen_filters}, plot_type="{self.plot_type}", \
+                log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, '
             + "default_values={"
             + f'"{self.axis_x}": {self.range_axis_x}, '
             + range_filters
@@ -270,7 +271,7 @@ class univariateStudy:
 
     def graph_histogram(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.histplot(data=x, ax=ax)
+        sns.histplot(data=x, ax=ax, bins=25)
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
 
@@ -312,6 +313,7 @@ class univariateStudy:
             ax.set_yscale('log')
         else:
             ax.set_ylabel("number of recipes")
+        ax.grid(True, which='both', linestyle='-', linewidth=0.7, alpha=0.7)
         st.pyplot(fig)
 
     def display_graph(self, free=False, explanation=None):
@@ -340,6 +342,8 @@ class univariateStudy:
                         if np.issubdtype(self.dataframe[axis_x].dtype, np.number):
                             self.log_axis_x = st.checkbox("log axis_x", key=("log axis_x"+self.key+str(self.iteration)), value = self.log_axis_x)
                             pos+=1
+                        else:
+                            self.log_axis_x = False
                     with col[pos]:
                         self.log_axis_y = st.checkbox("log axis_y", key=("log axis_y"+self.key+str(self.iteration)), value = self.log_axis_x)
                     if axis_x == 'ingredients_replaced':
