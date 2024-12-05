@@ -133,6 +133,7 @@ class bivariateStudy:
         )
 
         st.write(output)
+        return True
 
     def __set_axis(self):
         axis_x = st.selectbox(
@@ -324,6 +325,7 @@ class bivariateStudy:
                     :10
                 ]
                 st.dataframe(display_df, hide_index=True)
+        return True
 
     # Affichage pour les graphes d'intérêt à navigation limité
     def display_graph(self, free=False, explanation=None):
@@ -508,3 +510,5 @@ class bivariateStudy:
 
                 if explanation != None:
                     st.write(explanation)
+
+        return True
