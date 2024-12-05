@@ -4,7 +4,7 @@ import streamlit as st
 from utils.bivariateStudy import bivariateStudy
 from utils.univariateStudy import univariateStudy
 from pandas import Timestamp
-from utils.load_csv import compute_trend, load_df, initialize_recipes_df, load_css
+from utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
 
 st.set_page_config(layout="wide")
 

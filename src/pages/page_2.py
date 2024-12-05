@@ -8,7 +8,7 @@ from collections import Counter
 import logging
 from utils.univariateStudy import univariateStudy
 from utils.classes import AdvancedStudy
-from utils.load_csv import load_df
+from utils.load_functions import load_df
 import os
 
 logger = logging.getLogger(os.path.basename(__file__))

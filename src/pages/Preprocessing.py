@@ -7,7 +7,9 @@ import nltk
 import re
 from utils.dbapi import DBapi
 import logging
-from utils.load_csv import load_data, load_css
+from utils.load_functions import load_data, load_css
+import html
+
 
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -67,6 +69,21 @@ if not raw_interactions.empty:
 else:
     st.warning("Fichier RAW_interactions_sample.csv introuvable.")
     logger.warning("RAW_interactions_sample.csv introuvable.")
+
+with open("../data/Food_data_drawio.html", "r", encoding="utf-8") as f:
+    html_string = f.read()
+
+# Échapper les guillemets du contenu HTML
+
+escaped_html = html.escape(html_string)
+
+# Créer le code HTML de l'iframe avec des styles pour les bords arrondis
+iframe_code = f"""
+    <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
+"""
+
+st.components.v1.html(iframe_code, height=820)
+
 
 # --- Transformation des Données ---
 st.header(" Transformation des Données")

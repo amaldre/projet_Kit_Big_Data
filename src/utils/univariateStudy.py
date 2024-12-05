@@ -264,19 +264,25 @@ class univariateStudy:
     # Pour les differents types de graphes
     def graph_normal(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
-        ax.plot(x, range(len(x)), marker="o", markersize=0.5)
+        ax.plot(x, range(len(x)), marker="o", linewidth=0.7, markersize=0.5)
+        fig.patch.set_alpha(0)
+        ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes : {len(x)}")
 
     def graph_boxplot(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.boxplot(data=x, ax=ax, orient="h")
+        fig.patch.set_alpha(0)
+        ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
 
     def graph_density(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.kdeplot(data=x, ax=ax)
+        sns.kdeplot(data=x, ax=ax, linewidth=2)
+        fig.patch.set_alpha(0)
+        ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {len(x)}")
 
@@ -284,11 +290,15 @@ class univariateStudy:
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.histplot(data=x, ax=ax, bins=25)
         self.axis_graph(fig, ax)
+        fig.patch.set_alpha(0)
+        ax.set_facecolor((0, 0, 0, 0))
         st.write(f"number of recipes in the graph: {len(x)}")
 
     def graph_bar_elts(self, nb_elts_display, count_elts):
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.barplot(x=nb_elts_display, y=count_elts)
+        fig.patch.set_alpha(0)
+        ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
         st.write(f"number of recipes in the graph: {sum(count_elts)}")
 
@@ -327,7 +337,7 @@ class univariateStudy:
         else:
             ax.set_ylabel("number of recipes")
         ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
-        st.pyplot(fig)
+        st.pyplot(fig, clear_figure=True)
 
     def display_graph(self, free=False, explanation=None):
         self.default_values = self.default_values_save
