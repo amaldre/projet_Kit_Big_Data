@@ -8,17 +8,9 @@ from streamlit_autorefresh import st_autorefresh
 import altair as alt
 import logging
 import os
+from utils.load_csv import load_css
 
 logger = logging.getLogger(os.path.basename(__file__))
-
-
-def load_css(file_name):
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except Exception as e:
-        logger.error(f"Erreur lors du chargement du fichier CSS : {file_name}. {e}")
-        st.error("Impossible de charger le fichier CSS.")
 
 
 load_css("style.css")
