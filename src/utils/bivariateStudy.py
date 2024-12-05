@@ -291,13 +291,13 @@ class bivariateStudy:
             elif self.plot_type == "plot":
                 plt.plot(x, y)
             elif self.plot_type == "density map":
-    
-                x = x.astype(np.int64) // 10**9
-
+                print(type(x[0]))
+                if self.axis_x == "submitted":
+                    x = x.astype(np.int64) // 10**9
+                    plt.xticks(ticks=np.linspace(min(x), max(x), 5),
+                    labels=pd.to_datetime(np.linspace(min(x), max(x), 5), unit='s').strftime('%Y-%m-%d'))
                 hb = plt.hexbin(x, y, gridsize=300, cmap=leS, mincnt=1, norm=LogNorm())
                 plt.colorbar(hb, shrink=1, aspect=40, pad=0.02)
-                plt.xticks(ticks=np.linspace(min(x), max(x), 5),
-                labels=pd.to_datetime(np.linspace(min(x), max(x), 5), unit='s').strftime('%Y-%m-%d'))
             plt.grid(True, which='both', linestyle='-', linewidth=0.7, alpha=0.7)
             st.pyplot(fig)
             st.write(f"number of data points : {len(x)}")
