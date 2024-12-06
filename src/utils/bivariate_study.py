@@ -250,10 +250,10 @@ class bivariate_study(base_study):
             elif self.plot_type == "density map":
                 if self.axis_x == "submitted":
                     x = x.astype(np.int64) // 10**9
-                    ax.set_xticks(np.linspace(min(x), max(x), 10))
+                    ax.set_xticks(np.linspace(min(x), max(x), 7))
                     ax.set_xticklabels(
                         pd.to_datetime(
-                            np.linspace(min(x), max(x), 10), unit="s"
+                            np.linspace(min(x), max(x), 7), unit="s"
                         ).strftime("%Y-%m-%d")
                     )
                 hb = ax.hexbin(
