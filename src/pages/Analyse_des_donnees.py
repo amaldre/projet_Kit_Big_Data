@@ -5,8 +5,8 @@ Page de l'application dédiée à l'analyse des données.
 import os
 import logging
 import streamlit as st
-from utils.bivariate_study import bivariate_study
-from utils.univariate_study import univariate_study
+from utils.bivariate_study import BivariateStudy
+from utils.univariate_study import UnivariateStudy
 from pandas import Timestamp
 from utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
 
@@ -37,7 +37,7 @@ def main():
             trend = compute_trend(st.session_state["recipes_df"])
             logger.info("Tendance calculee avec succes.")
 
-            nb_recette_par_annee_study = bivariate_study(
+            nb_recette_par_annee_study = BivariateStudy(
                 dataframe=trend,
                 key="Moyenne glissante du nombre de recettes au cours du temps",
                 name="Moyenne glissante du nombre de recettes du temps",
@@ -55,7 +55,7 @@ def main():
             )
             st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"] = nb_recette_par_annee_study
 
-            nb_recette_temps_study = univariate_study(
+            nb_recette_temps_study = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre de recettes en fonction du temps",
                 name="Nombre de recettes en fonction du temps",
@@ -76,7 +76,7 @@ def main():
 
             
 
-            nb_commentaire_par_annee_study = bivariate_study(
+            nb_commentaire_par_annee_study = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre de commentaires par recette en fonction du temps",
                 name="Nombre de commentaires par recette en fonction du temps",
@@ -134,7 +134,7 @@ def main():
                 )
             st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"] = comment_box_blot
 
-            min_popular_recipes = bivariate_study(
+            min_popular_recipes = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="Duree recettes populaires",
                 name="Duree recettes populaires",

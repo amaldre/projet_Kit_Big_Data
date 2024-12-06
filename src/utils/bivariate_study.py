@@ -11,7 +11,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-from utils.base_study import base_study
+from utils.base_study import BaseStudy
 
 leS = LinearSegmentedColormap.from_list(
     "truncated_bone",
@@ -63,7 +63,7 @@ leS.set_bad(color="gray")
 logger = logging.getLogger(__name__)
 
 
-class bivariate_study(base_study):
+class BivariateStudy(BaseStudy):
 
     def __init__(
         self,
@@ -96,7 +96,7 @@ class bivariate_study(base_study):
         self.x = None
         self.y = None
         self.recipes_id = None
-        self.name = key if name == None else name
+        self.name = key if name is None else name
         self.default_values = default_values
         self.default_values_save = default_values
         self.chosen_filters = None
@@ -116,7 +116,7 @@ class bivariate_study(base_study):
     def save_graph(self):
         logger.info("Sauvegarde des attributs de l'objet Study avec key='%s'", self.key)
         range_filters = ""
-        if self.chosen_filters != None:
+        if self.chosen_filters is not None:
             for i in range(len(self.chosen_filters)):
                 range_filters += (
                     '"'
@@ -177,12 +177,12 @@ class bivariate_study(base_study):
                     (df[filter] >= range_filters[i][0])
                     & (df[filter] <= range_filters[i][1])
                 ]
-        if self.default_values != None:
+        if self.default_values is not None:
             self.default_values = {
                 f"{self.axis_x}": self.range_axis_x,
                 f"{self.axis_y}": self.range_axis_y,
             }
-            if self.range_filters != None:
+            if self.range_filters is not None:
                 for i in range(len(self.range_filters)):
                     self.default_values[f"{self.chosen_filters[i]}"] = (
                         self.range_filters[i]
@@ -197,14 +197,14 @@ class bivariate_study(base_study):
     def __set_range_axis(self, axis):
 
         if self.dataframe[axis].dtype == "datetime64[ns]":
-            range_axis = self._base_study__set_date(axis)
+            range_axis = self._BaseStudy__set_date(axis)
         else:
-            range_axis = self._base_study__create_slider_from_df(self.dataframe, axis)
+            range_axis = self._BaseStudy__create_slider_from_df(self.dataframe, axis)
         logger.debug(f"Plages definies pour axis {axis}: range_axis_x= {range_axis}")
         return range_axis
 
     def __filters(self, axis_x, axis_y):
-        if self.default_values != None:
+        if self.default_values is not None:
             default_values = self.default_values["chosen_filters"]
         else:
             default_values = None
@@ -287,12 +287,12 @@ class bivariate_study(base_study):
         logger.info("Affichage du graphique pour l'instance avec key='%s'", self.key)
         chosen_filters = []
         range_filters = []
-        if self.delete == False:
+        if self.delete is False:
             with st.container(border=True):
                 st.markdown(f"**{self.name}**")
                 graph_container = st.empty()
                 with graph_container.expander("**filters**", expanded=free):
-                    if free == True:
+                    if free is True:
                         axis_x, axis_y = self.__set_axis()
                     else:
                         axis_x = self.axis_x
@@ -301,7 +301,7 @@ class bivariate_study(base_study):
                     self.range_axis_x = self.__set_range_axis(axis_x)
                     self.range_axis_y = self.__set_range_axis(axis_y)
 
-                    if self.filters != None and len(self.filters) > 0:
+                    if self.filters is not None and len(self.filters) > 0:
                         st.write("extra_filters")
                         chosen_filters, range_filters = self.__filters(axis_x, axis_y)
                         self.chosen_filters = chosen_filters
@@ -329,7 +329,7 @@ class bivariate_study(base_study):
                                 )
                             else:
                                 self.log_axis_y = False
-                        if free == False:
+                        if free is False:
                             col = st.columns(3)
                             with col[0]:
                                 if st.form_submit_button(label="Draw graph"):
@@ -347,7 +347,7 @@ class bivariate_study(base_study):
                                         )
                                     )
 
-                            if self.default_values_save != None:
+                            if self.default_values_save is not None:
                                 with col[1]:
                                     if st.form_submit_button(label="Reset graph"):
                                         self.default_values = self.default_values_save
@@ -445,7 +445,7 @@ class bivariate_study(base_study):
                                     )
                                     st.rerun()
 
-                if self.first_draw == True:
+                if self.first_draw is True:
                     print("here")
                     self.axis_x = axis_x
                     self.axis_y = axis_y
@@ -462,7 +462,7 @@ class bivariate_study(base_study):
 
                 self.__draw_plot(self.x, self.y, self.recipes_id)
 
-                if explanation != None:
+                if explanation is not None:
                     st.write(explanation)
 
         return True

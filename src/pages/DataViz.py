@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from datetime import date
-from utils.bivariate_study import bivariate_study
-from utils.univariate_study import univariate_study
+from utils.bivariate_study import BivariateStudy
+from utils.univariate_study import UnivariateStudy
 import pandas as pd
 import ast
 from utils.load_functions import initialize_recipes_df, load_css
@@ -79,7 +79,7 @@ def main():
         try:
             if st.button("Add univariate graph"):
                 name = f"graph {len(st.session_state["graph"]) + 1}"
-                study = univariate_study(
+                study = UnivariateStudy(
                     dataframe=st.session_state["recipes_df"],
                     axis_x_list=axis_x_univar,
                     filters=filters,
@@ -101,7 +101,7 @@ def main():
         try:
             if st.button("Add bivariate graph"):
                 name = f"graph {len(st.session_state["graph"]) + 1}"
-                study = bivariate_study(
+                study = BivariateStudy(
                     dataframe=st.session_state["recipes_df"],
                     axis_x_list=axis_x_list,
                     axis_y_list=axis_y_list,
