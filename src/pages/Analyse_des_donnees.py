@@ -22,7 +22,7 @@ if "first_load" not in st.session_state:
     st.session_state["first_load"] = True
 
 if "locked_graphs" not in st.session_state:
-    st.session_state["locked_graphs"] = []
+    st.session_state["locked_graphs"] = {}
 
 
 def main():
@@ -39,8 +39,8 @@ def main():
 
             nb_recette_par_annee_study = bivariate_study(
                 dataframe=trend,
-                key="1",
-                name="Moyenne du nombre de recettes au cours du temps",
+                key="Moyenne glissante du nombre de recettes au cours du temps",
+                name="Moyenne glissante du nombre de recettes du temps",
                 axis_x="Date",
                 axis_y="Trend",
                 plot_type="plot",
@@ -53,11 +53,11 @@ def main():
                     "chosen_filters": [],
                 },
             )
-            st.session_state["locked_graphs"].append(nb_recette_par_annee_study)
+            st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"] = nb_recette_par_annee_study
 
             nb_recette_temps_study = univariate_study(
                 dataframe=st.session_state["recipes_df"],
-                key="2",
+                key="Nombre de recettes en fonction du temps",
                 name="Nombre de recettes en fonction du temps",
                 axis_x="submitted",
                 filters=[],
@@ -72,12 +72,14 @@ def main():
                     "chosen_filters": [],
                 },
             )
-            st.session_state["locked_graphs"].append(nb_recette_temps_study)
+            st.session_state["locked_graphs"]["Nombre de recettes en fonction du temps"] = nb_recette_temps_study
+
+            
 
             nb_commentaire_par_annee_study = bivariate_study(
                 dataframe=st.session_state["recipes_df"],
-                key="3",
-                name="nombre de commentaires par recette en fonction du temps",
+                key="Nombre de commentaires par recette en fonction du temps",
+                name="Nombre de commentaires par recette en fonction du temps",
                 axis_x="submitted",
                 axis_y="comment_count",
                 filters=[],
@@ -93,11 +95,48 @@ def main():
                     "chosen_filters": [],
                 },
             )
-            st.session_state["locked_graphs"].append(nb_commentaire_par_annee_study)
+            st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"] = nb_commentaire_par_annee_study
+
+            nb_recette_temps_active_study = univariate_study(
+                dataframe=st.session_state["recipes_df"],
+                key="Nombre de recettes durant le pic d'activité du site",
+                name="Nombre de recettes durant le pic d'activité du site",
+                axis_x="submitted", 
+                filters=[],
+                plot_type="histogram", 
+                log_axis_x=False, 
+                log_axis_y=False, 
+                default_values={
+                    "submitted": 
+                    (Timestamp('2001-10-01 00:00:00'), 
+                     Timestamp('2010-10-01 00:00:00')), 
+                     "chosen_filters":[]
+                     },
+            )
+            st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"] = nb_recette_temps_active_study
+
+            comment_box_blot = univariate_study(
+                dataframe=st.session_state["recipes_df"],
+                name="Distribution du nombre de commentaires par recette",
+                key="Distribution du nombre de commentaires par recette",
+                axis_x="comment_count",
+                filters=["submitted"],
+                plot_type="boxplot", 
+                log_axis_x=True, 
+                log_axis_y=False, 
+                default_values={
+                    "comment_count": (1, 1613), 
+                    "submitted":
+                    (Timestamp('2001-10-01 00:00:00'),
+                     Timestamp('2010-10-01 00:00:00')),
+                     "chosen_filters":['submitted']
+                     },
+                )
+            st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"] = comment_box_blot
 
             min_popular_recipes = bivariate_study(
                 dataframe=st.session_state["recipes_df"],
-                key="5",
+                key="Duree recettes populaires",
                 name="Duree recettes populaires",
                 axis_x="minutes",
                 axis_y="comment_count",
@@ -110,7 +149,7 @@ def main():
                     "chosen_filters": ["mean_rating"],
                 },
             )
-            st.session_state["locked_graphs"].append(min_popular_recipes)
+            st.session_state["locked_graphs"]["Duree recettes populaires"] = min_popular_recipes
 
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
@@ -128,23 +167,35 @@ def main():
           2. **Fatigue des contributeurs** : Les créateurs pourraient avoir perdu intérêt ou ne pas être suffisamment motivés pour continuer à enrichir la plateforme.
           3. **Manque d'innovation** : Si le site n'a pas évolué pour répondre aux nouvelles attentes des utilisateurs (fonctionnalités modernes, gamification, etc.), il aurait pu perdre de l'engagement.
         """
-        st.session_state["locked_graphs"][0].display_graph(
+        st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"].display_graph(
             explanation=explanation_graph_1
         )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][0].name}")
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"].name}")
 
-        st.session_state["locked_graphs"][1].display_graph(
+        st.session_state["locked_graphs"]["Nombre de recettes en fonction du temps"].display_graph(
             explanation=explanation_graph_1
         )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][1].name}")
-        st.session_state["locked_graphs"][2].display_graph(
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de recettes en fonction du temps"].name}")
+
+        st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"].display_graph(
             explanation=explanation_graph_1
         )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][2].name}")
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"].name}")
+
+        st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].name}")
 
         st.header("2️⃣ Définition d'une recette de populaire")
 
+        st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].name}")
+
         st.header("3️⃣ Caractéristiques des recettes populaires")
+        
 
         explanation_graph_2 = """
         **Observations :**
@@ -156,10 +207,10 @@ def main():
         - Les recettes populaires génèrent plus de commentaires, ce qui peut indiquer un **engagement plus fort de la part des utilisateurs**.
         """
 
-        st.session_state["locked_graphs"][3].display_graph(
+        st.session_state["locked_graphs"]["Duree recettes populaires"].display_graph(
             explanation=explanation_graph_2
         )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][3].name}")
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Duree recettes populaires"].name}")
 
     except Exception as e:
         logger.exception(f"Erreur dans la fonction principale : {e}")

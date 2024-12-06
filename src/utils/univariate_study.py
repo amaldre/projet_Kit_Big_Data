@@ -77,8 +77,8 @@ class univariate_study(base_study):
                 range_filters_str += f'"{chosen_filter}":{self.range_filters[i]}, '
 
         output = (
-            f'axis_x="{self.axis_x}", plot_type="{self.plot_type}", '
-            f"log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, "
+            f'axis_x="{self.axis_x}", filters={self.chosen_filters}, plot_type="{self.plot_type}", \
+                log_axis_x={self.log_axis_x}, log_axis_y={self.log_axis_y}, '
             + "default_values={"
             + f'"{self.axis_x}": {self.range_axis_x}, '
             + range_filters_str
