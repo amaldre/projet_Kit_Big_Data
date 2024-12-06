@@ -11,7 +11,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-from utils.base_study import base_study
+from utils.BaseStudy import BaseStudy
 
 leS = LinearSegmentedColormap.from_list(
     "truncated_bone",
@@ -63,7 +63,7 @@ leS.set_bad(color="gray")
 logger = logging.getLogger(__name__)
 
 
-class bivariate_study(base_study):
+class BivariateStudy(BaseStudy):
 
     def __init__(
         self,
@@ -197,9 +197,9 @@ class bivariate_study(base_study):
     def __set_range_axis(self, axis):
 
         if self.dataframe[axis].dtype == "datetime64[ns]":
-            range_axis = self._base_study__set_date(axis)
+            range_axis = self._BaseStudy__set_date(axis)
         else:
-            range_axis = self._base_study__create_slider_from_df(self.dataframe, axis)
+            range_axis = self._BaseStudy__create_slider_from_df(self.dataframe, axis)
         logger.debug(f"Plages definies pour axis {axis}: range_axis_x= {range_axis}")
         return range_axis
 

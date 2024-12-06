@@ -11,12 +11,12 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 import matplotlib.pyplot as plt
-from utils.base_study import base_study
+from utils.BaseStudy import BaseStudy
 
 logger = logging.getLogger(__name__)
 
 
-class univariate_study(base_study):
+class UnivariateStudy(BaseStudy):
     """
     A class to perform univariate data analysis and visualization on a dataframe.
     Supports filtering, axis transformations, and multiple plot types.
@@ -128,9 +128,9 @@ class univariate_study(base_study):
         if axis in ("ingredients_replaced", "techniques"):
             range_axis = self.__set_number_ingredients(axis)
         elif self.dataframe[axis].dtype == "datetime64[ns]":
-            range_axis = self._base_study__set_date(axis)
+            range_axis = self._BaseStudy__set_date(axis)
         else:
-            range_axis = self._base_study__create_slider_from_df(self.dataframe, axis)
+            range_axis = self._BaseStudy__create_slider_from_df(self.dataframe, axis)
         logger.debug("Range defined for axis %s: range_axis_x=%s", axis, range_axis)
         return range_axis
 

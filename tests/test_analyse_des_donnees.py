@@ -31,13 +31,13 @@ def mock_session_state():
 
 
 @patch("src.pages.Analyse_des_donnees.compute_trend")
-@patch("src.pages.Analyse_des_donnees.bivariate_study")
+@patch("src.pages.Analyse_des_donnees.BivariateStudy")
 @patch("src.pages.Analyse_des_donnees.UnivariateStud")
 @patch("src.pages.Analyse_des_donnees.load_css")
 def test_main(
     mock_load_css,
     mock_UnivariateStud,
-    mock_bivariate_study,
+    mock_BivariateStudy,
     mock_compute_trend,
     mock_session_state,
 ):
@@ -54,7 +54,7 @@ def test_main(
         }
     )
 
-    mock_bivariate_study.return_value = MagicMock(
+    mock_BivariateStudy.return_value = MagicMock(
         display_graph=MagicMock(),
         name="Mocked Bivariate Study",
     )
@@ -82,13 +82,13 @@ def test_main(
 
 # Exception handling
 @patch("src.pages.Analyse_des_donnees.compute_trend")
-@patch("src.pages.Analyse_des_donnees.bivariate_study")
+@patch("src.pages.Analyse_des_donnees.BivariateStudy")
 @patch("src.pages.Analyse_des_donnees.UnivariateStud")
 @patch("src.pages.Analyse_des_donnees.load_css")
 def test_main_exception_handling(
     mock_load_css,
     mock_UnivariateStud,
-    mock_bivariate_study,
+    mock_BivariateStudy,
     mock_compute_trend,
     mock_session_state,
 ):

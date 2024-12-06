@@ -12,7 +12,17 @@ import streamlit as st
 logger = logging.getLogger(__name__)
 
 
-class base_study:
+class BaseStudy:
+    """
+    A mother class that contains the common methods for the study classes.
+    """
+
+    def __init__(self):
+        self.dataframe = None
+        self.default_values = None
+        self.key = None
+        self.iteration = None
+
     def __set_date(self, axis):
         """
         Create a date input range for datetime columns.

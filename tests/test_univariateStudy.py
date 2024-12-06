@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from datetime import datetime
 from unittest.mock import patch, MagicMock
-from utils.univariate_study import univariate_study
+from utils.UnivariateStudy import UnivariateStudy
 
 
 def test_init_univariate():
@@ -17,7 +17,7 @@ def test_init_univariate():
     axis_x = "col1"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     assert study.dataframe.equals(df)
     assert study.axis_x_list == axis_x_list
@@ -52,8 +52,8 @@ def test_set_axis_univariate():
     axis_x = "axis_x"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
-    study._univariate_study__set_axis()
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
+    study._UnivariateStudy__set_axis()
     assert study.axis_x == axis_x
 
 
@@ -72,11 +72,11 @@ def test_set_date_univariate():
     axis_x = "date_col"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     with patch("streamlit.date_input") as mock_date_input:
         mock_date_input.side_effect = [datetime(2021, 1, 1), datetime(2021, 5, 1)]
-        start_date, end_date = study._univariate_study__set_date(axis_x)
+        start_date, end_date = study._UnivariateStudy__set_date(axis_x)
 
     assert start_date == pd.to_datetime("2021-01-01")
     assert end_date == pd.to_datetime("2021-05-01")
@@ -101,12 +101,12 @@ def test_set_number_ingredients_univariate():
     axis_x = "ingredients"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     with patch("streamlit.slider") as mock_slider:
         mock_slider.return_value = (1, 5)
         min_ingredients, max_ingredients = (
-            study._univariate_study__set_number_ingredients(axis_x)
+            study._UnivariateStudy__set_number_ingredients(axis_x)
         )
 
     assert min_ingredients == 1
@@ -126,11 +126,11 @@ def test_create_slider_from_df_univariate():
     axis_x = "numeric_col"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     with patch("streamlit.slider") as mock_slider:
         mock_slider.return_value = (10, 50)
-        slider_range = study._univariate_study__create_slider_from_df(df, axis_x)
+        slider_range = study._UnivariateStudy__create_slider_from_df(df, axis_x)
 
     assert slider_range == (10, 50)
 
@@ -148,11 +148,11 @@ def test_set_range_axis_univariate():
     axis_x = "numeric_col"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     with patch("streamlit.slider") as mock_slider:
         mock_slider.return_value = (10, 50)
-        range_axis = study._univariate_study__set_range_axis(axis_x)
+        range_axis = study._UnivariateStudy__set_range_axis(axis_x)
 
     assert range_axis == (10, 50)
 
@@ -171,7 +171,7 @@ def test_get_data_points_univariate():
     axis_x = "axis_x"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     range_axis_x = (2, 4)
     chosen_filters = ["filter_col"]
@@ -206,7 +206,7 @@ def test_get_data_points_ingredients_univariate():
         }
     )
 
-    univariate_study = univariate_study(
+    UnivariateStudy = UnivariateStudy(
         key="test_key",
         dataframe=df,
         plot_type="bar",
@@ -217,7 +217,7 @@ def test_get_data_points_ingredients_univariate():
     chosen_filters = ["filter1", "filter2"]
     range_filters = [(5, 15), (20, 30)]
 
-    list_elts, count_elts, recipe_ids = univariate_study.get_data_points_ingredients(
+    list_elts, count_elts, recipe_ids = UnivariateStudy.get_data_points_ingredients(
         df, axis_x, range_axis_x, chosen_filters, range_filters
     )
 
@@ -239,18 +239,17 @@ def test_filters_univariate():
     axis_x = "numeric_col"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
 
     with patch("streamlit.multiselect") as mock_multiselect, patch(
         "streamlit.slider"
     ) as mock_slider:
         mock_multiselect.return_value = ["numeric_col"]
         mock_slider.return_value = (10, 50)
-        chosen_filters, range_filters = study._univariate_study__filters(axis_x)
+        chosen_filters, range_filters = study._UnivariateStudy__filters(axis_x)
 
     assert chosen_filters == ["numeric_col"]
     assert range_filters == [(10, 50)]
-
 
 
 def test_graph_boxplot():
@@ -266,7 +265,7 @@ def test_graph_boxplot():
     axis_x = "axis_x"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     x = df[axis_x].values
     result = study.graph_boxplot(x)
     assert result is True
@@ -285,7 +284,7 @@ def test_graph_density():
     axis_x = "axis_x"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     x = df[axis_x].values
     result = study.graph_density(x)
     assert result is True
@@ -304,7 +303,7 @@ def test_graph_histogram():
     axis_x = "axis_x"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     x = df[axis_x].values
     result = study.graph_histogram(x)
     assert result is True
@@ -323,7 +322,7 @@ def test_graph_bar_elts():
     axis_x = "axis_x"
     key = "test_key"
 
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     nb_elts_display = ["ingredient1", "ingredient2", "ingredient3"]
     count_elts = [10, 20, 30]
     result = study.graph_bar_elts(nb_elts_display, count_elts)
@@ -343,11 +342,11 @@ def test_draw_graph():
     filters = ["axis_x"]
     axis_x = "axis_x"
     key = "test_key"
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     x = df[axis_x].values
     y = None
     recipes_id = df["recipe_id"].values
-    result = study._univariate_study__draw_graph(x, y, recipes_id)
+    result = study._UnivariateStudy__draw_graph(x, y, recipes_id)
     assert result is True
 
 
@@ -363,7 +362,7 @@ def test_axis_graph():
     filters = ["axis_x"]
     axis_x = "axis_x"
     key = "test_key"
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     fig, ax = plt.subplots()
     result = study.axis_graph(fig, ax)
     assert result is True
@@ -382,7 +381,7 @@ def test_display_graph():
     filters = ["axis_x"]
     axis_x = "axis_x"
     key = "test_key"
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     result = study.display_graph()
     assert result is True
 
@@ -400,7 +399,7 @@ def test_display_graph_with_params():
     filters = ["axis_x"]
     axis_x = "axis_x"
     key = "test_key"
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     result = study.display_graph(free=True, explanation="some explanation")
     assert result is True
 
@@ -417,7 +416,7 @@ def test_save_graph():
     filters = ["axis_x"]
     axis_x = "axis_x"
     key = "test_key"
-    study = univariate_study(key, df, plot_type, axis_x_list, filters, axis_x)
+    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
     with patch("streamlit.write") as mock_write:
         study.save_graph()
     mock_write.assert_called_once()
