@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 logger = logging.getLogger(__name__)
 
 
-class UnivariateStudy:
+class univariate_study:
     """
     A class to perform univariate data analysis and visualization on a dataframe.
     Supports filtering, axis transformations, and multiple plot types.

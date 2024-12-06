@@ -52,22 +52,22 @@ dans la mesure du possible, des branches et des Pull Request pour travailler en
 équipe. Assurez-vous d'inclure un fichier README.md qui explique comment
 installer, exécuter, déployer et utiliser votre application.
   - [ ] README à mettre à jour
-  - [ ] Protection des branches        
+  - [ ] Protection des branches c'est impossible je crois qu'il faut github premium       
 
 Optionnel : créez éventuellement des tags de version pour marquer les versions
 stables de votre application.
 
 
-- [ ] Streamlit : développer votre webapp avec une expérience utilisateur (UX) simple et
+- [X] Streamlit : développer votre webapp avec une expérience utilisateur (UX) simple et
 intuitive, en laissant à l’utilisateur la possibilité d'interagir avec vos données pour bien
 comprendre la storytelling que vous lui raconterez. Cette storytelling doit comporter
 des insights au travers de graphiques (charts, etc.) et doit répondre à votre
 problématique / question initiale.
-  - [ ] Story Telling
+  - [X] Story Telling
   - [X] Question Initial : "Pourquoi le site perds des membres ?"
   - Pages :
-    - [ ] Accueil
-    - [ ] Preprocessing
+    - [X] Accueil
+    - [X] Preprocessing
 
 
 ### La programmation
@@ -75,11 +75,11 @@ problématique / question initiale.
 - [X] Programmation orientée objet : dans la mesure du possible, utilisez le paradigme
 orienté objet. Utilisez les principes de l'encapsulation et de l'héritage si approprié.
 Utilisez également les bonnes structures de données.
-- [ ] Type Hinting : utilisez des annotations de type pour améliorer la lisibilité de votre
+- [X] Type Hinting : utilisez des annotations de type pour améliorer la lisibilité de votre
 code.
-- [ ] PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
+- [X] PEP 8 : assurez-vous que votre code respecte les normes PEP 8 pour la lisibilité et
 la cohérence du code. Utilisez un formateur (par exemple black)
-  - [ ] Améliorer la note de 6/10 de pylint -> 7.5/10
+  - [X] Améliorer la note de 6/10 de pylint -> 7.5/10
 - [X] Gestion des exceptions : gérez les erreurs de manière appropriée en utilisant des
 exceptions personnalisées lorsque nécessaire. Par exemple en cas de saisie
 incorrecte de l'utilisateur.
@@ -95,10 +95,10 @@ clair dans le code, etc.
 
 ### Les tests
 
-- [ ] Tests unitaires : écrivez des tests unitaires approfondis pour chaque composant de
+- [X] Tests unitaires : écrivez des tests unitaires approfondis pour chaque composant de
 votre application en utilisant pytest. Vérifiez que la logique de votre application
 fonctionne correctement.
-- [ ] Test coverage : utilisez un outil de test coverage (comme pytest-cov) pour mesurer
+- [X] Test coverage : utilisez un outil de test coverage (comme pytest-cov) pour mesurer
 la couverture de vos tests et assurez-vous d'avoir une couverture suffisante (90% de
 couverture minimum).
 
@@ -106,11 +106,11 @@ couverture minimum).
 
 - [ ] Commentaires : assurez-vous d'inclure des commentaires pertinents dans votre
 code pour expliquer la logique complexe ou les décisions de conception importantes.
-- [ ] Docstrings : utilisez des docstrings pour documenter vos classes, méthodes et
+- [X] Docstrings : utilisez des docstrings pour documenter vos classes, méthodes et
 fonctions de manière détaillée, en expliquant leur but, leurs paramètres et leurs
 valeurs de retour. Vous pouvez utiliser la convention qu'il vous plaira : Google,
 NumPy ou reStructuredText (reST).
-- [ ] Documentation : créez une documentation claire et concise pour votre application
+- [X] Documentation : créez une documentation claire et concise pour votre application
 en utilisant Sphinx. Documentez les classes, les méthodes, et expliquez comment
 installer et utiliser votre application.
 ### La CI

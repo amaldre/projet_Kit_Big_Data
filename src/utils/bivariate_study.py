@@ -62,7 +62,7 @@ leS.set_bad(color="gray")
 logger = logging.getLogger(__name__)
 
 
-class bivariateStudy:
+class bivariate_study:
 
     def __init__(
         self,
