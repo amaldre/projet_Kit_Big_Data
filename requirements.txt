@@ -161,6 +161,7 @@ sqlglot==25.24.4
 stack-data==0.6.3
 statsmodels==0.14.4
 streamlit==1.39.0
+streamlit-autorefresh==1.0.1
 sympy==1.13.3
 tenacity==9.0.0
 terminado==0.18.1
