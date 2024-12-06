@@ -322,6 +322,39 @@ def test_clean_and_tokenize(mock_pos_tag, mock_word_tokenize):
     assert result == expected_result
 
 
+from scripts.pipeline_preprocess import clean_colonne
+
+
+@patch("scripts.pipeline_preprocess.clean_and_tokenize")
+def test_clean_colonne(mock_clean_and_tokenize):
+    # Mock return value for clean_and_tokenize
+    mock_clean_and_tokenize.side_effect = [
+        ["cleaned", "text1"],
+        ["cleaned", "text2"]
+    ]
+
+    # Input data for the test
+    data = pd.DataFrame({
+        "text_column": ["Text to clean 1", "Text to clean 2"]
+    })
+    stopwords = {"to", "clean"}
+
+    # Call the function
+    result = clean_colonne(data.copy(), "text_column", stopwords)
+
+    # Expected result
+    expected = pd.DataFrame({
+        "text_column": ["Text to clean 1", "Text to clean 2"],
+        "cleaned_text_column": [["cleaned", "text1"], ["cleaned", "text2"]]
+    })
+
+    # Verify the result
+    pd.testing.assert_frame_equal(result, expected)
+    mock_clean_and_tokenize.assert_any_call("Text to clean 1", stopwords)
+    mock_clean_and_tokenize.assert_any_call("Text to clean 2", stopwords)
+    assert mock_clean_and_tokenize.call_count == 2
+
+
 from scripts.pipeline_preprocess import ingredient_to_ingredient_processed
 
 
@@ -365,7 +398,6 @@ def test_save_data(tmp_path):
 
 
 from scripts.pipeline_preprocess import save_data_json
-from scripts.pipeline_preprocess import explicit_nutriments
 
 
 def test_save_data_json(tmp_path):
@@ -377,37 +409,181 @@ def test_save_data_json(tmp_path):
 
     result_df = pd.read_json(test_json_path, lines=True)
     pd.testing.assert_frame_equal(result_df, test_df)
-    def test_explicit_nutriments_valid():
-        data = pd.DataFrame({
-            "nutrition": ["[100, 10, 5, 200, 15, 3, 50]", "[200, 20, 10, 400, 30, 6, 100]"]
-        })
-        result = explicit_nutriments(data.copy())
-        
-        expected = pd.DataFrame({
-            "nutrition": ["[100, 10, 5, 200, 15, 3, 50]", "[200, 20, 10, 400, 30, 6, 100]"],
-            "calories": ["100", "200"],
-            "total fat (%)": ["10", "20"],
-            "sugar (%)": ["5", "10"],
-            "sodium (%)": ["200", "400"],
-            "protein (%)": ["15", "30"],
-            "saturated fat (%)": ["3", "6"],
-            "carbohydrates (%)": ["50", "100"]
-        })
-        
-        pd.testing.assert_frame_equal(result, expected)
 
-    def test_explicit_nutriments_missing_column():
-        data = pd.DataFrame({
-            "other_column": ["value1", "value2"]
-        })
-        
-        with pytest.raises(ValueError, match="The 'nutrition' column is missing from the data."):
-            explicit_nutriments(data)
 
-    def test_explicit_nutriments_invalid_format():
-        data = pd.DataFrame({
-            "nutrition": ["invalid_format"]
-        })
+from scripts.pipeline_preprocess import explicit_nutriments
+
+
+def test_explicit_nutriments_valid():
+    data = pd.DataFrame({
+        "nutrition": ["[100, 10, 5, 200, 15, 3, 50]", "[200, 20, 10, 400, 30, 6, 100]"]
+    })
+    result = explicit_nutriments(data.copy())
+    
+    expected = pd.DataFrame({
+        "nutrition": ["[100, 10, 5, 200, 15, 3, 50]", "[200, 20, 10, 400, 30, 6, 100]"],
+        "calories": ["100", "200"],
+        "total fat (%)": ["10", "20"],
+        "sugar (%)": ["5", "10"],
+        "sodium (%)": ["200", "400"],
+        "protein (%)": ["15", "30"],
+        "saturated fat (%)": ["3", "6"],
+        "carbohydrates (%)": ["50", "100"]
+    })
+    
+    pd.testing.assert_frame_equal(result, expected)
+
+def test_explicit_nutriments_missing_column():
+    data = pd.DataFrame({
+        "other_column": ["value1", "value2"]
+    })
+    
+    with pytest.raises(ValueError, match="The 'nutrition' column is missing from the data."):
+        explicit_nutriments(data)
+
+def test_explicit_nutriments_invalid_format():
+    data = pd.DataFrame({
+        "nutrition": ["invalid_format"]
+    })
+    
+    with pytest.raises(ValueError, match="Error processing 'nutrition' column:"):
+        explicit_nutriments(data)
+
+
+from scripts.pipeline_preprocess import change_techniques_to_words
+
+
+def test_change_techniques_to_words():
+    data = pd.DataFrame({
+        "techniques": [
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ]
+    })
+
+    result = change_techniques_to_words(data.copy())
+
+    expected = pd.DataFrame({
+        "techniques": [
+            ["bake"],
+            ["barbecue"]
+        ]
+    })
+
+    pd.testing.assert_frame_equal(result, expected)
+
+
+from scripts.pipeline_preprocess import explicit_nutriments
+
+
+def test_explicit_nutriments_valid():
+    data = pd.DataFrame({
+        "nutrition": [[100, 10, 5, 200, 15, 3, 50], [200, 20, 10, 400, 30, 6, 100]]
+    })
+    result = explicit_nutriments(data.copy())
+    
+    expected = pd.DataFrame({
+        "nutrition": [[100, 10, 5, 200, 15, 3, 50], [200, 20, 10, 400, 30, 6, 100]],
+        "calories": [100, 200],
+        "total fat (%)": [10, 20],
+        "sugar (%)": [5, 10],
+        "sodium (%)": [200, 400],
+        "protein (%)": [15, 30],
+        "saturated fat (%)": [3, 6],
+        "carbohydrates (%)": [50, 100]
+    })
+    
+    pd.testing.assert_frame_equal(result, expected)
+
+def test_explicit_nutriments_missing_column():
+    data = pd.DataFrame({
+        "other_column": ["value1", "value2"]
+    })
+    
+    with pytest.raises(ValueError, match="The 'nutrition' column is missing from the data."):
+        explicit_nutriments(data)
+
+
+def test_explicit_nutriments_invalid_format():
+    data = pd.DataFrame({
+        "nutrition": ["invalid_format"]
+    })
+    
+    with pytest.raises(ValueError, match="Error processing 'nutrition' column:"):
+        explicit_nutriments(data)
+
+
+from scripts.pipeline_preprocess import preprocess
+from unittest.mock import patch, MagicMock
+
         
-        with pytest.raises(ValueError, match="Error processing 'nutrition' column:"):
-            explicit_nutriments(data)
+@patch("scripts.pipeline_preprocess.load_nltk_resources")
+@patch("scripts.pipeline_preprocess.load_data")
+@patch("scripts.pipeline_preprocess.change_to_date_time_format")
+@patch("scripts.pipeline_preprocess.change_to_list")
+@patch("scripts.pipeline_preprocess.merge_dataframe")
+@patch("scripts.pipeline_preprocess.groupby")
+@patch("scripts.pipeline_preprocess.change_na_description_by_name")
+@patch("scripts.pipeline_preprocess.change_category")
+@patch("scripts.pipeline_preprocess.delete_outliers_minutes")
+@patch("scripts.pipeline_preprocess.delete_outliers_steps")
+@patch("scripts.pipeline_preprocess.get_stopwords")
+@patch("scripts.pipeline_preprocess.clean_colonne")
+@patch("scripts.pipeline_preprocess.processed_ingredient")
+@patch("scripts.pipeline_preprocess.change_techniques_to_words")
+@patch("scripts.pipeline_preprocess.explicit_nutriments")
+@patch("scripts.pipeline_preprocess.delete_unwanted_columns")
+@patch("scripts.pipeline_preprocess.delete_outliers_calories")
+@patch("scripts.pipeline_preprocess.save_data")
+@patch("scripts.pipeline_preprocess.save_data_json")
+def test_preprocess(
+    mock_save_data_json,
+    mock_save_data,
+    mock_delete_outliers_calories,
+    mock_delete_unwanted_columns,
+    mock_explicit_nutriments,
+    mock_change_techniques_to_words,
+    mock_processed_ingredient,
+    mock_clean_colonne,
+    mock_get_stopwords,
+    mock_delete_outliers_steps,
+    mock_delete_outliers_minutes,
+    mock_change_category,
+    mock_change_na_description_by_name,
+    mock_groupby,
+    mock_merge_dataframe,
+    mock_change_to_list,
+    mock_change_to_date_time_format,
+    mock_load_data,
+    mock_load_nltk_resources,
+):
+    # Mock return values for the functions
+    mock_load_data.side_effect = [
+        pd.DataFrame({"id": [1, 2], "submitted": ["2021-01-01", "2021-01-02"]}),
+        pd.DataFrame({"recipe_id": [1, 2], "date": ["2021-01-01", "2021-01-02"]}),
+        pd.DataFrame({"id": [1, 2], "techniques": ["[1, 0]", "[0, 1]"]}),
+    ]
+    mock_get_stopwords.return_value = set(["stopword1", "stopword2"])
+
+    preprocess()
+
+    # Assert that the functions were called
+    mock_load_nltk_resources.assert_called_once()
+    assert mock_load_data.call_count == 3
+    assert mock_change_to_date_time_format.call_count == 2
+    assert mock_change_to_list.call_count == 5
+    mock_merge_dataframe.assert_called()
+    mock_groupby.assert_called_once()
+    mock_change_na_description_by_name.assert_called_once()
+    assert mock_change_category.call_count == 2
+    mock_delete_outliers_minutes.assert_called_once()
+    mock_delete_outliers_steps.assert_called_once()
+    mock_get_stopwords.assert_called_once()
+    assert mock_clean_colonne.call_count == 2
+    mock_processed_ingredient.assert_called_once()
+    mock_change_techniques_to_words.assert_called_once()
+    mock_explicit_nutriments.assert_called_once()
+    mock_delete_unwanted_columns.assert_called_once()
+    mock_delete_outliers_calories.assert_called_once()
+    mock_save_data.assert_called_once()
+    mock_save_data_json.assert_called_once()
