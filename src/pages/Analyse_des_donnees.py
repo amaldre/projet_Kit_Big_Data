@@ -11,20 +11,6 @@ st.set_page_config(layout="wide")
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-def load_css(file_name):
-    """Charge le fichier CSS pour la mise en page Streamlit."""
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-            logger.info(f"CSS charge depuis {file_name}.")
-    except FileNotFoundError as e:
-        logger.error(f"Le fichier CSS {file_name} est introuvable : {e}")
-        st.error("Le fichier de style CSS est introuvable.")
-    except Exception as e:
-        logger.exception(f"Erreur lors du chargement du CSS : {e}")
-        st.error("Une erreur est survenue lors du chargement du style.")
-
-
 if "recipes_df" not in st.session_state:
     st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
 
