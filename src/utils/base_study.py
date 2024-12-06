@@ -11,6 +11,9 @@ import streamlit as st
 
 logger = logging.getLogger(__name__)
 
+# pylint: disable=unused-private-member
+# pylint: disable=too-few-public-methods
+
 
 class BaseStudy:
     """

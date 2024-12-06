@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from datetime import date
-from utils.BivariateStudy import BivariateStudy
-from utils.UnivariateStudy import UnivariateStudy
+from utils.bivariate_study import BivariateStudy
+from utils.univariate_study import UnivariateStudy
 import pandas as pd
 import ast
 from utils.load_functions import initialize_recipes_df, load_css

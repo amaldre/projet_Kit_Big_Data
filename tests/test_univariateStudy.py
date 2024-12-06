@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from datetime import datetime
 from unittest.mock import patch, MagicMock
-from utils.UnivariateStudy import UnivariateStudy
+from utils.univariate_study import UnivariateStudy
 
 
 def test_init_univariate():

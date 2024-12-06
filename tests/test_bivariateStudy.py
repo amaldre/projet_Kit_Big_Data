@@ -7,7 +7,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from datetime import datetime
 from unittest.mock import patch, MagicMock
-from utils.BivariateStudy import BivariateStudy
+from utils.bivariate_study import BivariateStudy
 
 # TODO: Implement Test fct
 

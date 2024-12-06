@@ -5,8 +5,8 @@ Page de l'application dédiée à l'analyse des données.
 import os
 import logging
 import streamlit as st
-from utils.BivariateStudy import BivariateStudy
-from utils.UnivariateStudy import UnivariateStudy
+from utils.bivariate_study import BivariateStudy
+from utils.univariate_study import UnivariateStudy
 from pandas import Timestamp
 from utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
 

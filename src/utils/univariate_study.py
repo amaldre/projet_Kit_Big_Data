@@ -11,7 +11,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 import matplotlib.pyplot as plt
-from utils.BaseStudy import BaseStudy
+from utils.base_study import BaseStudy
 
 logger = logging.getLogger(__name__)
 
