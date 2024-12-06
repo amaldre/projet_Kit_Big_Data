@@ -1,3 +1,7 @@
+"""
+Page expliquant les étapes de prétraitement des données.
+"""
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt

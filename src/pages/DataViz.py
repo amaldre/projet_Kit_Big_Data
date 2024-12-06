@@ -1,3 +1,7 @@
+"""
+Page permettant de visualiser les donnees de maniere interactive.
+"""
+
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt

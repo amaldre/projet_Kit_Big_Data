@@ -1,3 +1,7 @@
+"""
+Page de visualisation des données sous forme d'une carte interactive.
+"""
+
 import streamlit as st
 import geopandas as gpd
 import pydeck as pdk

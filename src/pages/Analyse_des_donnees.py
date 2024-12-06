@@ -1,3 +1,7 @@
+"""
+Page de l'application dédiée à l'analyse des données.
+"""
+
 import os
 import logging
 import streamlit as st
