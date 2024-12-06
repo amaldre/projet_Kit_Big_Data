@@ -89,31 +89,13 @@ def main():
                      "chosen_filters":[]
                      },
             )
-            st.session_state["locked_graphs"].append(nb_recette_temps_study)
-
-            nb_commentaire_par_annee_study = bivariateStudy(
-                dataframe=st.session_state["recipes_df"],
-                key="3",
-                name="nombre de commentaires par recette en fonction du temps",
-                axis_x="submitted", 
-                axis_y="comment_count", 
-                filters=[], 
-                plot_type="density map", 
-                log_axis_x=False, 
-                log_axis_y=True, 
-                default_values={
-                    "submitted": 
-                    (Timestamp('1999-08-06 00:00:00'), 
-                     Timestamp('2018-12-04 00:00:00')), 
-                     "comment_count": (1, 1613), 
-                     "chosen_filters":[]
-                     },
-                )
             st.session_state["locked_graphs"].append(nb_commentaire_par_annee_study)
+
+            
 
             min_popular_recipes = bivariateStudy(
                 dataframe=st.session_state["recipes_df"],
-                key="4",
+                key="5",
                 name="Duree recettes populaires",
                 axis_x="minutes",
                 axis_y="comment_count",
