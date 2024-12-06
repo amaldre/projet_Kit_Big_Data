@@ -1,7 +1,8 @@
 """
 Module utils.load_functions
 
-Ce module contient des fonctions pour charger des fichiers, manipuler des données et calculer des tendances.
+Ce module contient des fonctions pour charger des fichiers, 
+manipuler des données et calculer des tendances.
 """
 
 import os
@@ -10,7 +11,6 @@ import logging
 import pandas as pd
 import statsmodels.api as sm
 import streamlit as st
-from utils.dbapi import DBApi
 
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -54,7 +54,8 @@ def load_css(file_name):
 
 def load_df(file_path):
     """
-    Charge un fichier CSV, applique des transformations sur les colonnes et retourne un DataFrame pandas.
+    Charge un fichier CSV, applique des transformations
+    sur les colonnes et retourne un DataFrame pandas.
 
     :param file_path: Le chemin du fichier CSV à charger.
     :type file_path: str
@@ -79,7 +80,8 @@ def load_data(path_data, file_name):
     :type path_data: str
     :param file_name: Le nom du fichier CSV à charger.
     :type file_name: str
-    :return: Un DataFrame pandas contenant les données ou un DataFrame vide si le fichier est introuvable.
+    :return: Un DataFrame pandas contenant les données
+    ou un DataFrame vide si le fichier est introuvable.
     :rtype: pd.DataFrame
     """
     path = os.path.join(path_data, file_name)
@@ -134,7 +136,8 @@ def compute_trend(nb_recette_par_annee_df):
 
     :param nb_recette_par_annee_df: DataFrame contenant les données des recettes soumises.
     :type nb_recette_par_annee_df: pd.DataFrame
-    :return: Un DataFrame contenant les tendances calculées ou un DataFrame vide si les données sont insuffisantes.
+    :return: Un DataFrame contenant les tendances calculées
+    ou un DataFrame vide si les données sont insuffisantes.
     :rtype: pd.DataFrame
     """
     if nb_recette_par_annee_df.empty:
