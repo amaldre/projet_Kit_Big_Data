@@ -143,8 +143,7 @@ def test_initialize_recipes_df_parser_error(tmp_path, caplog):
     loaded_df = initialize_recipes_df(str(file_path))
     assert loaded_df.empty
     assert (
-        "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
-        in caplog.text
+        "Erreur lors du traitement du fichier CSV. Veuillez vérifier son format." in caplog.text
     )
 
 

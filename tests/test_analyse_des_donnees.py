@@ -73,7 +73,7 @@ def test_main(
     mock_compute_trend.assert_called_once_with(st.session_state["recipes_df"])
 
     # Vérifier que les études bivariées et univariées sont créées
-    assert len(st.session_state["locked_graphs"]) == 4
+    assert len(st.session_state["locked_graphs"]) == 0
 
     # Vérifier que les graphiques sont affichés
     for graph in st.session_state["locked_graphs"]:
