@@ -1,6 +1,4 @@
 """
-Module utils.score_functions
-
 Ce module fournit des fonctions pour calculer des scores liés aux évaluations des recettes.
 """
 

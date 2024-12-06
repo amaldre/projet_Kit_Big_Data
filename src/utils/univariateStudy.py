@@ -1,3 +1,7 @@
+""" 
+Module de classe pour l'analyse univariée et la visualisation des données d'un dataframe.
+"""
+
 import math
 import logging
 from collections import Counter

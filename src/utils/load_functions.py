@@ -1,8 +1,5 @@
 """
-Module utils.load_functions
-
-Ce module contient des fonctions pour charger des fichiers, 
-manipuler des données et calculer des tendances.
+Ce module contient des fonctions pour charger des fichiers, manipuler des données et calculer des tendances.
 """
 
 import os

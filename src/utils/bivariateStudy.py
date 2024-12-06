@@ -1,3 +1,7 @@
+""" 
+Module de classe pour l'analyse bivariée.
+"""
+
 import streamlit as st
 import math
 import matplotlib.pyplot as plt
