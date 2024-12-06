@@ -159,7 +159,7 @@ def test_get_data_points_ingredients_univariate():
         }
     )
 
-    UnivariateStudy = UnivariateStudy(
+    study = UnivariateStudy(
         key="test_key",
         dataframe=df,
         plot_type="bar",
@@ -170,7 +170,7 @@ def test_get_data_points_ingredients_univariate():
     chosen_filters = ["filter1", "filter2"]
     range_filters = [(5, 15), (20, 30)]
 
-    list_elts, count_elts, recipe_ids = UnivariateStudy.get_data_points_ingredients(
+    list_elts, count_elts, recipe_ids = study.get_data_points_ingredients(
         df, axis_x, range_axis_x, chosen_filters, range_filters
     )
 

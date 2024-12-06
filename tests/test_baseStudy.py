@@ -6,7 +6,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from datetime import datetime
 from unittest.mock import patch, MagicMock
-from utils.BaseStudy import BaseStudy
+from utils.base_study import BaseStudy
 
 def test_init():
 
