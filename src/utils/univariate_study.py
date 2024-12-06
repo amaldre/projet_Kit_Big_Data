@@ -11,11 +11,12 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 import matplotlib.pyplot as plt
+from utils.base_study import base_study
 
 logger = logging.getLogger(__name__)
 
 
-class univariate_study:
+class univariate_study(base_study):
     """
     A class to perform univariate data analysis and visualization on a dataframe.
     Supports filtering, axis transformations, and multiple plot types.
@@ -98,61 +99,6 @@ class univariate_study:
         logger.debug("Axes defined: axis_x=%s", axis_x)
         return axis_x
 
-    def __create_slider_from_df(self, df, axis):
-        """
-        Create a slider for numeric columns to select a range.
-        """
-        data_min = math.floor(df[axis].min())
-        data_max = math.ceil(df[axis].max())
-        if self.default_values is not None and axis in self.default_values:
-            default_value = self.default_values[axis]
-        else:
-            default_value = [data_min, data_max]
-
-        logger.debug(
-            "Creating a slider for '%s' with min=%d, max=%d", axis, data_min, data_max
-        )
-        return st.slider(
-            label=f"Range for {axis}",
-            min_value=data_min,
-            max_value=data_max,
-            value=default_value,
-            step=1,
-            key=(axis + self.key + str(self.iteration)),
-        )
-
-    def __set_date(self, axis):
-        """
-        Create a date input range for datetime columns.
-        """
-        min_date = self.dataframe[axis].min()
-        max_date = self.dataframe[axis].max()
-        if self.default_values is not None and axis in self.default_values:
-            default_value = self.default_values[axis]
-        else:
-            default_value = [min_date, max_date]
-
-        col1, col2 = st.columns(2)
-        with col1:
-            start_date = st.date_input(
-                "Start date",
-                value=default_value[0],
-                min_value=min_date,
-                max_value=max_date,
-                key=("start date" + self.key + str(self.iteration)),
-            )
-        with col2:
-            end_date = st.date_input(
-                "End date",
-                value=default_value[1],
-                min_value=start_date,
-                max_value=max_date,
-                key=("end date" + self.key + str(self.iteration)),
-            )
-        start_date = pd.to_datetime(start_date)
-        end_date = pd.to_datetime(end_date)
-        return start_date, end_date
-
     def __set_number_ingredients(self, axis):
         """
         Create a slider for selecting the number of ingredients or techniques to display.
@@ -182,9 +128,9 @@ class univariate_study:
         if axis in ("ingredients_replaced", "techniques"):
             range_axis = self.__set_number_ingredients(axis)
         elif self.dataframe[axis].dtype == "datetime64[ns]":
-            range_axis = self.__set_date(axis)
+            range_axis = self._base_study__set_date(axis)
         else:
-            range_axis = self.__create_slider_from_df(self.dataframe, axis)
+            range_axis = self._base_study__create_slider_from_df(self.dataframe, axis)
         logger.debug("Range defined for axis %s: range_axis_x=%s", axis, range_axis)
         return range_axis
 
