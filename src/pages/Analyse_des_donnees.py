@@ -97,7 +97,7 @@ def main():
             )
             st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"] = nb_commentaire_par_annee_study
 
-            nb_recette_temps_active_study = univariate_study(
+            nb_recette_temps_active_study = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre de recettes durant le pic d'activité du site",
                 name="Nombre de recettes durant le pic d'activité du site",
@@ -115,7 +115,7 @@ def main():
             )
             st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"] = nb_recette_temps_active_study
 
-            comment_box_blot = univariate_study(
+            comment_box_blot = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 name="Distribution du nombre de commentaires par recette",
                 key="Distribution du nombre de commentaires par recette",
