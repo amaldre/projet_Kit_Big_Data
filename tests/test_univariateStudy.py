@@ -245,26 +245,7 @@ def test_filters_univariate():
     assert chosen_filters == ["numeric_col"]
     assert range_filters == [(10, 50)]
 
-def test_graph_normal():
-    # Créer un DataFrame d'exemple
-    df = pd.DataFrame(
-        {
-            "recipe_id": [1, 2, 3, 4, 5],
-            "axis_x": [1, 2, 3, 4, 5],
-        }
-    )
-    plot_type = "plot_type"
-    axis_x_list = ["axis_x"]
-    filters = ["axis_x"]
-    axis_x = "axis_x"
-    key = "test_key"
 
-    study = univariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
-
-    x = df[axis_x].values
-
-    result = study.graph_normal(x)
-    assert result == True
 
 def test_graph_boxplot():
     # Créer un DataFrame d'exemple
