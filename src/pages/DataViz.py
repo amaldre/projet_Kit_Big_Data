@@ -60,6 +60,7 @@ def main():
         "comment_count",
         "ingredient_count",
         "submitted",
+        "mean_rating",
     ]
 
     # Affichage des graphiques existants
