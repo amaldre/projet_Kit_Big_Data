@@ -1,3 +1,7 @@
+"""
+Page expliquant les étapes de prétraitement des données.
+"""
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -169,6 +173,10 @@ st.write(
 Certaines recettes troll ou mal renseignées sont supprimées :
 - Les recettes avec un temps de cuisson excessif.
 - Les recettes avec un nombre de steps ou d'ingrédients nul.
+- Après avoir séparré la colonne nutrion et n'avoir gardé que l'information sur les calories,
+    les recettes avec un nombre de calories excessif sont supprimées.
+- Dans un soucis de taille de la base de données, le vecteurs des techniques
+    de cuisson est retransformé en mot. 
 """
 )
 
@@ -235,11 +243,14 @@ Nous avons alors tenté d'utiliser MongoDB Atlas.
 Pour cela nous avons réduit le nombre de colonnes de notre base en supprimant les colonnes inutiles.
 Nous avons alors gardé uniquement les colonnes suivantes car la version gratuite de MongoDB Atlas nous limitait à 512 Mo de données :
 - recipe_id
-- name
 - rating
 - minutes
 - ingredients
-- n_steps
+- techniques
+- calories
+- n_steps 
+- submitted
+
 
 Après avoir créé notre collection et inséré nos données, nous avons pu nous connecter à notre base de données via une classe Python créée pour l'occasion.
 Cependant, la version gratuite de MongoDB Atlas nous a limité dans le téléchargement de nos données. Le téléchargement étant limité à 10 Go sur une période glissante de 7 jours, nous avons au cours de nos tests épuisé notre quota de téléchargement.

@@ -1,3 +1,7 @@
+""" 
+Module de classe pour l'analyse bivariée.
+"""
+
 import streamlit as st
 import math
 import matplotlib.pyplot as plt
@@ -58,7 +62,7 @@ leS.set_bad(color="gray")
 logger = logging.getLogger(__name__)
 
 
-class bivariateStudy:
+class bivariate_study:
 
     def __init__(
         self,

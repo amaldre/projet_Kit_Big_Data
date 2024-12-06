@@ -1,3 +1,7 @@
+"""
+Cette page presente le Clustering appliqué aux donnees des recettes.
+"""
+
 import os
 import streamlit as st
 import pandas as pd

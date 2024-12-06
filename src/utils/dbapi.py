@@ -1,3 +1,7 @@
+""" 
+Module pour interagir avec une base de données MongoDB. 
+"""
+
 import os
 import logging
 from pymongo import MongoClient, errors
