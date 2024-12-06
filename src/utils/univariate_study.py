@@ -470,7 +470,7 @@ class UnivariateStudy(BaseStudy):
                                         )
                                         self.iteration += 1
                                         graph_container.empty()
-                                        st.experimental_rerun()
+                                        st.rerun()
 
                 if self.first_draw:
                     self.axis_x = axis_x
