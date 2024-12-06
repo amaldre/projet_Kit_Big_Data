@@ -262,15 +262,6 @@ class univariateStudy:
         return chosen_filters, range_filters
 
     # Pour les differents types de graphes
-    def graph_normal(self, x):
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.plot(x, range(len(x)), marker="o", linewidth=0.7, markersize=0.5)
-        fig.patch.set_alpha(0)
-        ax.set_facecolor((0, 0, 0, 0))
-        self.axis_graph(fig, ax)
-        st.write(f"number of recipes : {len(x)}")
-        return True
-
     def graph_boxplot(self, x):
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.boxplot(data=x, ax=ax, orient="h")
