@@ -12,7 +12,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 if "recipes_df" not in st.session_state:
-    st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
+    st.session_state["recipes_df"] = initialize_recipes_df("data/cloud_df.csv")
 
 if "first_load" not in st.session_state:
     st.session_state["first_load"] = True
@@ -26,7 +26,7 @@ def main():
     Fonction principale de la page Analyse des données.
     """
     st.title("Analyse des data")
-    load_css("style.css")
+    load_css("src/style.css")
 
     try:
         if st.session_state["first_load"]:
@@ -55,17 +55,18 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="2",
                 name="Nombre de recettes en fonction du temps",
-                axis_x="submitted" , 
-                filters=[], 
-                plot_type="histogram", 
-                log_axis_x=False, 
-                log_axis_y=False, 
+                axis_x="submitted",
+                filters=[],
+                plot_type="histogram",
+                log_axis_x=False,
+                log_axis_y=False,
                 default_values={
-                    "submitted": 
-                    (Timestamp('1999-08-06 00:00:00'), 
-                     Timestamp('2018-12-04 00:00:00')), 
-                     "chosen_filters":[]
-                     },
+                    "submitted": (
+                        Timestamp("1999-08-06 00:00:00"),
+                        Timestamp("2018-12-04 00:00:00"),
+                    ),
+                    "chosen_filters": [],
+                },
             )
             st.session_state["locked_graphs"].append(nb_recette_temps_study)
 
@@ -111,7 +112,6 @@ def main():
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][1].name}")
-
 
         st.header("2️⃣ Définition d'une recette de populaire")
 

@@ -13,14 +13,14 @@ logger = logging.getLogger(os.path.basename(__file__))
 # Parametrage de Streamlit
 st.set_page_config(page_title="Explication Pretraitement", layout="wide")
 
+
 def main():
 
-    PATH_DATA = "../data/bertopic_chart/"
+    PATH_DATA = "data/bertopic_chart/"
     TOPICS_CSV = "topics_model.csv"
 
-
     # Charger le CSS
-    load_css("style.css")
+    load_css("src/style.css")
 
     # Titre et description de la page
     st.title("👨‍🍳 Clustering des recettes pour analyser les types de cuisine")
@@ -66,7 +66,6 @@ def main():
 
     topics_csv = load_data(PATH_DATA, TOPICS_CSV)
 
-
     # Afficher les données brutes si elles existent
     if not topics_csv.empty:
         st.write("Exemple des Topics obtenus:")
@@ -74,7 +73,6 @@ def main():
     else:
         st.warning("Fichier topic_model.csv introuvable.")
         logger.warning("topic_model.csv introuvable.")
-
 
     st.header("3️⃣ Analyse des topics")
 
@@ -94,15 +92,12 @@ def main():
             """
     )
 
-
     with open(
-        "../data/bertopic_chart/visualization_topics.html", "r", encoding="utf-8"
+        "data/bertopic_chart/visualization_topics.html", "r", encoding="utf-8"
     ) as f:
         html_string = f.read()
 
-
     escaped_html = html.escape(html_string)
-
 
     iframe_code = f"""
         <iframe srcdoc="{escaped_html}" width="700" height="700" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
@@ -110,9 +105,7 @@ def main():
 
     st.components.v1.html(iframe_code, height=715, width=715)
 
-
     st.header("4️⃣ Visualisation sous formes d'arbres hierarchiques")
-
 
     st.write(
         """
@@ -121,7 +114,7 @@ def main():
         """
     )
 
-    with open("../data/bertopic_chart/visualization.html", "r", encoding="utf-8") as f:
+    with open("data/bertopic_chart/visualization.html", "r", encoding="utf-8") as f:
         html_string = f.read()
 
     # Échapper les guillemets du contenu HTML

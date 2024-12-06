@@ -17,11 +17,11 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 # Charger les styles CSS
-load_css("style.css")
+load_css("src/style.css")
 
 # Initialiser les donnees dans l'etat de session
 if "recipes_df" not in st.session_state:
-    st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
+    st.session_state["recipes_df"] = initialize_recipes_df("data/cloud_df.csv")
 
 
 # Configuration de l'application Streamlit

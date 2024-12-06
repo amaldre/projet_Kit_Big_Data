@@ -23,7 +23,7 @@ def setup_logging(log_level=logging.INFO):
             "file": {
                 "class": "logging.handlers.RotatingFileHandler",
                 "formatter": "default",
-                "filename": "../app.log",
+                "filename": "app.log",
                 "level": log_level,
                 "maxBytes": 10 * 1024 * 1024,  # 10 Mo
                 #'backupCount': 3,  # Garder 3 fichiers de sauvegarde
