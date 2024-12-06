@@ -87,7 +87,6 @@ def main():
                     plot_type="density",
                 )
                 st.session_state["graph"].append(study)
-                print("add", len(st.session_state["graph"]))
                 st.rerun()
         except Exception as e:
             logger.error(
@@ -110,7 +109,6 @@ def main():
                     plot_type="scatter",
                 )
                 st.session_state["graph"].append(study)
-                print("add", len(st.session_state["graph"]))
                 st.rerun()
         except Exception as e:
             logger.error(

@@ -304,18 +304,18 @@ class UnivariateStudy(BaseStudy):
         """
         Set axis labels, scale, and grid for the plot.
         """
-        ax.set_title(self.name)
+        ax.set_title(self.name, fontsize=16, pad=20, weight='bold')
         if self.log_axis_x:
-            ax.set_xlabel("log " + self.axis_x)
+            ax.set_xlabel("log " + self.axis_x, fontsize=16)
             ax.set_xscale("log")
         else:
-            ax.set_xlabel(self.axis_x)
+            ax.set_xlabel(self.axis_x, fontsize=16)
 
         if self.log_axis_y:
-            ax.set_ylabel("log number of recipes")
+            ax.set_ylabel("log number of recipes", fontsize=16)
             ax.set_yscale("log")
         else:
-            ax.set_ylabel("number of recipes")
+            ax.set_ylabel("number of recipes", fontsize=16)
 
         ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
         st.pyplot(fig, clear_figure=True)

@@ -231,20 +231,32 @@ class BivariateStudy(BaseStudy):
 
             fig, ax = plt.subplots(figsize=(10, 6))
 
-            ax.set_title(self.name)
-            if self.log_axis_x:
-                ax.set_xlabel("log " + self.axis_x)
-                x = np.log(x)
+            ax.set_title(self.name, fontsize=16, pad=20, weight='bold')
+            if self.plot_type != "density map":
+                if self.log_axis_x :
+                    ax.set_xlabel("log " + self.axis_x, fontsize=16)
+                    ax.set_xscale("log")
+                else:
+                    ax.set_xlabel(self.axis_x, fontsize=16)
+                if self.log_axis_y:
+                    ax.set_ylabel("log " + self.axis_y, fontsize=16)
+                    ax.set_yscale("log")
+                else:
+                    ax.set_ylabel(self.axis_y, fontsize=16)
             else:
-                ax.set_xlabel(self.axis_x)
-            if self.log_axis_y:
-                ax.set_ylabel("log " + self.axis_y)
-                y = np.log(y)
-            else:
-                ax.set_ylabel(self.axis_y)
+                if self.log_axis_x :
+                    ax.set_xlabel("log " + self.axis_x, fontsize=16)
+                    x = np.log(x)
+                else:
+                    ax.set_xlabel(self.axis_x, fontsize=16)
+                if self.log_axis_y:
+                    ax.set_ylabel("log " + self.axis_y, fontsize=16)
+                    y = np.log(y)
+                else:
+                    ax.set_ylabel(self.axis_y, fontsize=16)
 
             if self.plot_type == "scatter":
-                ax.scatter(x, y, s=1)
+                ax.scatter(x, y, s=1, alpha=0.4)
             elif self.plot_type == "plot":
                 ax.plot(x, y)
             elif self.plot_type == "density map":
@@ -254,7 +266,7 @@ class BivariateStudy(BaseStudy):
                     ax.set_xticklabels(
                         pd.to_datetime(
                             np.linspace(min(x), max(x), 7), unit="s"
-                        ).strftime("%Y-%m-%d")
+                        ).strftime("%Y")
                     )
                 hb = ax.hexbin(
                     x, y, gridsize=300, cmap="viridis", mincnt=1, norm=LogNorm()
@@ -266,6 +278,7 @@ class BivariateStudy(BaseStudy):
             # Fond transparent
             ax.set_facecolor((0, 0, 0, 0))
             fig.patch.set_alpha(0)
+            ax.tick_params(axis='both', labelsize=14) 
 
             st.pyplot(fig)
             st.write(f"number of recipes : {len(x)}")
@@ -353,7 +366,6 @@ class BivariateStudy(BaseStudy):
                                         self.default_values = self.default_values_save
                                         self.axis_x = axis_x
                                         self.axis_y = axis_y
-                                        print(self.default_values)
                                         range_filters_save = [
                                             self.default_values_save[filter]
                                             for filter in self.default_values_save[
@@ -446,7 +458,6 @@ class BivariateStudy(BaseStudy):
                                     st.rerun()
 
                 if self.first_draw is True:
-                    print("here")
                     self.axis_x = axis_x
                     self.axis_y = axis_y
                     self.x, self.y, self.recipes_id = self.get_data_points(

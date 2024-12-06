@@ -117,15 +117,15 @@ def main():
 
             comment_box_blot = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
-                name="Distribution du nombre de commentaires par recette",
                 key="Distribution du nombre de commentaires par recette",
+                name="Distribution du nombre de commentaires par recette",
                 axis_x="comment_count",
                 filters=["submitted"],
                 plot_type="boxplot", 
                 log_axis_x=True, 
                 log_axis_y=False, 
                 default_values={
-                    "comment_count": (1, 1613), 
+                    "comment_count": (0, 1613), 
                     "submitted":
                     (Timestamp('2001-10-01 00:00:00'),
                      Timestamp('2010-10-01 00:00:00')),
@@ -133,6 +133,25 @@ def main():
                      },
                 )
             st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"] = comment_box_blot
+
+            mean_rating_box_blot = UnivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Distribution de la note moyenne des recettes",
+                name="Distribution de la note moyenne des recettes",
+                axis_x="mean_rating", 
+                filters=['submitted'], 
+                plot_type="boxplot", 
+                log_axis_x=True, 
+                log_axis_y=False, 
+                default_values={
+                    "mean_rating": (0, 5), 
+                    "submitted":
+                    (Timestamp('2001-10-01 00:00:00'), 
+                     Timestamp('2010-10-01 00:00:00')), 
+                     "chosen_filters":['submitted']
+                     },
+                )
+            st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"] = mean_rating_box_blot
 
             min_popular_recipes = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
@@ -150,6 +169,44 @@ def main():
                 },
             )
             st.session_state["locked_graphs"]["Duree recettes populaires"] = min_popular_recipes
+
+            nb_steps_recipes = BivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Nombre d'étapes des recettes populaires",
+                name="Nombre d'étapes des recettes populaires",
+                axis_x="n_steps", 
+                axis_y="comment_count", 
+                filters=['mean_rating'], 
+                plot_type="density map", 
+                log_axis_x=False, 
+                log_axis_y=False, 
+                default_values={
+                    "n_steps": (3, 37), 
+                    "comment_count": (5, 1613), 
+                    "mean_rating":(4, 5), 
+                    "chosen_filters":['mean_rating'],
+                    },
+                )
+            st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"] = nb_steps_recipes
+
+            nb_ing_recipes = BivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Nombre d'ingrédients des recettes populaires",
+                name="Nombre d'ingrédients des recettes populaires",
+                axis_x="ingredient_count", 
+                axis_y="comment_count", 
+                filters=['mean_rating'], 
+                plot_type="density map", 
+                log_axis_x=False, 
+                log_axis_y=False, 
+                default_values={
+                    "ingredient_count": (4, 20), 
+                    "comment_count": (5, 1613), 
+                    "mean_rating":(4, 5), 
+                    "chosen_filters":['mean_rating'],
+                    },
+                )
+            st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"] = nb_ing_recipes
 
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
@@ -194,6 +251,13 @@ def main():
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].name}")
 
+        st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].name}")
+
+        
+
         st.header("3️⃣ Caractéristiques des recettes populaires")
         
 
@@ -211,6 +275,17 @@ def main():
             explanation=explanation_graph_2
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Duree recettes populaires"].name}")
+
+        st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].name}")
+
+        st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"].name}")
+        
 
     except Exception as e:
         logger.exception(f"Erreur dans la fonction principale : {e}")
