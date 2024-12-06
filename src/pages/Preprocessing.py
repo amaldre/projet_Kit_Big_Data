@@ -5,7 +5,7 @@ import os
 import ast
 import nltk
 import re
-from utils.dbapi import DBapi
+from utils.dbapi import DBApi
 import logging
 from utils.load_functions import load_data, load_css
 import html
