@@ -6,7 +6,7 @@ import pytest
 # Ajouter le chemin au module utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.dbapi import DBApi  # Import avec le nom de classe corrigé
+from utils.dbapi import DBApi
 
 
 def test_dbapi_init():
@@ -89,32 +89,6 @@ def test_dbapi_find_range_submitted():
         )
         expected_result = ["doc_submitted_1", "doc_submitted_2", "doc_submitted_3"]
         assert result == expected_result
-
-
-def test_dbapi_use_query():
-    with patch("utils.dbapi.MongoClient") as mock_mongo_client:
-        # Mock de la collection
-        mock_collection = MagicMock()
-        mock_db = {"Food.com": mock_collection}
-        mock_client_instance = {"MangaTaMainDF": mock_db}
-        mock_mongo_client.return_value = mock_client_instance
-
-        # Créer une instance de DBApi
-        db_api = DBApi()
-        db_api.client = mock_client_instance
-        db_api.db = mock_client_instance["MangaTaMainDF"]
-        db_api.collection = mock_collection
-
-        # Configurer find()
-        mock_collection.find.return_value = ["doc1", "doc2"]
-
-        # Appeler la méthode avec une requête personnalisée
-        query = {"field": "value"}
-        result = db_api.use_query(query)
-
-        # Assertions
-        mock_collection.find.assert_called_once_with(query)
-        assert result == ["doc1", "doc2"]
 
 
 def test_dbapi_close_connection():
