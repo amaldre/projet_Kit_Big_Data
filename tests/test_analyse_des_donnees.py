@@ -11,73 +11,95 @@ from src.pages.Analyse_des_donnees import main
 @pytest.fixture
 def mock_session_state():
     """
-    Fixture pour initialiser l'état de session de Streamlit.
+    Fixture pour initialiser le session_state mocké.
     """
-    st.session_state.clear()
-    st.session_state["recipes_df"] = pd.DataFrame(
-        {
-            "submitted": [
-                pd.Timestamp("2000-01-01"),
-                pd.Timestamp("2005-01-01"),
-                pd.Timestamp("2010-01-01"),
-            ],
-            "minutes": [10, 20, 30],
-            "comment_count": [50, 150, 300],
-            "mean_rating": [3.5, 4.0, 5.0],
-        }
-    )
-    st.session_state["first_load"] = True
-    st.session_state["locked_graphs"] = []
+    session_state = {
+        "recipes_df": pd.DataFrame({
+            "submitted": pd.date_range(start="1999-01-01", periods=100, freq="Y"),
+            "comment_count": range(100),
+            "mean_rating": [4.5] * 100,
+            "minutes": [30] * 100
+        }),
+        "first_load": True,
+        "locked_graphs": {}
+    }
+    return session_state
 
 
+@patch("src.pages.Analyse_des_donnees.st")
+@patch("src.pages.Analyse_des_donnees.load_css")
 @patch("src.pages.Analyse_des_donnees.compute_trend")
 @patch("src.pages.Analyse_des_donnees.BivariateStudy")
 @patch("src.pages.Analyse_des_donnees.UnivariateStudy")
-@patch("src.pages.Analyse_des_donnees.load_css")
 def test_main(
-    mock_load_css,
-    mock_UnivariateStud,
-    mock_BivariateStudy,
+    mock_univariate_study,
+    mock_bivariate_study,
     mock_compute_trend,
-    mock_session_state,
+    mock_load_css,
+    mock_st
 ):
     """
-    Test principal pour vérifier le bon fonctionnement de la fonction main.
+    Test principal pour vérifier que la fonction main s'exécute correctement.
     """
-    # Mock des fonctions utilisées dans main()
+    # Mock des fonctions et classes
     mock_load_css.return_value = None
 
-    mock_compute_trend.return_value = pd.DataFrame(
-        {
-            "Date": [pd.Timestamp("2000-01-01"), pd.Timestamp("2005-01-01")],
-            "Trend": [100, 200],
-        }
-    )
+    mock_compute_trend.return_value = pd.DataFrame({
+        "Date": pd.date_range(start="2000-01-01", periods=20, freq="Y"),
+        "Trend": range(20)
+    })
 
-    mock_BivariateStudy.return_value = MagicMock(
-        display_graph=MagicMock(),
-        name="Mocked Bivariate Study",
-    )
-    mock_UnivariateStud.return_value = MagicMock(
-        display_graph=MagicMock(),
-        name="Mocked Univariate Study",
-    )
+    mock_bivariate_instance = MagicMock()
+    mock_bivariate_study.return_value = mock_bivariate_instance
 
-    # Appeler la fonction main
-    main()
+    mock_univariate_instance = MagicMock()
+    mock_univariate_study.return_value = mock_univariate_instance
 
-    # Vérifier que les CSS sont chargés
-    mock_load_css.assert_called_once_with("src/style.css")
+    mock_st.session_state = {
+        "recipes_df": pd.DataFrame({
+            "submitted": pd.date_range(start="1999-01-01", periods=100, freq="YE"),
+            "comment_count": range(100),
+            "mean_rating": [4.5] * 100,
+            "minutes": [30] * 100
+        }),
+        "first_load": True,
+        "locked_graphs": {}
+    }
 
-    # Vérifier que compute_trend a été appelé avec le bon argument
-    mock_compute_trend.assert_called_once_with(st.session_state["recipes_df"])
+    # Exécuter la fonction main
+    with patch("src.pages.Analyse_des_donnees.st", mock_st):
+        mock_st.title = MagicMock()
+        mock_st.header = MagicMock()
+        mock_st.error = MagicMock()
 
-    # Vérifier que les études bivariées et univariées sont créées
-    assert len(st.session_state["locked_graphs"]) == 0
+        main()
 
-    # Vérifier que les graphiques sont affichés
-    for graph in st.session_state["locked_graphs"]:
-        graph.display_graph.assert_called()
+        # Assertions pour vérifier les appels attendus
+        mock_load_css.assert_called_once_with("src/style.css")
+        mock_compute_trend.assert_called_once_with(mock_st.session_state["recipes_df"])
+
+        # Vérifier que les classes BivariateStudy et UnivariateStudy ont été appelées correctement
+        assert mock_bivariate_study.call_count == 3
+        assert mock_univariate_study.call_count == 3
+
+        # Vérifier que les graphiques sont ajoutés au locked_graphs
+        assert "Moyenne glissante du nombre de recettes" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de recettes en fonction du temps" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de commentaires par recette en fonction du temps" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de recettes durant le pic d'activité du site" in mock_st.session_state["locked_graphs"]
+        assert "Distribution du nombre de commentaires par recette" in mock_st.session_state["locked_graphs"]
+        assert "Duree recettes populaires" in mock_st.session_state["locked_graphs"]
+
+        # Vérifier que la première charge est désactivée
+        assert not mock_st.session_state["first_load"]
+
+        # Vérifier que st.header et st.title ont été appelés
+        mock_st.title.assert_called_once_with("Analyse des data")
+        assert mock_st.header.call_count == 3
+
+        # Vérifier les affichages de graphiques
+        assert mock_bivariate_instance.display_graph.call_count == 3
+        assert mock_univariate_instance.display_graph.call_count == 3
 
 
 # Exception handling
