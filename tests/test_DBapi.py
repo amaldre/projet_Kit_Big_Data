@@ -56,7 +56,9 @@ def test_dbapi_find_by(mock_getenv):
         assert result == ["doc1", "doc2"]
 
 
-def test_dbapi_find_range_submitted():
+@patch("utils.dbapi.os.getenv")
+def test_dbapi_find_range_submitted(mock_getenv):
+    mock_getenv.return_value = "mongodb://mock_uri"
     with patch("utils.dbapi.MongoClient") as mock_mongo_client:
         # Mock de la collection
         mock_collection = MagicMock()
