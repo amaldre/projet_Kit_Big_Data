@@ -32,7 +32,7 @@ def mock_session_state():
 
 @patch("src.pages.Analyse_des_donnees.compute_trend")
 @patch("src.pages.Analyse_des_donnees.BivariateStudy")
-@patch("src.pages.Analyse_des_donnees.UnivariateStud")
+@patch("src.pages.Analyse_des_donnees.UnivariateStudy")
 @patch("src.pages.Analyse_des_donnees.load_css")
 def test_main(
     mock_load_css,
@@ -67,13 +67,13 @@ def test_main(
     main()
 
     # Vérifier que les CSS sont chargés
-    mock_load_css.assert_called_once_with("style.css")
+    mock_load_css.assert_called_once_with("src/style.css")
 
     # Vérifier que compute_trend a été appelé avec le bon argument
     mock_compute_trend.assert_called_once_with(st.session_state["recipes_df"])
 
     # Vérifier que les études bivariées et univariées sont créées
-    assert len(st.session_state["locked_graphs"]) == 3
+    assert len(st.session_state["locked_graphs"]) == 4
 
     # Vérifier que les graphiques sont affichés
     for graph in st.session_state["locked_graphs"]:
@@ -83,7 +83,7 @@ def test_main(
 # Exception handling
 @patch("src.pages.Analyse_des_donnees.compute_trend")
 @patch("src.pages.Analyse_des_donnees.BivariateStudy")
-@patch("src.pages.Analyse_des_donnees.UnivariateStud")
+@patch("src.pages.Analyse_des_donnees.UnivariateStudy")
 @patch("src.pages.Analyse_des_donnees.load_css")
 def test_main_exception_handling(
     mock_load_css,
@@ -108,7 +108,7 @@ def test_main_exception_handling(
         pytest.fail(f"main() a levé une exception: {e}")
 
     # Vérifier que les CSS sont chargés même en cas d'exception
-    mock_load_css.assert_called_once_with("style.css")
+    mock_load_css.assert_called_once_with("src/style.css")
 
     # Vérifier que compute_trend a été appelé avec le bon argument
     mock_compute_trend.assert_called_once_with(st.session_state["recipes_df"])
