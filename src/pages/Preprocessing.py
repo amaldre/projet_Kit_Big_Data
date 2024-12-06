@@ -18,7 +18,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 #     df = pd.DataFrame(db.get_percentage_documents(per=0.0005))
 
 # Variables globales pour simuler les données
-PATH_DATA = "../data/"
+PATH_DATA = "data/"
 RAW_RECIPE = "RAW_recipes_sample.csv"
 RAW_INTERACTIONS = "RAW_interactions_sample.csv"
 
@@ -30,7 +30,7 @@ except Exception as e:
     st.error("Une erreur s'est produite lors de la configuration de la page.")
 
 
-load_css("style.css")
+load_css("src/style.css")
 
 # --- Titre et Introduction ---
 st.title("🌟 Explication du Prétraitement des Données")
@@ -70,7 +70,7 @@ else:
     st.warning("Fichier RAW_interactions_sample.csv introuvable.")
     logger.warning("RAW_interactions_sample.csv introuvable.")
 
-with open("../data/Food_data_drawio.html", "r", encoding="utf-8") as f:
+with open("data/Food_data_drawio.html", "r", encoding="utf-8") as f:
     html_string = f.read()
 
 # Échapper les guillemets du contenu HTML

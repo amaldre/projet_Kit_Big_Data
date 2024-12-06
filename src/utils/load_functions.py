@@ -1,25 +1,30 @@
-import pandas as pd
+"""
+Module utils.load_functions
+
+Ce module contient des fonctions pour charger des fichiers, manipuler des données et calculer des tendances.
+"""
+
 import os
 import ast
-from utils.dbapi import DBapi
+import logging
+import pandas as pd
 import statsmodels.api as sm
 import streamlit as st
-import logging
+from utils.dbapi import DBApi
 
 logger = logging.getLogger(os.path.basename(__file__))
 
 
 def load_csv(file_path):
     """
-    Load a csv file from a given path and return a pandas dataframe
+    Charge un fichier CSV depuis un chemin donné et retourne un DataFrame pandas.
 
-    :param file_path: The path to the csv file to load
+    :param file_path: Le chemin du fichier CSV à charger.
     :type file_path: str
-    :raises FileNotFoundError: If the file is not found
-    :return: The loaded csv file as a pandas dataframe
+    :raises FileNotFoundError: Si le fichier n'est pas trouvé.
+    :return: Le fichier CSV chargé sous forme de DataFrame pandas.
     :rtype: pd.DataFrame
     """
-
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
     return pd.read_csv(file_path)
@@ -27,115 +32,111 @@ def load_csv(file_path):
 
 def load_css(file_name):
     """
-    Load a CSS file into the markdown file
+    Charge un fichier CSS et l'applique à la page Streamlit.
 
-    :param file_name: The name of the CSS file to load
+    :param file_name: Le nom du fichier CSS à charger.
     :type file_name: str
     """
     try:
-        with open(file_name) as f:
+        with open(file_name, encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-            logger.info(f"CSS charge avec succes depuis '{file_name}'.")
+            logger.info("CSS chargé avec succès depuis '%s'.", file_name)
     except FileNotFoundError:
         error_message = f"Le fichier CSS '{file_name}' est introuvable."
         logger.error(error_message)
         st.error(error_message)
     except Exception as e:
-        error_message = (
-            f"Une erreur inattendue s'est produite lors du chargement du CSS : {e}"
+        logger.exception(
+            "Une erreur inattendue s'est produite lors du chargement du CSS : %s", e
         )
-        logger.exception(error_message)
-        st.error(error_message)
+        st.error(f"Une erreur inattendue s'est produite : {e}")
 
 
 def load_df(file_path):
     """
-    Load a csv file from a given path and return a pandas dataframe, change the columns to the correct type
+    Charge un fichier CSV, applique des transformations sur les colonnes et retourne un DataFrame pandas.
 
-
-    :param file_path: The path to the csv file to load
+    :param file_path: Le chemin du fichier CSV à charger.
     :type file_path: str
-    :return: The loaded csv file as a pandas dataframe
+    :return: Le fichier CSV transformé sous forme de DataFrame pandas.
     :rtype: pd.DataFrame
     """
     df = load_csv(file_path)
-    print(df.head())
     df["ingredients_replaced"] = df["ingredients_replaced"].apply(ast.literal_eval)
     df["ingredient_count"] = df["ingredients_replaced"].apply(len)
     df["techniques"] = df["techniques"].apply(ast.literal_eval)
     df["techniques_count"] = df["techniques"].apply(len)
-
     df["submitted"] = pd.to_datetime(df["submitted"])
-    print(df["submitted"].dtype)
-
     return df
 
 
 @st.cache_data
-def load_data(PATH_DATA, file_name):
-    path = os.path.join(PATH_DATA, file_name)
+def load_data(path_data, file_name):
+    """
+    Charge un fichier CSV depuis un chemin donné.
+
+    :param path_data: Le chemin du dossier contenant le fichier.
+    :type path_data: str
+    :param file_name: Le nom du fichier CSV à charger.
+    :type file_name: str
+    :return: Un DataFrame pandas contenant les données ou un DataFrame vide si le fichier est introuvable.
+    :rtype: pd.DataFrame
+    """
+    path = os.path.join(path_data, file_name)
     try:
         if os.path.exists(path):
-            logger.info(f"Chargement des donnees depuis {path}")
+            logger.info("Chargement des données depuis %s", path)
             return pd.read_csv(path)
-        else:
-            logger.warning(f"Fichier introuvable : {path}")
-            return pd.DataFrame()  # Placeholder si le fichier est manquant
+        logger.warning("Fichier introuvable : %s", path)
+        return pd.DataFrame()  # Placeholder si le fichier est manquant
     except Exception as e:
-        logger.error(f"Erreur lors du chargement du fichier {file_name} : {e}")
+        logger.error("Erreur lors du chargement du fichier %s : %s", file_name, e)
         return pd.DataFrame()
 
 
 @st.cache_data
 def initialize_recipes_df(file_path):
     """
-    Initialise le DataFrame dans l'etat de session de Streamlit.
+    Initialise un DataFrame à partir d'un fichier CSV.
 
-
-    :param file_path: path to the CSV file
+    :param file_path: Chemin vers le fichier CSV.
     :type file_path: str
-    :return: The loaded csv file as a pandas dataframe
+    :return: Le DataFrame chargé ou un DataFrame vide en cas d'erreur.
     :rtype: pd.DataFrame
     """
-
     try:
         dataframe = load_df(file_path)
-        logger.info(f"DataFrame charge avec succes depuis '{file_path}'.")
+        logger.info("DataFrame chargé avec succès depuis '%s'.", file_path)
         return dataframe
     except FileNotFoundError:
         error_message = f"Le fichier CSV '{file_path}' est introuvable."
         logger.error(error_message)
         st.error(error_message)
-        dataframe = pd.DataFrame()  # Charger un DataFrame vide en cas d'erreur
-        return dataframe
+        return pd.DataFrame()  # DataFrame vide en cas d'erreur
     except pd.errors.ParserError:
         error_message = (
-            "Erreur lors du traitement du fichier CSV. Veuillez verifier son format."
+            "Erreur lors du traitement du fichier CSV. Veuillez vérifier son format."
         )
         logger.error(error_message)
         st.error(error_message)
-        dataframe = pd.DataFrame()
-        return dataframe
+        return pd.DataFrame()
     except Exception as e:
-        error_message = (
-            f"Une erreur inattendue s'est produite lors du chargement du CSV : {e}"
+        logger.exception(
+            "Une erreur inattendue s'est produite lors du chargement du CSV : %s", e
         )
-        logger.exception(error_message)
-        st.error(error_message)
-        dataframe = pd.DataFrame()
-        return dataframe
+        st.error(f"Une erreur inattendue s'est produite : {e}")
+        return pd.DataFrame()
 
 
 def compute_trend(nb_recette_par_annee_df):
     """
-    Compute the trend of the number of recipes submitted per month
+    Calcule la tendance du nombre de recettes soumises par mois.
 
-    :param nb_recette_par_annee_df: The dataframe containing the number of recipes submitted per year
+    :param nb_recette_par_annee_df: DataFrame contenant les données des recettes soumises.
     :type nb_recette_par_annee_df: pd.DataFrame
-    :return: The trend of the number of recipes submitted per month
+    :return: Un DataFrame contenant les tendances calculées ou un DataFrame vide si les données sont insuffisantes.
     :rtype: pd.DataFrame
     """
-
     if nb_recette_par_annee_df.empty:
         return pd.DataFrame()
 
@@ -147,8 +148,6 @@ def compute_trend(nb_recette_par_annee_df):
     if nb_recette_par_annee_df["submitted"].isnull().all():
         return pd.DataFrame()
 
-    # nombre de recettes par années
-    print(nb_recette_par_annee_df["submitted"].dtype)
     nb_recette_par_annee_df["year"] = nb_recette_par_annee_df["submitted"].dt.year
     nb_recette_par_annee_df["month"] = nb_recette_par_annee_df["submitted"].dt.month
     nb_recette_par_annee_df["submitted_by_month"] = (

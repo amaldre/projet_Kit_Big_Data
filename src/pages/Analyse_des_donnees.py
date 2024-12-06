@@ -11,22 +11,8 @@ st.set_page_config(layout="wide")
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-def load_css(file_name):
-    """Charge le fichier CSS pour la mise en page Streamlit."""
-    try:
-        with open(file_name) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-            logger.info(f"CSS charge depuis {file_name}.")
-    except FileNotFoundError as e:
-        logger.error(f"Le fichier CSS {file_name} est introuvable : {e}")
-        st.error("Le fichier de style CSS est introuvable.")
-    except Exception as e:
-        logger.exception(f"Erreur lors du chargement du CSS : {e}")
-        st.error("Une erreur est survenue lors du chargement du style.")
-
-
 if "recipes_df" not in st.session_state:
-    st.session_state["recipes_df"] = initialize_recipes_df("../data/cloud_df.csv")
+    st.session_state["recipes_df"] = initialize_recipes_df("data/cloud_df.csv")
 
 if "first_load" not in st.session_state:
     st.session_state["first_load"] = True
@@ -40,7 +26,7 @@ def main():
     Fonction principale de la page Analyse des données.
     """
     st.title("Analyse des data")
-    load_css("style.css")
+    load_css("src/style.css")
 
     try:
         if st.session_state["first_load"]:
@@ -69,15 +55,37 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="2",
                 name="Nombre de recettes en fonction du temps",
-                axis_x="submitted" , 
+                axis_x="submitted",
+                filters=[],
+                plot_type="histogram",
+                log_axis_x=False,
+                log_axis_y=False,
+                default_values={
+                    "submitted": (
+                        Timestamp("1999-08-06 00:00:00"),
+                        Timestamp("2018-12-04 00:00:00"),
+                    ),
+                    "chosen_filters": [],
+                },
+            )
+            st.session_state["locked_graphs"].append(nb_recette_temps_study)
+
+            nb_commentaire_par_annee_study = bivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="3",
+                name="nombre de commentaires par recette en fonction du temps",
+                axis_x="submitted", 
+                axis_y="comment_count", 
                 filters=[], 
-                plot_type="histogram", 
+                plot_type="density map", 
                 log_axis_x=False, 
-                log_axis_y=False, 
+                log_axis_y=True, 
                 default_values={
                     "submitted": 
                     (Timestamp('1999-08-06 00:00:00'), 
-                     Timestamp('2018-12-04 00:00:00')), 
+                     Timestamp('2018-12-04 00:00:00')
+                     ), 
+                     "comment_count": (1, 1613), 
                      "chosen_filters":[]
                      },
             )

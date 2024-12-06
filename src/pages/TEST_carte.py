@@ -13,7 +13,7 @@ from utils.load_functions import load_css
 logger = logging.getLogger(os.path.basename(__file__))
 
 
-load_css("style.css")
+load_css("src/style.css")
 
 st.title("Carte Data Food.com au cours des années")
 
@@ -123,10 +123,10 @@ st.write(
     """
 )
 
-geojson_path = "../data/us_states.geojson"
+geojson_path = "data/us_states.geojson"
 gdf = load_geojson(geojson_path)
 
-df_recette = load_recipes_data("../data/cloud_df.csv")
+df_recette = load_recipes_data("data/cloud_df.csv")
 
 if gdf.empty:
     st.error("Le fichier GeoJSON est vide ou non valide.")
