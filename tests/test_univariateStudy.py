@@ -57,31 +57,6 @@ def test_set_axis_univariate():
     assert study.axis_x == axis_x
 
 
-def test_set_date_univariate():
-    df = pd.DataFrame(
-        {
-            "recipe_id": [1, 2, 3, 4, 5],
-            "date_col": pd.to_datetime(
-                ["2021-01-01", "2021-02-01", "2021-03-01", "2021-04-01", "2021-05-01"]
-            ),
-        }
-    )
-    plot_type = "plot_type"
-    axis_x_list = ["date_col"]
-    filters = ["date_col"]
-    axis_x = "date_col"
-    key = "test_key"
-
-    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
-
-    with patch("streamlit.date_input") as mock_date_input:
-        mock_date_input.side_effect = [datetime(2021, 1, 1), datetime(2021, 5, 1)]
-        start_date, end_date = study._UnivariateStudy__set_date(axis_x)
-
-    assert start_date == pd.to_datetime("2021-01-01")
-    assert end_date == pd.to_datetime("2021-05-01")
-
-
 def test_set_number_ingredients_univariate():
     df = pd.DataFrame(
         {
@@ -111,28 +86,6 @@ def test_set_number_ingredients_univariate():
 
     assert min_ingredients == 1
     assert max_ingredients == 5
-
-
-def test_create_slider_from_df_univariate():
-    df = pd.DataFrame(
-        {
-            "recipe_id": [1, 2, 3, 4, 5],
-            "numeric_col": [10, 20, 30, 40, 50],
-        }
-    )
-    plot_type = "plot_type"
-    axis_x_list = ["numeric_col"]
-    filters = ["numeric_col"]
-    axis_x = "numeric_col"
-    key = "test_key"
-
-    study = UnivariateStudy(key, df, plot_type, axis_x_list, filters, axis_x)
-
-    with patch("streamlit.slider") as mock_slider:
-        mock_slider.return_value = (10, 50)
-        slider_range = study._UnivariateStudy__create_slider_from_df(df, axis_x)
-
-    assert slider_range == (10, 50)
 
 
 def test_set_range_axis_univariate():

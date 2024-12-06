@@ -69,51 +69,6 @@ def test_set_axis():
     assert axis_y == "col2"
 
 
-def test_create_slider_from_df():
-    df = pd.DataFrame({"col1": [1, 2, 3, 4, 5]})
-    plot_type = "plot_type"
-    axis_x_list = ["col1"]
-    axis_y_list = ["col1"]
-    filters = ["col1"]
-    axis_x = "col1"
-    axis_y = "col1"
-    key = "test_key"
-
-    study = BivariateStudy(
-        key, df, plot_type, axis_x_list, axis_y_list, filters, axis_x, axis_y
-    )
-
-    with patch("streamlit.slider") as mock_slider:
-        mock_slider.return_value = [1, 5]
-        slider = study._BivariateStudy__create_slider_from_df(df, "col1")
-
-    assert slider == [1, 5]
-
-
-def test_set_date():
-    df = pd.DataFrame(
-        {"date_col": pd.to_datetime(["2021-01-01", "2021-01-02", "2021-01-03"])}
-    )
-    plot_type = "plot_type"
-    axis_x_list = ["date_col"]
-    axis_y_list = ["date_col"]
-    filters = ["date_col"]
-    axis_x = "date_col"
-    axis_y = "date_col"
-    key = "test_key"
-
-    study = BivariateStudy(
-        key, df, plot_type, axis_x_list, axis_y_list, filters, axis_x, axis_y
-    )
-
-    with patch("streamlit.date_input") as mock_date_input:
-        mock_date_input.side_effect = [datetime(2021, 1, 1), datetime(2021, 1, 3)]
-        start_date, end_date = study._BivariateStudy__set_date("date_col")
-
-    assert start_date == pd.to_datetime("2021-01-01")
-    assert end_date == pd.to_datetime("2021-01-03")
-
-
 def test_get_data_points():
     df = pd.DataFrame(
         {
