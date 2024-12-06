@@ -11,6 +11,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from utils.base_study import base_study
 
 leS = LinearSegmentedColormap.from_list(
     "truncated_bone",
@@ -62,7 +63,7 @@ leS.set_bad(color="gray")
 logger = logging.getLogger(__name__)
 
 
-class bivariate_study:
+class bivariate_study(base_study):
 
     def __init__(
         self,
@@ -154,57 +155,6 @@ class bivariate_study:
         logger.debug("Axes definis: axis_x=%s, axis_y=%s", axis_x, axis_y)
         return axis_x, axis_y
 
-    def __create_slider_from_df(self, df, axis):
-
-        min = math.floor(df[axis].min())
-        max = math.ceil(df[axis].max())
-        if self.default_values != None and axis in self.default_values:
-            default_value = self.default_values[axis]
-            print(self.iteration, self.default_values)
-            print(self.iteration, default_value)
-        else:
-            default_value = [min, max]
-
-        logger.debug(
-            "Creation d'un slider pour '%s' avec min=%d, max=%d", axis, min, max
-        )
-        return st.slider(
-            label=f"Range for {axis}",
-            min_value=min,
-            max_value=max,
-            value=default_value,
-            step=1,
-            key=(axis + self.key + str(self.iteration)),
-        )
-
-    def __set_date(self, axis):
-        min_date = self.dataframe[axis].min()
-        max_date = self.dataframe[axis].max()
-        if self.default_values != None and axis in self.default_values:
-            default_value = self.default_values[axis]
-        else:
-            default_value = [min_date, max_date]
-        col1, col2 = st.columns(2)
-        with col1:
-            start_date = st.date_input(
-                "Start date",
-                value=default_value[0],
-                min_value=min_date,
-                max_value=max_date,
-                key=("start date" + self.key + str(self.iteration)),
-            )
-        with col2:
-            end_date = st.date_input(
-                "End date",
-                value=default_value[1],
-                min_value=start_date,
-                max_value=max_date,
-                key=("end date" + self.key + str(self.iteration)),
-            )
-        start_date = pd.to_datetime(start_date)
-        end_date = pd.to_datetime(end_date)
-        return start_date, end_date
-
     def get_data_points(
         self,
         df,
@@ -247,9 +197,9 @@ class bivariate_study:
     def __set_range_axis(self, axis):
 
         if self.dataframe[axis].dtype == "datetime64[ns]":
-            range_axis = self.__set_date(axis)
+            range_axis = self._base_study__set_date(axis)
         else:
-            range_axis = self.__create_slider_from_df(self.dataframe, axis)
+            range_axis = self._base_study__create_slider_from_df(self.dataframe, axis)
         logger.debug(f"Plages definies pour axis {axis}: range_axis_x= {range_axis}")
         return range_axis
 
