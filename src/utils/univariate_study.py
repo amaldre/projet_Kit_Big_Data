@@ -384,7 +384,7 @@ class univariate_study:
         chosen_filters = []
         range_filters = []
         if not self.delete:
-            with st.container():
+            with st.container(border=True):
                 st.markdown(f"**{self.name}**")
                 graph_container = st.empty()
                 with graph_container.expander("**filters**", expanded=free):
