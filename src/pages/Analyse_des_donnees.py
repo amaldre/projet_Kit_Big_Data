@@ -2,7 +2,7 @@ import os
 import logging
 import streamlit as st
 from utils.bivariateStudy import bivariateStudy
-from utils.univariateStudy import univariateStudy
+from utils.univariateStudy import UnivariateStudy
 from pandas import Timestamp
 from utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
 
@@ -51,7 +51,7 @@ def main():
             )
             st.session_state["locked_graphs"].append(nb_recette_par_annee_study)
 
-            nb_recette_temps_study = univariateStudy(
+            nb_recette_temps_study = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="2",
                 name="Nombre de recettes en fonction du temps",
@@ -74,24 +74,22 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="3",
                 name="nombre de commentaires par recette en fonction du temps",
-                axis_x="submitted", 
-                axis_y="comment_count", 
-                filters=[], 
-                plot_type="density map", 
-                log_axis_x=False, 
-                log_axis_y=True, 
+                axis_x="submitted",
+                axis_y="comment_count",
+                filters=[],
+                plot_type="density map",
+                log_axis_x=False,
+                log_axis_y=True,
                 default_values={
-                    "submitted": 
-                    (Timestamp('1999-08-06 00:00:00'), 
-                     Timestamp('2018-12-04 00:00:00')
-                     ), 
-                     "comment_count": (1, 1613), 
-                     "chosen_filters":[]
-                     },
+                    "submitted": (
+                        Timestamp("1999-08-06 00:00:00"),
+                        Timestamp("2018-12-04 00:00:00"),
+                    ),
+                    "comment_count": (1, 1613),
+                    "chosen_filters": [],
+                },
             )
             st.session_state["locked_graphs"].append(nb_commentaire_par_annee_study)
-
-            
 
             min_popular_recipes = bivariateStudy(
                 dataframe=st.session_state["recipes_df"],
@@ -112,9 +110,6 @@ def main():
 
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
-
-
-            
 
         st.header("1️⃣ Analyse de la fréquentation du site")
 
@@ -138,12 +133,10 @@ def main():
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][1].name}")
-
         st.session_state["locked_graphs"][2].display_graph(
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"][2].name}")
-
 
         st.header("2️⃣ Définition d'une recette de populaire")
 
