@@ -287,7 +287,7 @@ def test_draw_graph():
         {
             "recipe_id": [1, 2, 3, 4, 5],
             "axis_x": [1, 2, 3, 4, 5],
-            "comment_count": [10, 20, 30, 40, 50],
+            "Nombre de commentaires": [10, 20, 30, 40, 50],
         }
     )
     plot_type = "boxplot"
@@ -326,7 +326,7 @@ def test_display_graph():
         {
             "recipe_id": [1, 2, 3, 4, 5],
             "axis_x": [1, 2, 3, 4, 5],
-            "comment_count": [10, 20, 30, 40, 50],
+            "Nombre de commentaires": [10, 20, 30, 40, 50],
         }
     )
     plot_type = "boxplot"
@@ -344,7 +344,7 @@ def test_display_graph_with_params():
         {
             "recipe_id": [1, 2, 3, 4, 5],
             "axis_x": [1, 2, 3, 4, 5],
-            "comment_count": [10, 20, 30, 40, 50],
+            "Nombre de commentaires": [10, 20, 30, 40, 50],
         }
     )
     plot_type = "boxplot"

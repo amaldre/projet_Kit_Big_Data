@@ -41,14 +41,14 @@ def test_set_date(mock_date_input, sample_dataframe):
     start_date, end_date = study._BaseStudy__set_date("date_column")
 
     mock_date_input.assert_any_call(
-        "Start date",
+        "Date de début",
         value=pd.Timestamp("2021-01-01"),
         min_value=pd.Timestamp("2021-01-01"),
         max_value=pd.Timestamp("2021-05-01"),
         key="start datekey1",
     )
     mock_date_input.assert_any_call(
-        "End date",
+        "Date de fin",
         value=pd.Timestamp("2021-05-01"),
         min_value=pd.Timestamp("2021-01-01"),
         max_value=pd.Timestamp("2021-05-01"),
@@ -75,7 +75,7 @@ def test_create_slider_from_df(mock_slider):
     result = study._BaseStudy__create_slider_from_df(sample_dataframe, "numeric_column")
 
     mock_slider.assert_called_once_with(
-        label="Range for numeric_column",
+        label="Plage de valeurs pour : numeric_column",
         min_value=10,
         max_value=200,
         value=[50, 150],

@@ -513,10 +513,55 @@ def test_explicit_nutriments_invalid_format():
         explicit_nutriments(data)
 
 
+from scripts.pipeline_preprocess import create_colums_count
+from scripts.pipeline_preprocess import create_mean_rating
+
+
+def test_create_colums_count():
+    data = pd.DataFrame({
+        "rating": [[5, 4, 3], [2, 1], [], [4, 4, 4, 4]]
+    })
+
+    result = create_colums_count(data.copy())
+
+    expected = pd.DataFrame({
+        "rating": [[5, 4, 3], [2, 1], [], [4, 4, 4, 4]],
+        "comment_count": [3, 2, 0, 4]
+    })
+
+    pd.testing.assert_frame_equal(result, expected)
+
+
+def test_create_mean_rating():
+    data = pd.DataFrame({
+        "rating": [[5, 4, 3], [2, 1], [], [4, 4, 4, 4]]
+    })
+
+    result = create_mean_rating(data.copy())
+
+    expected = pd.DataFrame({
+        "rating": [[5, 4, 3], [2, 1], [], [4, 4, 4, 4]],
+        "mean_rating": [4.0, 1.5, None, 4.0]
+    })
+
+    pd.testing.assert_frame_equal(result, expected)
+
+
+def test_create_mean_rating_exception():
+    data = pd.DataFrame({
+        "ratings": [[5, 4, 3], [2, 1], [], [4, 4, 4, 4, 0]]
+    })
+
+    with pytest.raises(ValueError, match="Le DataFrame doit contenir une colonne 'rating'."):
+        create_mean_rating(data)
+
 from scripts.pipeline_preprocess import preprocess
 from unittest.mock import patch, MagicMock
 
-        
+
+@patch("scripts.pipeline_preprocess.rename_column")
+@patch("scripts.pipeline_preprocess.create_mean_rating")
+@patch("scripts.pipeline_preprocess.create_colums_count")
 @patch("scripts.pipeline_preprocess.load_nltk_resources")
 @patch("scripts.pipeline_preprocess.load_data")
 @patch("scripts.pipeline_preprocess.change_to_date_time_format")
@@ -556,12 +601,15 @@ def test_preprocess(
     mock_change_to_date_time_format,
     mock_load_data,
     mock_load_nltk_resources,
+    mock_create_colums_count,
+    mock_create_mean_rating,
+    mock_rename_column,
 ):
     # Mock return values for the functions
     mock_load_data.side_effect = [
-        pd.DataFrame({"id": [1, 2], "submitted": ["2021-01-01", "2021-01-02"]}),
-        pd.DataFrame({"recipe_id": [1, 2], "date": ["2021-01-01", "2021-01-02"]}),
-        pd.DataFrame({"id": [1, 2], "techniques": ["[1, 0]", "[0, 1]"]}),
+        pd.DataFrame({"id": [1, 2], "submitted": ["2021-01-01", "2021-01-02"], "rating": [[1, 1], [1, 1]]}),
+        pd.DataFrame({"recipe_id": [1, 2], "date": ["2021-01-01", "2021-01-02"], "rating": [[1, 1], [1, 1]]}),
+        pd.DataFrame({"id": [1, 2], "techniques": ["[1, 0]", "[0, 1]"], "rating": [[1, 1], [1, 1]]}),
     ]
     mock_get_stopwords.return_value = set(["stopword1", "stopword2"])
 
@@ -587,3 +635,6 @@ def test_preprocess(
     mock_delete_outliers_calories.assert_called_once()
     mock_save_data.assert_called_once()
     mock_save_data_json.assert_called_once()
+    mock_create_colums_count.assert_called_once()
+    mock_create_mean_rating.assert_called_once()
+    mock_rename_column.assert_called_once()
