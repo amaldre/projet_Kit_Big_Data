@@ -59,18 +59,18 @@ def test_load_df_valid_file(tmp_path):
     file_path = tmp_path / "test.csv"
     df = pd.DataFrame(
         {
-            "ingredients_replaced": ["['salt', 'pepper']", "['sugar']"],
-            "techniques": ["['bake']", "['fry']"],
-            "submitted": ["2023-01-01", "2023-01-02"],
+            "Ingrédients": ["['salt', 'pepper']", "['sugar']"],
+            "Techniques utilisées": ["['bake']", "['fry']"],
+            "Date de publication de la recette": ["2023-01-01", "2023-01-02"],
         }
     )
     df.to_csv(file_path, index=False)
     loaded_df = load_df(str(file_path))
-    assert loaded_df["ingredients_replaced"].iloc[0] == ["salt", "pepper"]
-    assert loaded_df["ingredient_count"].iloc[0] == 2
-    assert loaded_df["techniques"].iloc[0] == ["bake"]
-    assert loaded_df["techniques_count"].iloc[0] == 1
-    assert pd.to_datetime(loaded_df["submitted"].iloc[0]) == pd.to_datetime(
+    assert loaded_df["Ingrédients"].iloc[0] == ["salt", "pepper"]
+    assert loaded_df["Nombre d'ingrédients"].iloc[0] == 2
+    assert loaded_df["Techniques utilisées"].iloc[0] == ["bake"]
+    assert loaded_df["Nombre de techniques utilisées"]    .iloc[0] == 1
+    assert pd.to_datetime(loaded_df["Date de publication de la recette"].iloc[0]) == pd.to_datetime(
         "2023-01-01"
     )
 
@@ -113,18 +113,18 @@ def test_initialize_recipes_df_valid_file(tmp_path):
     file_path = tmp_path / "test.csv"
     df = pd.DataFrame(
         {
-            "ingredients_replaced": ["['salt', 'pepper']", "['sugar']"],
-            "techniques": ["['bake']", "['fry']"],
-            "submitted": ["2023-01-01", "2023-01-02"],
+            "Ingrédients": ["['salt', 'pepper']", "['sugar']"],
+            "Techniques utilisées": ["['bake']", "['fry']"],
+            "Date de publication de la recette": ["2023-01-01", "2023-01-02"],
         }
     )
     df.to_csv(file_path, index=False)
     loaded_df = initialize_recipes_df(str(file_path))
-    assert loaded_df["ingredients_replaced"].iloc[0] == ["salt", "pepper"]
-    assert loaded_df["ingredient_count"].iloc[0] == 2
-    assert loaded_df["techniques"].iloc[0] == ["bake"]
-    assert loaded_df["techniques_count"].iloc[0] == 1
-    assert pd.to_datetime(loaded_df["submitted"].iloc[0]) == pd.to_datetime(
+    assert loaded_df["Ingrédients"].iloc[0] == ["salt", "pepper"]
+    assert loaded_df["Nombre d'ingrédients"].iloc[0] == 2
+    assert loaded_df["Techniques utilisées"].iloc[0] == ["bake"]
+    assert loaded_df["Nombre de techniques utilisées"].iloc[0] == 1
+    assert pd.to_datetime(loaded_df["Date de publication de la recette"].iloc[0]) == pd.to_datetime(
         "2023-01-01"
     )
 
@@ -172,17 +172,17 @@ def test_initialize_recipes_df_unexpected_error(tmp_path, monkeypatch, caplog):
 def test_compute_trend_valid_data():
     df = pd.DataFrame(
         {
-            "submitted": pd.date_range(start="2021-01-01", periods=24, freq="M"),
+            "Date de publication de la recette": pd.date_range(start="2021-01-01", periods=24, freq="M"),
             "count": [10 * i for i in range(1, 25)],
         }
     )
     trend_df = compute_trend(df)
     assert "Date" in trend_df.columns
-    assert "Trend" in trend_df.columns
+    assert "Moyenne glissante" in trend_df.columns
     assert len(trend_df.dropna()) > 0
 
 
 def test_compute_trend_empty_data():
-    df = pd.DataFrame(columns=["submitted", "count"])
+    df = pd.DataFrame(columns=["Date de publication de la recette", "count"])
     trend_df = compute_trend(df)
     assert trend_df.empty
