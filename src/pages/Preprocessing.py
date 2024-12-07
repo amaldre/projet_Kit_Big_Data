@@ -269,7 +269,7 @@ def main():
         with col:
             st.markdown(
                 f"""
-                <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                     <strong>{columns[i]}</strong>
                 </div>
                 """,
@@ -279,7 +279,7 @@ def main():
             if i + 4 < len(columns):
                 st.markdown(
                     f"""
-                    <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                         <strong>{columns[i + 4]}</strong>
                     </div>
                     """,
@@ -318,7 +318,7 @@ def main():
         with col:
             st.markdown(
                 f"""
-                <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                     <strong>{columns[i]}</strong>
                 </div>
                 """,
@@ -328,7 +328,7 @@ def main():
             if i + 4 < len(columns):
                 st.markdown(
                     f"""
-                    <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                         <strong>{columns[i + 4]}</strong>
                     </div>
                     """,
