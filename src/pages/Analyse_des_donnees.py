@@ -68,8 +68,8 @@ def main():
                 log_axis_y=False,
                 default_values={
                     "Date de publication de la recette": (
-                        Timestamp("1999-08-06 00:00:00"),
-                        Timestamp("2018-12-04 00:00:00"),
+                        Timestamp("2000-01-01 00:00:00"),
+                        Timestamp("2018-01-01 00:00:00"),
                     ),
                     "chosen_filters": [],
                 },
@@ -110,8 +110,8 @@ def main():
                 log_axis_y=False, 
                 default_values={
                     "Date de publication de la recette": 
-                    (Timestamp('2001-10-01 00:00:00'), 
-                     Timestamp('2010-10-01 00:00:00')), 
+                    (Timestamp('2002-01-01 00:00:00'), 
+                     Timestamp('2010-01-01 00:00:00')), 
                      "chosen_filters":[]
                 },
             )
