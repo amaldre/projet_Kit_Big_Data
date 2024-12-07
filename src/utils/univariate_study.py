@@ -114,7 +114,7 @@ class UnivariateStudy(BaseStudy):
             "Creating a slider for '%s' with min=%d, max=%d", axis, min_val, max_val
         )
         return st.slider(
-            label=f"Range for {axis}",
+            label=f"Plage de valeurs pour : {axis}",
             min_value=min_val,
             max_value=max_val,
             value=default_value,

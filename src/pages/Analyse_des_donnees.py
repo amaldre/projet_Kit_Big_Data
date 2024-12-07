@@ -125,16 +125,12 @@ def main():
                 key="Distribution du nombre de commentaires par recette",
                 name="Distribution du nombre de commentaires par recette",
                 axis_x="Nombre de commentaires",
-                filters=["Date de publication de la recette"],
+                filters=[],
                 plot_type="boxplot", 
                 log_axis_x=True, 
                 log_axis_y=False, 
                 default_values={
                     "Nombre de commentaires": (0, 1613), 
-                    "Date de publication de la recette":
-                    (Timestamp('2001-10-01 00:00:00'),
-                     Timestamp('2010-10-01 00:00:00')),
-                     "chosen_filters":['Date de publication de la recette']
                 },
             )
             st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"] = comment_box_blot
@@ -144,16 +140,12 @@ def main():
                 key="Distribution de la note moyenne des recettes",
                 name="Distribution de la note moyenne des recettes",
                 axis_x="Note moyenne", 
-                filters=['Date de publication de la recette'], 
+                filters=[], 
                 plot_type="boxplot", 
                 log_axis_x=True, 
                 log_axis_y=False, 
                 default_values={
                     "Note moyenne": (0, 5), 
-                    "Date de publication de la recette":
-                    (Timestamp('2001-10-01 00:00:00'), 
-                     Timestamp('2010-10-01 00:00:00')), 
-                     "chosen_filters":['Date de publication de la recette']
                 },
             )
             st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"] = mean_rating_box_blot
@@ -367,22 +359,65 @@ def main():
           La démarche proposée dans la suite de l'étude est d'analyser en profondeur les recettes les plus populaires ayant portées 
           le site durant son âge d'or, engendrant de l'attractivité et de l'engagement de la part de ses utilisateurs.
         """
-
-        st.write(conclusion_part_1)
+        with st.container(border=True):
+            st.write(conclusion_part_1)
         
 
         st.header("2️⃣ Définition d'une recette de populaire")
 
+        st.write("""Dans cette deuxième partie, il conviendra comprendre ce qui définit la popularatié d'une recette
+                 Deux axes pricipaux seront explorées : la note moyenne et le nombre de commentaire des recettes""")
+
+        explanation_graph_4 = """
+        **Observations :**
+        Ce graphe de type boite à moustache illustre la distribution du nombre de commentaires par recette. 
+        Plus précisemment, d'après celui-ci, on observe :
+        - une médianne situé au alentours de 2 commentaires par recettes
+        - 25% des meilleurs recettes en terme de nombre de commentaires ont 5 ou plus de commentaires (Troisième quartile).
+
+        La distribution du nombre de commentaires par recette est très polarisée en faveur des recettes avec peu de commentaires
+        avec la grande majorité des recettes ayant en dessous de 5 commentaires, 
+        une médiane situé à 2 commentaires et un grand nombre à 1 commentaire (63084 recettes soit 35%).
+        Cette analyse confirme le rapport quantité/attractivité à améliorer évoqué dans la première partie.
+        """
+
         st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].display_graph(
-            explanation=explanation_graph_1
+            explanation=explanation_graph_4
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].name}")
 
+        explanation_graph_5 = """
+        **Observations :**
+        Ce graphe de type boite à moustache représente la distribution des notes moyennes des recettes. 
+        Plus précisemment, d'après celui-ci, on observe :
+        - une médianne située au alentours de la note moyenne de 4,6 commentaires par recette
+        - seulement 25% des recettes sont notés 4 ou moins (1er quartile).
+
+        Ce critère est moins représentatif des meilleurs recettes car la majorité des recettes sont notés 4 ou plus. 
+        De plus, des exemples de recettes très populaires mais avec notes en dessous de la médiane sont présents dans la dataframe ci-dessus
+        (exemple : la recette "best banana bread" est notée 4,186 en moyenne).
+        """
+
         st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].display_graph(
-            explanation=explanation_graph_1
+            explanation=explanation_graph_5
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].name}")
 
+        conclusion_part_2 = """
+        D'après cette analyse, deux critères peuvent définir la popularité d'une recette. 
+        Tout d'abord, l'élément le plus discriminant est le nombre de commentaires par recettes 
+        car seul très peu de recettes réussissent à attirer l'engagement des utilisateurs.
+         
+        Un second élément moins représentatif est la note moyenne permettant de supprimer les recettes dépréciées, 
+        mais ne permettant pas de juger seul de l'attractivité d'une recette.
+
+        Dans le reste de cette étude on se placera dans ces conditions : 
+        - nombre de commentaires par recette : supérieur ou égale à 5
+        - note moyenne : supérieur ou égale à 4
+        """
+
+        with st.container(border=True):
+            st.write(conclusion_part_2)
 
         
 
