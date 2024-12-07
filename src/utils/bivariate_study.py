@@ -34,6 +34,7 @@ class BivariateStudy(BaseStudy):
         default_values=None,
         log_axis_x=False,
         log_axis_y=False,
+        graph_pad=10,
     ):
         # Attributs de la classe
         self.dataframe = dataframe
@@ -59,6 +60,7 @@ class BivariateStudy(BaseStudy):
         self.iteration = 1
         self.log_axis_x = log_axis_x
         self.log_axis_y = log_axis_y
+        self.graph_pad = graph_pad
 
         # Log l'initialisation de l'objet
         logger.info("Instance de Study creee avec key='%s'", self.key)
@@ -181,7 +183,7 @@ class BivariateStudy(BaseStudy):
         return chosen_filters, range_filters
 
     def __draw_plot(self, x, y, recipes_id):
-        col = st.columns([1, 3, 1])
+        col = st.columns([self.graph_pad, 30, self.graph_pad])
         with col[1]:
 
             fig, ax = plt.subplots(figsize=(10, 6))
@@ -246,7 +248,7 @@ class BivariateStudy(BaseStudy):
                 st.dataframe(display_df, hide_index=True)
         return True
 
-    # Affichage pour les graphes d'intérêt à navigation limité
+
     def display_graph(self, free=False, explanation=None):
         self.default_values = self.default_values_save
         logger.info("Affichage du graphique pour l'instance avec key='%s'", self.key)

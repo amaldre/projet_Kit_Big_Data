@@ -34,6 +34,7 @@ class UnivariateStudy(BaseStudy):
         default_values=None,
         log_axis_x=False,
         log_axis_y=False,
+        graph_pad=10,
     ):
         self.dataframe = dataframe
         self.axis_x_list = axis_x_list
@@ -55,7 +56,7 @@ class UnivariateStudy(BaseStudy):
         self.iteration = 1
         self.log_axis_x = log_axis_x
         self.log_axis_y = log_axis_y
-
+        self.graph_pad = graph_pad
     def __del__(self):
         # No special cleanup required
         return
@@ -284,7 +285,7 @@ class UnivariateStudy(BaseStudy):
         """
         Display the selected graph type and related data.
         """
-        col = st.columns([1, 3, 1])
+        col = st.columns([self.graph_pad, 30, self.graph_pad])
         with col[1]:
             if self.plot_type == "boxplot":
                 self.graph_boxplot(x)

@@ -41,7 +41,7 @@ def main():
 
             nb_recette_par_annee_study = BivariateStudy(
                 dataframe=trend,
-                key="Moyenne glissante du nombre de recettes au cours du temps",
+                key="Moyenne glissante du nombre de recettes par mois",
                 name="Moyenne glissante du nombre de recettes du temps",
                 axis_x="Date",
                 axis_y="Moyenne glissante",
@@ -59,8 +59,8 @@ def main():
 
             nb_recette_temps_study = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
-                key="Nombre de recettes en fonction du temps",
-                name="Nombre de recettes en fonction du temps",
+                key="Nombre de recettes par an",
+                name="Nombre de recettes par an",
                 axis_x="Date de publication de la recette",
                 filters=[],
                 plot_type="histogram",
@@ -73,8 +73,9 @@ def main():
                     ),
                     "chosen_filters": [],
                 },
+                graph_pad=1,
             )
-            st.session_state["locked_graphs"]["Nombre de recettes en fonction du temps"] = nb_recette_temps_study
+            st.session_state["locked_graphs"]["Nombre de recettes par an"] = nb_recette_temps_study
 
             
 
@@ -114,6 +115,8 @@ def main():
                      Timestamp('2010-01-01 00:00:00')), 
                      "chosen_filters":[]
                 },
+                graph_pad=1,
+                
             )
             st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"] = nb_recette_temps_active_study
 
@@ -284,41 +287,89 @@ def main():
             logger.info("Graphiques initialises avec succes.")
 
             
-
+        st.write("""Dans cette page, diverses analyses seront effectuées sur les données fournies par le site Food.com, 
+                 notamment sur les recettes telles les nombres de recettes publiés, leur note moyenne et nombre commentaires,
+                 les ingrédients ou techniques de cuisine utilisés, etc.. 
+                 Le but de de cette étude est d'évaluer les performances du site au cours du temps et de comprempre les facteurs de succès 
+                 des recettes les plus populaire afin de redynamiser l'activité sur la platforme""")
 
         # Page layout 
         st.header("1️⃣ Analyse de la fréquentation du site")
 
+        st.write("""Tout d'abord, il s'agira d'étudier la fréquentation du site au cours des années 
+                 à travers l'évolution du nombre de recettes ainsi que le nombre de commentaires par recettes.""")
+
         explanation_graph_1 = """
         **Observations :**
-        - Une forte croissance des contributions est visible entre 2000 et 2008, culminant à une activité maximale autour de 2008.
-        - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro vers 2016-2018.
+        - Ce graphe représente la moyenne glissante sur par mois du nombre de recettes entre 2000 et 2018
+        - Une forte croissance des contributions est visible entre 2000 et 2002, puis une stagnation entre 2002 et 2004 puis une deuxième phase de croissance en 2008, 
+        - Le pic d'activité maximale est atteint autour de 2007 et 2008 avec plus de 2000 recettes par mois.
+        - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro entre 2016 et 2018."""
 
-        **Interprétation :**
-        - Cette baisse reflète une **diminution marquée de l'activité des utilisateurs créateurs de contenu**, probablement due à plusieurs facteurs :
-          1. **Concurrence croissante** : Avec l'émergence de plateformes sociales comme YouTube, Instagram, et des sites concurrents, le site aurait pu perdre son attractivité.
-          2. **Fatigue des contributeurs** : Les créateurs pourraient avoir perdu intérêt ou ne pas être suffisamment motivés pour continuer à enrichir la plateforme.
-          3. **Manque d'innovation** : Si le site n'a pas évolué pour répondre aux nouvelles attentes des utilisateurs (fonctionnalités modernes, gamification, etc.), il aurait pu perdre de l'engagement.
-        """
+        
         st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"].display_graph(
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"].name}")
 
-        st.session_state["locked_graphs"]["Nombre de recettes en fonction du temps"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de recettes en fonction du temps"].name}")
+        col1, col2 = st.columns(2)
+        with col1 :
+            st.session_state["locked_graphs"]["Nombre de recettes par an"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de recettes par an"].name}")
+        with col2 :
+            st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].name}")
+        
+        with st.container(border=True):
+            explanation_graph_2 = """
+            **Observations :**
+            - Ces deux graphes représentent le nombre de recettes publiés par an sur deux plages d'années différentes. 
+            Celui de droite offrant une vue d'ensemble sur toute la période couverte par les données, entre 2000 et 2018 
+            Le de gauche se focalise sur la phase de plus grande affluence du site entre 2002 et 2010. 
+            - La tendance nombre de publications de recettes précedemment observée est en accord avec ces graphes avec 
+            comme année culminante 2007 et 2008 comptant respectivement 26539 et 23238 recettes, puis une chute de l'activité après 2008.
+            - De plus, il est intéressant de noter que le pic d'activité représente 151367 recettes sur 176287 au total, soit 
+            environ 85% de toutes les recettes publiées.
+            """
+            st.write(explanation_graph_2)
+            
+
+        explanation_graph_3 ="""
+        **Observations :**
+        - Ce graphe est une carte de densité repésentant l'évolution du nombre de commentaires par recette sur la période étudiée.
+        Une forte activité des utilisateurs se traduisant par un nombre de commentaires par recette peut être observée dès 2000 jusqu'à 2009, 
+        ce sur une plage temporelle plus étendue comparé au nombre de recettes publiées.
+        - Sur cette période un grand nombre de recette dépasse les 20 commentaires et 
+        les records de nombre de commentaires sont établis pour les recettes publié dans cet intervalle, 
+        atteignant plus de 1600 commentaires pour les meilleurs recettes.
+        - De plus, une concentration très important de recettes publiés à ce moment ont entre 1 et 20 commentaires (en jaune et cyan sur le graphe),
+        notamment entre 2006 et 2009 qui ont la plus fort concentration recette à 1 commentaires.Cette tendance montre une effervescence de recettes, 
+        mais que ces recettes n'attirent pas forcemment beaucoup de personnes, remmettant en cause la qualité des recettes.
+        """
 
         st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"].display_graph(
-            explanation=explanation_graph_1
+            explanation=explanation_graph_3
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"].name}")
 
-        st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].name}")
+        conclusion_part_1 = """
+        **Interprétation :**
+        - Après une forte croissance jusqu'en 2009, Le site a connu un fort déclin jusqu'à aujoud'hui, qui s'illustre par la diminution marquée de l'activité des utilisateurs
+        dans la création de recettes et de l'engagement utilisateurs dans l'espace commentaire.  
+
+        - Cette baisse d'activité peut être expliquer par plusieurs facteurs :
+          1. **Concurrence croissante** : Avec l'émergence de plateformes sociales comme YouTube, Instagram, et des sites concurrents, le site aurait pu perdre son attractivité.
+          2. **Fatigue des contributeurs** : Les créateurs pourraient avoir perdu intérêt ou ne pas être suffisamment motivés pour continuer à enrichir la plateforme.
+          3. **Manque d'innovation** : Si le site n'a pas évolué pour répondre aux nouvelles attentes des utilisateurs (fonctionnalités modernes, gamification, etc.), il aurait pu perdre de l'engagement.
+          4. **Facteurs externes** : La crise économique de 2008 a pu engendrée un manque de moyens pour s'investir dans la cuisine maison. 
+        
+        - La question des solutions de comment remedier à cette tendance et revitaliser le site peut se poser.
+          La démarche proposée dans la suite de l'étude est d'analyser en profondeur les recettes les plus populaires ayant portées 
+          le site durant son âge d'or, engendrant de l'attractivité et de l'engagement de la part de ses utilisateurs.
+        """
+
+        st.write(conclusion_part_1)
+        
 
         st.header("2️⃣ Définition d'une recette de populaire")
 
@@ -338,7 +389,7 @@ def main():
         st.header("3️⃣ Caractéristiques des recettes populaires")
         
 
-        explanation_graph_2 = """
+        explanation_graph_ = """
         **Observations :**
         - La majorité des recettes populaires sont des recettes courtes, avec une durée de préparation inférieure à 100 Durée de la recette (minutes).
         - Les recettes populaires ont tendance à avoir un nombre de commentaires plus élevé, avec une concentration autour de 1000 commentaires.
@@ -349,7 +400,7 @@ def main():
         """
 
         st.session_state["locked_graphs"]["Duree recettes populaires"].display_graph(
-            explanation=explanation_graph_2
+            explanation=explanation_graph_
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Duree recettes populaires"].name}")
 
