@@ -17,8 +17,8 @@ def test_main(mock_st):
 
     # Vérifications
     mock_st.columns.assert_called_once_with(2)  # Vérifie si les colonnes ont été définies
-    mock_st.button.assert_any_call("Add univariate graph")  # Vérifie le bouton univarié
-    mock_st.button.assert_any_call("Add bivariate graph")  # Vérifie le bouton bivarié
+    mock_st.button.assert_any_call("Ajout graphe univarié")  # Vérifie le bouton univarié
+    mock_st.button.assert_any_call("Ajout graphe bivarié")  # Vérifie le bouton bivarié
 
 @patch("src.pages.DataViz.st")
 def test_main_add_univariate_graph(mock_st):
