@@ -195,8 +195,9 @@ webencodings==0.5.1
 websocket-client==1.8.0
 widgetsnbextension==4.0.13
 wrapt==1.16.0
-pytest
-pytest-cov
-pymongo
-python-dotenv
-pylint
+pytest == 8.3.3
+pytest-cov == 6.0.0
+pymongo == 4.10.1
+python-dotenv == 1.0.1
+pylint == 3.3.2
+geopandas == 1.0.1
