@@ -176,7 +176,7 @@ def delete_outliers_calories(data: pd):
     :return: dataframe des recettes sans les recettes avec plus de 300 000 calories
     :rtype: pd.dataframe
     """
-    data = data[data["calories"] < 300000]
+    data = data[data["calories"] < 20000]
     return data
 
 
@@ -307,6 +307,30 @@ def clean_colonne(data: pd, colonne: str, stopwords: set):
         lambda x: clean_and_tokenize(x, stopwords)
     )
     return data
+
+
+def rename_column(data: pd.DataFrame, old_col: list, new_col: dict) -> pd.DataFrame:
+    """Rename the columns of the DataFrame
+
+    :param data: dataframe to rename columns
+    :type data: pd.DataFrame
+    :param old_col: list of old columns
+    :type old_col: list
+    :param new_col: dictionary of new columns
+    :type new_col: dict
+    :raises KeyError: The following columns are missing in the DataFrame: {missing_cols}
+    :return: The data in a pandas dataframe with the columns renamed
+    :rtype: pd.DataFrame
+    """
+
+    missing_cols = [col for col in old_col if col not in data.columns]
+    if missing_cols:
+        raise KeyError(
+            f"The following columns are missing in the DataFrame: {missing_cols}"
+        )
+
+    df = data[old_col].rename(columns=new_col)
+    return df
 
 
 def ingredient_to_ingredient_processed(
@@ -470,6 +494,33 @@ def change_techniques_to_words(data: pd):
     return data
 
 
+def create_colums_count(data):
+    data["comment_count"] = data["rating"].apply(lambda x: len(x))
+    return data
+
+
+def create_mean_rating(df):
+    """
+    Ajoute une colonne 'mean_rating' au DataFrame en calculant la moyenne des notes dans la colonne 'rating'.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame contenant une colonne 'rating' avec des listes de notes.
+
+    Returns:
+    pd.DataFrame: DataFrame avec la nouvelle colonne 'mean_rating'.
+    """
+    # Vérifier que la colonne 'rating' existe
+    if "rating" not in df.columns:
+        raise ValueError("Le DataFrame doit contenir une colonne 'rating'.")
+
+    # Calculer la moyenne de chaque liste de notes
+    df["mean_rating"] = df["rating"].apply(
+        lambda notes: sum(notes) / len(notes) if len(notes) > 0 else None
+    )
+
+    return df
+
+
 def explicit_nutriments(data):
     if "nutrition" not in data.columns:
         raise ValueError("The 'nutrition' column is missing from the data.")
@@ -535,7 +586,9 @@ def preprocess():
     df = change_techniques_to_words(df)
 
     df = explicit_nutriments(df)
-
+    df = create_colums_count(df)
+    df = create_mean_rating(df)
+    print(df.columns)
     # supression des colonnes inutiles
     unwated_columns = [
         "ingredient_tokens",
@@ -561,13 +614,47 @@ def preprocess():
         "carbohydrates (%)",
         "calorie_level",
         "rating",
+        "contributor_id",
+        "user_id",
     ]
     df = delete_unwanted_columns(df, unwated_columns)
 
     df = delete_outliers_calories(df)
 
+    old_col = [
+        "name",
+        "mean_rating",
+        "comment_count",
+        "submitted",
+        "minutes",
+        "ingredients_replaced",
+        "calories",
+        "techniques",
+        "n_steps",
+        "date",
+    ]
+
+    new_col = {
+        "mean_rating": "Note moyenne",
+        "comment_count": "Nombre de commentaires",
+        "name": "Nom",
+        "submitted": "Date de publication de la recette",
+        "n_steps": "Nombre d'étapes",
+        "date": "Dates des commentaires",
+        "ingredients_replaced": "Ingrédients",
+        "minutes": "Durée de la recette (minutes)",
+        "calories": "Calories",
+        "techniques": "Techniques utilisées",
+    }
+
+    print("Original columns:", df.columns)
+
+    df = rename_column(df, old_col, new_col)
+
+    print("Renamed columns:", df.columns)
+
     save_data(df, os.path.join(PATH_DATA, PROCESSED_DATA))
     save_data_json(df, os.path.join(PATH_DATA, PROCESSED_DATA_JSON))
 
 
-# preprocess()
+preprocess()
