@@ -33,6 +33,7 @@ def main():
     load_css("src/style.css")
 
     try:
+        # Creation of all the graphs displayed in the page
         if st.session_state["first_load"]:
             print(st.session_state["recipes_df"].head())
             trend = compute_trend(st.session_state["recipes_df"])
@@ -175,18 +176,17 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre d'étapes des recettes populaires",
                 name="Nombre d'étapes des recettes populaires",
-                axis_x="Nombre d'étapes", 
-                axis_y="Nombre de commentaires", 
-                filters=['Note moyenne'], 
-                plot_type="density map", 
-                log_axis_x=False, 
-                log_axis_y=False, 
+                axis_x="Durée de la recette (minutes)",
+                axis_y="Nombre de commentaires", filters=['Note moyenne'],
+                plot_type="density map",
+                log_axis_x=True,
+                log_axis_y=True,
                 default_values={
-                    "Nombre d'étapes": (3, 37), 
-                    "Nombre de commentaires": (5, 1613), 
-                    "Note moyenne":(4, 5), 
-                    "chosen_filters":['Note moyenne'],
-                    },
+                    "Durée de la recette (minutes)": (1, 18720),
+                    "Nombre de commentaires": (5, 1613),
+                    "Note moyenne":(0, 5),
+                    "chosen_filters":['Note moyenne']
+                    }
                 )
             st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"] = nb_steps_recipes
 
@@ -209,9 +209,63 @@ def main():
                 )
             st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"] = nb_ing_recipes
 
+            popular_ing = UnivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Ingrédients les plus populaires",
+                name="Ingrédients les plus populaires",
+                axis_x="Ingrédients",
+                filters=['Note moyenne'],
+                plot_type="bar_ingredients",
+                log_axis_x=False, log_axis_y=False,
+                default_values={
+                    "Ingrédients": 10,
+                    "Note moyenne":(4, 5),
+                    "chosen_filters":['Note moyenne']
+                    },
+            )
+            st.session_state["locked_graphs"]["Ingrédients les plus populaires"] = popular_ing
+
+            calories_recipes = BivariateStudy(
+                key="Calories des recettes populaires",
+                dataframe=st.session_state["recipes_df"],
+                name="Calories des recettes populaires",
+                axis_x="Calories",
+                axis_y="Nombre de commentaires",
+                filters=['Note moyenne'], plot_type="density map",
+                log_axis_x=True, log_axis_y=True,
+                default_values={
+                    "Calories": (1, 19383),
+                    "Nombre de commentaires": (5, 1613), 
+                    "Note moyenne":(4, 5),
+                    "chosen_filters":['Note moyenne']
+                    },
+                )
+            st.session_state["locked_graphs"]["Calories des recettes populaires"] = calories_recipes
+
+            popular_techniques = UnivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Techniques de cuisine les plus populaires",
+                name="Techniques de cuisine les plus populaires",
+                axis_x="Techniques utilisées",
+                filters=['Note moyenne'],
+                plot_type="bar_techniques",
+                log_axis_x=False,
+                log_axis_y=False,
+                default_values={
+                    "Techniques utilisées": 10,
+                    "Note moyenne":(4, 5),
+                    "chosen_filters":['Note moyenne']
+                    },
+            )
+            st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"] = popular_techniques
+
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
 
+            
+
+
+        # Page layout 
         st.header("1️⃣ Analyse de la fréquentation du site")
 
         explanation_graph_1 = """
@@ -257,6 +311,7 @@ def main():
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].name}")
 
+
         
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
@@ -286,8 +341,23 @@ def main():
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"].name}")
-        
 
+        st.session_state["locked_graphs"]["Calories des recettes populaires"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Calories des recettes populaires"].name}")
+        
+        st.session_state["locked_graphs"]["Ingrédients les plus populaires"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Ingrédients les plus populaires"].name}")
+
+        st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].name}")
+        
+        
     except Exception as e:
         logger.exception(f"Erreur dans la fonction principale : {e}")
         st.error("Une erreur est survenue lors de l'execution de l'application.")

@@ -472,13 +472,24 @@ class UnivariateStudy(BaseStudy):
 
                 if self.first_draw:
                     self.axis_x = axis_x
-                    self.x, self.recipes_id = self.get_data_points(
-                        self.dataframe,
-                        self.axis_x,
-                        self.range_axis_x,
-                        chosen_filters,
-                        range_filters,
-                    )
+                    if self.axis_x in ("Ingrédients", "Techniques utilisées"):
+                        self.x, self.y, self.recipes_id = (
+                                        self.get_data_points_ingredients(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.range_axis_x,
+                                            chosen_filters,
+                                            range_filters,
+                                        )
+                                    )
+                    else:
+                        self.x, self.recipes_id = self.get_data_points(
+                            self.dataframe,
+                            self.axis_x,
+                            self.range_axis_x,
+                            chosen_filters,
+                            range_filters,
+                        )
                     self.first_draw = False
 
                 self.__draw_graph(self.x, self.y, self.recipes_id)

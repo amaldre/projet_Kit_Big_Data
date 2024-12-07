@@ -169,14 +169,14 @@ def delete_outliers_minutes(data: pd):
 
 
 def delete_outliers_calories(data: pd):
-    """Delete Recipe over 300 000 calories (outliers)
+    """Delete Recipe over 20000 calories or 0 calories (outliers)
 
     :param data: dataframe des recettes
     :type data: pd
-    :return: dataframe des recettes sans les recettes avec plus de 300 000 calories
+    :return: dataframe des recettes sans les recettes avec plus de 20000 calories ou 0 calories
     :rtype: pd.dataframe
     """
-    data = data[data["calories"] < 20000]
+    data = data[(data["calories"] < 20000) & (data["calories"] > 0)]
     return data
 
 
