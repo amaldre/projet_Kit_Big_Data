@@ -125,7 +125,7 @@ class UnivariateStudy(BaseStudy):
         """
         Determine the appropriate input widget (slider/date input) based on column type.
         """
-        if axis in ("ingredients_replaced", "techniques"):
+        if axis in ("Ingrédients", "Techniques utilisées"):
             range_axis = self.__set_number_ingredients(axis)
         elif self.dataframe[axis].dtype == "datetime64[ns]":
             range_axis = self._BaseStudy__set_date(axis)
@@ -361,9 +361,9 @@ class UnivariateStudy(BaseStudy):
                             )
 
                         if axis_x in ("Ingrédients", "Techniques utilisées"):
-                            col1, col2 = st.columns(2)
+                            col1, col2, col3 = st.columns(3)
                             with col1:
-                                if st.form_submit_button(label="Draw Bar"):
+                                if st.form_submit_button(label="Tracer un diagramme en barre"):
                                     self.axis_x = axis_x
                                     self.x, self.y, self.recipes_id = (
                                         self.get_data_points_ingredients(
@@ -378,11 +378,15 @@ class UnivariateStudy(BaseStudy):
                                         self.plot_type = "bar_ingredients"
                                     else:
                                         self.plot_type = "bar_techniques"
-
-                            with col2:
-                                if st.form_submit_button(label="Delete graph"):
-                                    self.delete = True
-                                    st.experimental_rerun()
+                            
+                            if free:
+                                with col2:
+                                    if st.form_submit_button(label="Supprimer le graphe"):
+                                        self.delete = True
+                                        st.experimental_rerun()
+                                with col3:
+                                    if st.form_submit_button(label="Paramètres du graphe"):
+                                        self.save_graph()
 
                         else:
                             if free:
