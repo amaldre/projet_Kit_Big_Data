@@ -98,7 +98,7 @@ def main():
 
     with col1:
         try:
-            if st.button("Add univariate graph"):
+            if st.button("Ajout graphe univarié"):
                 name = f"graph {len(st.session_state["graph"]) + 1}"
                 study = UnivariateStudy(
                     dataframe=st.session_state["recipes_df"],
@@ -119,7 +119,7 @@ def main():
 
     with col2:
         try:
-            if st.button("Add bivariate graph"):
+            if st.button("Ajout graphe bivarié"):
                 name = f"graph {len(st.session_state["graph"]) + 1}"
                 study = BivariateStudy(
                     dataframe=st.session_state["recipes_df"],

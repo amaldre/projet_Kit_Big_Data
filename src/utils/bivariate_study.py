@@ -103,7 +103,7 @@ class BivariateStudy(BaseStudy):
         )
         axis_y = st.selectbox(
             label="axis_y",
-            options=self.axis_y_list,
+            options=[axis for axis in self.axis_y_list if axis !=axis_x],
             key=("axis_y" + self.key + str(self.iteration)),
         )
 
