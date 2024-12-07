@@ -45,7 +45,7 @@ class BaseStudy:
         col1, col2 = st.columns(2)
         with col1:
             start_date = st.date_input(
-                "Start date",
+                "Date de début",
                 value=default_value[0],
                 min_value=min_date,
                 max_value=max_date,
@@ -53,7 +53,7 @@ class BaseStudy:
             )
         with col2:
             end_date = st.date_input(
-                "End date",
+                "Date de fin",
                 value=default_value[1],
                 min_value=start_date,
                 max_value=max_date,
@@ -85,7 +85,7 @@ class BaseStudy:
             "Creating a slider for '%s' with min=%d, max=%d", axis, data_min, data_max
         )
         return st.slider(
-            label=f"Range for {axis}",
+            label=f"Plage de valeurs pour : {axis}",
             min_value=data_min,
             max_value=data_max,
             value=default_value,

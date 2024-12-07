@@ -13,51 +13,6 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from utils.base_study import BaseStudy
 
-leS = LinearSegmentedColormap.from_list(
-    "truncated_bone",
-    [
-        "#000000",
-        "#00070C",
-        "#010E19",
-        "#011625",
-        "#021F34",
-        "#032641",
-        "#032744",
-        "#032846",
-        "#042A49",
-        "#042B4B",
-        "#042E50",
-        "#063459",
-        "#073C65",
-        "#09426E",
-        "#0B4A7A",
-        "#114F81",
-        "#285183",
-        "#395385",
-        "#515688",
-        "#63588A",
-        "#795B8D",
-        "#8C5D90",
-        "#A35F93",
-        "#B56295",
-        "#BF6C98",
-        "#C4759A",
-        "#C9819C",
-        "#CD8A9E",
-        "#D497A0",
-        "#D89FA2",
-        "#DEACA3",
-        "#E3B5A6",
-        "#EAC6AF",
-        "#F3DDC2",
-        "#FDFBDC",
-        "#FFFFE9",
-        "#FFFFF8",
-        "#FFFFFF",
-    ],
-    N=256,
-)
-leS.set_bad(color="gray")
 
 # Créez un logger spécifique pour ce module
 logger = logging.getLogger(__name__)
@@ -256,11 +211,11 @@ class BivariateStudy(BaseStudy):
                     ax.set_ylabel(self.axis_y, fontsize=16)
 
             if self.plot_type == "scatter":
-                ax.scatter(x, y, s=1, alpha=0.4)
+                ax.scatter(x, y, s=1)
             elif self.plot_type == "plot":
                 ax.plot(x, y)
             elif self.plot_type == "density map":
-                if self.axis_x == "submitted":
+                if self.axis_x == "Date de publication de la recette":
                     x = x.astype(np.int64) // 10**9
                     ax.set_xticks(np.linspace(min(x), max(x), 7))
                     ax.set_xticklabels(
@@ -273,7 +228,7 @@ class BivariateStudy(BaseStudy):
                 )
                 fig.colorbar(hb, shrink=1, aspect=40, pad=0.02)
 
-            ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
+            ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.4, color="grey")
 
             # Fond transparent
             ax.set_facecolor((0, 0, 0, 0))
@@ -281,10 +236,10 @@ class BivariateStudy(BaseStudy):
             ax.tick_params(axis='both', labelsize=14) 
 
             st.pyplot(fig)
-            st.write(f"number of recipes : {len(x)}")
+            st.write(f"Nombre de recettes affichées dans le graphe : {len(x)}")
 
         if "recipe_id" in self.dataframe.columns:
-            with st.expander(f"Dataframe best {self.axis_y}"):
+            with st.expander(f"Meilleures recettes selon le critère : {self.axis_y} (avec les filtres actuels)"):
                 display_df = self.dataframe[
                     self.dataframe["recipe_id"].isin(recipes_id)
                 ]
@@ -304,7 +259,7 @@ class BivariateStudy(BaseStudy):
             with st.container(border=True):
                 st.markdown(f"**{self.name}**")
                 graph_container = st.empty()
-                with graph_container.expander("**filters**", expanded=free):
+                with graph_container.expander("**Filtres**", expanded=free):
                     if free is True:
                         axis_x, axis_y = self.__set_axis()
                     else:
@@ -315,7 +270,7 @@ class BivariateStudy(BaseStudy):
                     self.range_axis_y = self.__set_range_axis(axis_y)
 
                     if self.filters is not None and len(self.filters) > 0:
-                        st.write("extra_filters")
+                        st.write("Filtres additionnels")
                         chosen_filters, range_filters = self.__filters(axis_x, axis_y)
                         self.chosen_filters = chosen_filters
                         self.range_filters = range_filters
@@ -345,7 +300,7 @@ class BivariateStudy(BaseStudy):
                         if free is False:
                             col = st.columns(3)
                             with col[0]:
-                                if st.form_submit_button(label="Draw graph"):
+                                if st.form_submit_button(label="Tracer le graphe"):
                                     self.axis_x = axis_x
                                     self.axis_y = axis_y
                                     self.x, self.y, self.recipes_id = (
@@ -362,7 +317,7 @@ class BivariateStudy(BaseStudy):
 
                             if self.default_values_save is not None:
                                 with col[1]:
-                                    if st.form_submit_button(label="Reset graph"):
+                                    if st.form_submit_button(label="Réinitialiser le graphe"):
                                         self.default_values = self.default_values_save
                                         self.axis_x = axis_x
                                         self.axis_y = axis_y
@@ -392,7 +347,7 @@ class BivariateStudy(BaseStudy):
                         else:
                             col = st.columns(3)
                             with col[0]:
-                                if st.form_submit_button(label="Draw plot"):
+                                if st.form_submit_button(label="Tracer un graphe plot"):
                                     self.axis_x = axis_x
                                     self.axis_y = axis_y
                                     self.x, self.y, self.recipes_id = (
@@ -409,7 +364,7 @@ class BivariateStudy(BaseStudy):
                                     self.plot_type = "plot"
 
                             with col[1]:
-                                if st.form_submit_button(label="Draw scatter"):
+                                if st.form_submit_button(label="Tracer un nuage de points"):
                                     self.axis_x = axis_x
                                     self.axis_y = axis_y
                                     self.x, self.y, self.recipes_id = (
@@ -426,7 +381,7 @@ class BivariateStudy(BaseStudy):
                                     self.plot_type = "scatter"
 
                             with col[2]:
-                                if st.form_submit_button(label="Draw density"):
+                                if st.form_submit_button(label="Tracer une carte de densité"):
                                     self.axis_x = axis_x
                                     self.axis_y = axis_y
                                     self.x, self.y, self.recipes_id = (
@@ -445,11 +400,11 @@ class BivariateStudy(BaseStudy):
                             col2 = st.columns(3)
 
                             with col2[0]:
-                                if st.form_submit_button(label="Save graph"):
+                                if st.form_submit_button(label="Paramètres du graphe"):
                                     self.save_graph()
 
                             with col2[1]:
-                                if st.form_submit_button(label=f"Delete graph"):
+                                if st.form_submit_button(label=f"Supprimer le graphe"):
                                     self.delete = True
                                     logger.info(
                                         "Graphique supprime pour l'instance avec key='%s'",

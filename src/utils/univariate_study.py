@@ -235,7 +235,7 @@ class UnivariateStudy(BaseStudy):
         fig.patch.set_alpha(0)
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
-        st.write(f"number of recipes in the graph: {len(x)}")
+        st.write(f"Nombre de recettes prises en compte dans le graphe : {len(x)}")
         return True
 
     def graph_density(self, x):
@@ -247,7 +247,7 @@ class UnivariateStudy(BaseStudy):
         fig.patch.set_alpha(0)
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
-        st.write(f"number of recipes in the graph: {len(x)}")
+        st.write(f"Nombre de recettes prises en compte dans le graphe : {len(x)}")
         return True
 
     def graph_histogram(self, x):
@@ -259,7 +259,7 @@ class UnivariateStudy(BaseStudy):
         fig.patch.set_alpha(0)
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
-        st.write(f"number of recipes in the graph: {len(x)}")
+        st.write(f"Nombre de recettes affichées dans le graphe : {len(x)}")
         return True
 
     def graph_bar_elts(self, nb_elts_display, count_elts):
@@ -271,7 +271,7 @@ class UnivariateStudy(BaseStudy):
         fig.patch.set_alpha(0)
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
-        st.write(f"number of recipes in the graph: {sum(count_elts)}")
+        st.write(f"Nombre de recettes affichées dans le graphe : {sum(count_elts)}")
         return True
 
     def __draw_graph(self, x, y, recipes_id):
@@ -291,11 +291,11 @@ class UnivariateStudy(BaseStudy):
 
         if recipes_id is not None:
             display_df = self.dataframe[self.dataframe["recipe_id"].isin(recipes_id)]
-            display_df = display_df.sort_values(by="comment_count", ascending=False)[
+            display_df = display_df.sort_values(by="Nombre de commentaires", ascending=False)[
                 :10
             ]
             with st.expander(
-                "The 10 recipes with the most comments (with current filters)"
+                "Recettes avec le plus de commentaires (avec les filtres actuels)"
             ):
                 st.dataframe(display_df, hide_index=True)
         return True
@@ -312,12 +312,12 @@ class UnivariateStudy(BaseStudy):
             ax.set_xlabel(self.axis_x, fontsize=16)
 
         if self.log_axis_y:
-            ax.set_ylabel("log number of recipes", fontsize=16)
+            ax.set_ylabel("log Nombre de recettes", fontsize=16)
             ax.set_yscale("log")
         else:
-            ax.set_ylabel("number of recipes", fontsize=16)
+            ax.set_ylabel("Nombre de recettes", fontsize=16)
 
-        ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.7)
+        ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.4)
         st.pyplot(fig, clear_figure=True)
         return True
 
@@ -333,7 +333,7 @@ class UnivariateStudy(BaseStudy):
             with st.container(border=True):
                 st.markdown(f"**{self.name}**")
                 graph_container = st.empty()
-                with graph_container.expander("**filters**", expanded=free):
+                with graph_container.expander("**Filtres**", expanded=free):
                     if free:
                         axis_x = self.__set_axis()
                     else:
@@ -341,7 +341,7 @@ class UnivariateStudy(BaseStudy):
                     self.range_axis_x = self.__set_range_axis(axis_x)
 
                     if self.filters is not None and self.filters:
-                        st.write("extra_filters")
+                        st.write("Filtres additionnels")
                         chosen_filters, range_filters = self.__filters(axis_x)
                         self.chosen_filters = chosen_filters
                         self.range_filters = range_filters
@@ -366,7 +366,7 @@ class UnivariateStudy(BaseStudy):
                                 value=self.log_axis_y,
                             )
 
-                        if axis_x in ("ingredients_replaced", "techniques"):
+                        if axis_x in ("Ingrédients", "Techniques utilisées"):
                             col1, col2 = st.columns(2)
                             with col1:
                                 if st.form_submit_button(label="Draw Bar"):
@@ -380,7 +380,7 @@ class UnivariateStudy(BaseStudy):
                                             range_filters,
                                         )
                                     )
-                                    if axis_x == "ingredients_replaced":
+                                    if axis_x == "Ingrédients":
                                         self.plot_type = "bar_ingredients"
                                     else:
                                         self.plot_type = "bar_techniques"
@@ -395,7 +395,7 @@ class UnivariateStudy(BaseStudy):
                                 col1, col2, col3 = st.columns(3)
 
                                 with col1:
-                                    if st.form_submit_button(label="Draw Box Plot"):
+                                    if st.form_submit_button(label="Tracer un graphe box plot"):
                                         self.axis_x = axis_x
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
@@ -407,7 +407,7 @@ class UnivariateStudy(BaseStudy):
                                         self.plot_type = "boxplot"
 
                                 with col2:
-                                    if st.form_submit_button(label="Draw Density Plot"):
+                                    if st.form_submit_button(label="Tracer un graphe de densité"):
                                         self.axis_x = axis_x
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
@@ -419,7 +419,7 @@ class UnivariateStudy(BaseStudy):
                                         self.plot_type = "density"
 
                                 with col3:
-                                    if st.form_submit_button(label="Draw Histogram"):
+                                    if st.form_submit_button(label="Tracer un histogramme"):
                                         self.axis_x = axis_x
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
@@ -432,18 +432,18 @@ class UnivariateStudy(BaseStudy):
 
                                 col1, col2, _ = st.columns(3)
                                 with col1:
-                                    if st.form_submit_button(label="Save graph"):
+                                    if st.form_submit_button(label="Paramètres du graphe"):
                                         self.save_graph()
 
                                 with col2:
-                                    if st.form_submit_button(label="Delete graph"):
+                                    if st.form_submit_button(label="Supprimer le graphe"):
                                         self.delete = True
                                         st.experimental_rerun()
 
                             else:
                                 col1, col2 = st.columns(2)
                                 with col1:
-                                    if st.form_submit_button(label="Draw graph"):
+                                    if st.form_submit_button(label="Trace le graphe"):
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
                                             self.axis_x,
@@ -452,7 +452,7 @@ class UnivariateStudy(BaseStudy):
                                             range_filters,
                                         )
                                 with col2:
-                                    if st.form_submit_button(label="Reset graph"):
+                                    if st.form_submit_button(label="Réinitialiser le graphe"):
                                         self.axis_x = axis_x
                                         self.default_values = self.default_values_save
                                         range_filters_save = [

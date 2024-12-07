@@ -60,11 +60,11 @@ def load_df(file_path):
     :rtype: pd.DataFrame
     """
     df = load_csv(file_path)
-    df["ingredients_replaced"] = df["ingredients_replaced"].apply(ast.literal_eval)
-    df["ingredient_count"] = df["ingredients_replaced"].apply(len)
-    df["techniques"] = df["techniques"].apply(ast.literal_eval)
-    df["techniques_count"] = df["techniques"].apply(len)
-    df["submitted"] = pd.to_datetime(df["submitted"])
+    df["Ingrédients"] = df["Ingrédients"].apply(ast.literal_eval)
+    df["Nombre d'ingrédients"] = df["Ingrédients"].apply(len)
+    df["Techniques utilisées"] = df["Techniques utilisées"].apply(ast.literal_eval)
+    df["Nombre de techniques utilisées"] = df["Techniques utilisées"].apply(len)
+    df["Date de publication de la recette"] = pd.to_datetime(df["Date de publication de la recette"])
     return df
 
 
@@ -140,18 +140,18 @@ def compute_trend(nb_recette_par_annee_df):
     if nb_recette_par_annee_df.empty:
         return pd.DataFrame()
 
-    if "submitted" in nb_recette_par_annee_df.columns:
-        nb_recette_par_annee_df["submitted"] = pd.to_datetime(
-            nb_recette_par_annee_df["submitted"], errors="coerce"
+    if "Date de publication de la recette" in nb_recette_par_annee_df.columns:
+        nb_recette_par_annee_df["Date de publication de la recette"] = pd.to_datetime(
+            nb_recette_par_annee_df["Date de publication de la recette"], errors="coerce"
         )
 
-    if nb_recette_par_annee_df["submitted"].isnull().all():
+    if nb_recette_par_annee_df["Date de publication de la recette"].isnull().all():
         return pd.DataFrame()
 
-    nb_recette_par_annee_df["year"] = nb_recette_par_annee_df["submitted"].dt.year
-    nb_recette_par_annee_df["month"] = nb_recette_par_annee_df["submitted"].dt.month
+    nb_recette_par_annee_df["year"] = nb_recette_par_annee_df["Date de publication de la recette"].dt.year
+    nb_recette_par_annee_df["month"] = nb_recette_par_annee_df["Date de publication de la recette"].dt.month
     nb_recette_par_annee_df["submitted_by_month"] = (
-        nb_recette_par_annee_df["submitted"].dt.to_period("M").dt.to_timestamp()
+        nb_recette_par_annee_df["Date de publication de la recette"].dt.to_period("M").dt.to_timestamp()
     )
     submissions_groupmonth = (
         nb_recette_par_annee_df["submitted_by_month"].value_counts().sort_index()
@@ -166,7 +166,7 @@ def compute_trend(nb_recette_par_annee_df):
     trend = pd.DataFrame(
         {
             "Date": decomposition.trend.index,  # X-axis: Time or index
-            "Trend": decomposition.trend.values,  # Y-axis: Trend values
+            "Moyenne glissante": decomposition.trend.values,  # Y-axis: Trend values
         }
     )
     return trend

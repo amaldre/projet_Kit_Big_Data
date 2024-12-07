@@ -33,7 +33,7 @@ if "graph" not in st.session_state:
     st.session_state["graph"] = []
 
 if "recipes_df" not in st.session_state:
-    st.session_state["recipes_df"] = initialize_recipes_df("data/cloud_df.csv")
+    st.session_state["recipes_df"] = initialize_recipes_df("data/clean_cloud_df.csv")
 
 
 def main():
@@ -42,25 +42,46 @@ def main():
     """
     # Definition des variables
     axis_x_list = [
-        "calories",
-        "minutes",
-        "n_steps",
-        "comment_count",
-        "ingredient_count",
-        "submitted",
+        'Note moyenne',
+        'Nombre de commentaires',
+        'Date de publication de la recette',
+        'Durée de la recette',
+        'Calories',
+        "Nombre d'étapes",
+        "Nombre d'ingrédients",
+        "Nombre de techniques utilisées",
     ]
-    axis_y_list = ["comment_count", "mean_rating"]
-    filters = ["comment_count", "mean_rating", "submitted"]
+    axis_y_list = [
+        'Note moyenne',
+        'Nombre de commentaires',
+        'Date de publication de la recette',
+        'Durée de la recette',
+        'Calories',
+        "Nombre d'étapes",
+        "Nombre d'ingrédients",
+        "Nombre de techniques utilisées",
+    ]
+    filters = [
+        'Note moyenne',
+        'Nombre de commentaires',
+        'Date de publication de la recette',
+        'Durée de la recette',
+        'Calories',
+        "Nombre d'étapes",
+        "Nombre d'ingrédients",
+        "Nombre de techniques utilisées",
+    ]
     axis_x_univar = [
-        "calories",
-        "ingredients_replaced",
-        "techniques",
-        "minutes",
-        "n_steps",
-        "comment_count",
-        "ingredient_count",
-        "submitted",
-        "mean_rating",
+        'Note moyenne',
+        'Nombre de commentaires',
+        'Date de publication de la recette',
+        "Durée de la recette (minutes)",
+        "Calories",
+        "Ingredients",
+        "Techniques utilisées",
+        "Nombre d'étapes",
+        "Nombre d'ingrédients",
+        "Nombre de techniques utilisées",
     ]
 
     # Affichage des graphiques existants

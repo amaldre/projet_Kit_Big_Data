@@ -16,7 +16,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 
 
 if "recipes_df" not in st.session_state:
-    st.session_state["recipes_df"] = initialize_recipes_df("data/cloud_df.csv")
+    st.session_state["recipes_df"] = initialize_recipes_df("data/clean_cloud_df.csv")
 
 if "first_load" not in st.session_state:
     st.session_state["first_load"] = True
@@ -34,6 +34,7 @@ def main():
 
     try:
         if st.session_state["first_load"]:
+            print(st.session_state["recipes_df"].head())
             trend = compute_trend(st.session_state["recipes_df"])
             logger.info("Tendance calculee avec succes.")
 
@@ -42,14 +43,14 @@ def main():
                 key="Moyenne glissante du nombre de recettes au cours du temps",
                 name="Moyenne glissante du nombre de recettes du temps",
                 axis_x="Date",
-                axis_y="Trend",
+                axis_y="Moyenne glissante",
                 plot_type="plot",
                 default_values={
                     "Date": (
                         Timestamp("1999-08-01 00:00:00"),
                         Timestamp("2018-12-1 00:00:00"),
                     ),
-                    "Trend": (3, 2268),
+                    "Moyenne glissante": (3, 2268),
                     "chosen_filters": [],
                 },
             )
@@ -59,13 +60,13 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre de recettes en fonction du temps",
                 name="Nombre de recettes en fonction du temps",
-                axis_x="submitted",
+                axis_x="Date de publication de la recette",
                 filters=[],
                 plot_type="histogram",
                 log_axis_x=False,
                 log_axis_y=False,
                 default_values={
-                    "submitted": (
+                    "Date de publication de la recette": (
                         Timestamp("1999-08-06 00:00:00"),
                         Timestamp("2018-12-04 00:00:00"),
                     ),
@@ -80,18 +81,18 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre de commentaires par recette en fonction du temps",
                 name="Nombre de commentaires par recette en fonction du temps",
-                axis_x="submitted",
-                axis_y="comment_count",
+                axis_x="Date de publication de la recette",
+                axis_y="Nombre de commentaires",
                 filters=[],
                 plot_type="density map",
                 log_axis_x=False,
                 log_axis_y=True,
                 default_values={
-                    "submitted": (
+                    "Date de publication de la recette": (
                         Timestamp("1999-08-06 00:00:00"),
                         Timestamp("2018-12-04 00:00:00"),
                     ),
-                    "comment_count": (1, 1613),
+                    "Nombre de commentaires": (1, 1613),
                     "chosen_filters": [],
                 },
             )
@@ -101,13 +102,13 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre de recettes durant le pic d'activité du site",
                 name="Nombre de recettes durant le pic d'activité du site",
-                axis_x="submitted", 
+                axis_x="Date de publication de la recette", 
                 filters=[],
                 plot_type="histogram", 
                 log_axis_x=False, 
                 log_axis_y=False, 
                 default_values={
-                    "submitted": 
+                    "Date de publication de la recette": 
                     (Timestamp('2001-10-01 00:00:00'), 
                      Timestamp('2010-10-01 00:00:00')), 
                      "chosen_filters":[]
@@ -119,17 +120,17 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Distribution du nombre de commentaires par recette",
                 name="Distribution du nombre de commentaires par recette",
-                axis_x="comment_count",
-                filters=["submitted"],
+                axis_x="Nombre de commentaires",
+                filters=["Date de publication de la recette"],
                 plot_type="boxplot", 
                 log_axis_x=True, 
                 log_axis_y=False, 
                 default_values={
-                    "comment_count": (0, 1613), 
-                    "submitted":
+                    "Nombre de commentaires": (0, 1613), 
+                    "Date de publication de la recette":
                     (Timestamp('2001-10-01 00:00:00'),
                      Timestamp('2010-10-01 00:00:00')),
-                     "chosen_filters":['submitted']
+                     "chosen_filters":['Date de publication de la recette']
                      },
                 )
             st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"] = comment_box_blot
@@ -138,17 +139,17 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Distribution de la note moyenne des recettes",
                 name="Distribution de la note moyenne des recettes",
-                axis_x="mean_rating", 
-                filters=['submitted'], 
+                axis_x="Note moyenne", 
+                filters=['Date de publication de la recette'], 
                 plot_type="boxplot", 
                 log_axis_x=True, 
                 log_axis_y=False, 
                 default_values={
-                    "mean_rating": (0, 5), 
-                    "submitted":
+                    "Note moyenne": (0, 5), 
+                    "Date de publication de la recette":
                     (Timestamp('2001-10-01 00:00:00'), 
                      Timestamp('2010-10-01 00:00:00')), 
-                     "chosen_filters":['submitted']
+                     "chosen_filters":['Date de publication de la recette']
                      },
                 )
             st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"] = mean_rating_box_blot
@@ -157,15 +158,15 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Duree recettes populaires",
                 name="Duree recettes populaires",
-                axis_x="minutes",
-                axis_y="comment_count",
-                filters=["mean_rating"],
+                axis_x="Durée de la recette (minutes)",
+                axis_y="Nombre de commentaires",
+                filters=["Note moyenne"],
                 plot_type="scatter",
                 default_values={
-                    "minutes": (1, 279),
-                    "comment_count": (100, 1613),
-                    "mean_rating": (4, 5),
-                    "chosen_filters": ["mean_rating"],
+                    "Durée de la recette (minutes)": (1, 279),
+                    "Nombre de commentaires": (100, 1613),
+                    "Note moyenne": (4, 5),
+                    "chosen_filters": ["Note moyenne"],
                 },
             )
             st.session_state["locked_graphs"]["Duree recettes populaires"] = min_popular_recipes
@@ -174,17 +175,17 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre d'étapes des recettes populaires",
                 name="Nombre d'étapes des recettes populaires",
-                axis_x="n_steps", 
-                axis_y="comment_count", 
-                filters=['mean_rating'], 
+                axis_x="Nombre d'étapes", 
+                axis_y="Nombre de commentaires", 
+                filters=['Note moyenne'], 
                 plot_type="density map", 
                 log_axis_x=False, 
                 log_axis_y=False, 
                 default_values={
-                    "n_steps": (3, 37), 
-                    "comment_count": (5, 1613), 
-                    "mean_rating":(4, 5), 
-                    "chosen_filters":['mean_rating'],
+                    "Nombre d'étapes": (3, 37), 
+                    "Nombre de commentaires": (5, 1613), 
+                    "Note moyenne":(4, 5), 
+                    "chosen_filters":['Note moyenne'],
                     },
                 )
             st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"] = nb_steps_recipes
@@ -193,17 +194,17 @@ def main():
                 dataframe=st.session_state["recipes_df"],
                 key="Nombre d'ingrédients des recettes populaires",
                 name="Nombre d'ingrédients des recettes populaires",
-                axis_x="ingredient_count", 
-                axis_y="comment_count", 
-                filters=['mean_rating'], 
+                axis_x="Nombre d'ingrédients", 
+                axis_y="Nombre de commentaires", 
+                filters=['Note moyenne'], 
                 plot_type="density map", 
                 log_axis_x=False, 
                 log_axis_y=False, 
                 default_values={
-                    "ingredient_count": (4, 20), 
-                    "comment_count": (5, 1613), 
-                    "mean_rating":(4, 5), 
-                    "chosen_filters":['mean_rating'],
+                    "Nombre d'ingrédients": (4, 20), 
+                    "Nombre de commentaires": (5, 1613), 
+                    "Note moyenne":(4, 5), 
+                    "chosen_filters":['Note moyenne'],
                     },
                 )
             st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"] = nb_ing_recipes
@@ -263,7 +264,7 @@ def main():
 
         explanation_graph_2 = """
         **Observations :**
-        - La majorité des recettes populaires sont des recettes courtes, avec une durée de préparation inférieure à 100 minutes.
+        - La majorité des recettes populaires sont des recettes courtes, avec une durée de préparation inférieure à 100 Durée de la recette (minutes).
         - Les recettes populaires ont tendance à avoir un nombre de commentaires plus élevé, avec une concentration autour de 1000 commentaires.
 
         **Interprétation :**
