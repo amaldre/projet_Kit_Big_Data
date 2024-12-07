@@ -58,7 +58,6 @@ def main():
     """
     )
 
-
     raw_recipes = load_data(PATH_DATA, RAW_RECIPE)
     raw_interactions = load_data(PATH_DATA, RAW_INTERACTIONS)
 
@@ -90,7 +89,6 @@ def main():
     """
 
     st.components.v1.html(iframe_code, height=820)
-
 
     # --- Transformation des Données ---
     st.header(" Transformation des Données")
@@ -127,7 +125,9 @@ def main():
             )
             st.write("**Après conversion :**", raw_recipes["tags"].dtype)
         except Exception as e:
-            logger.error(f"Erreur lors de la conversion de la colonne `submitted` : {e}")
+            logger.error(
+                f"Erreur lors de la conversion de la colonne `submitted` : {e}"
+            )
             st.error(
                 "Erreur lors de la conversion des colonnes. Veuillez vérifier vos données."
             )
@@ -153,7 +153,9 @@ def main():
             ax.set_xlabel("Nombre de valeurs manquantes")
             st.pyplot(fig)
         except Exception as e:
-            logger.error(f"Erreur lors de la visualisation des valeurs manquantes : {e}")
+            logger.error(
+                f"Erreur lors de la visualisation des valeurs manquantes : {e}"
+            )
             st.error("Impossible de visualiser les valeurs manquantes.")
 
     # --- Préparation à la fusion des Données ---
@@ -209,7 +211,9 @@ def main():
     )
 
     try:
-        example_text = "This is a recipe with a lot of unnecessary words and punctuation!!!"
+        example_text = (
+            "This is a recipe with a lot of unnecessary words and punctuation!!!"
+        )
         stopwords = {"this", "is", "a", "and"}
         cleaned_text = " ".join(
             [word for word in example_text.lower().split() if word not in stopwords]
@@ -245,25 +249,90 @@ def main():
     Nous avons alors tenté d'utiliser MongoDB Atlas.
     Pour cela nous avons réduit le nombre de colonnes de notre base en supprimant les colonnes inutiles.
     Nous avons alors gardé uniquement les colonnes suivantes car la version gratuite de MongoDB Atlas nous limitait à 512 Mo de données :
-    - recipe_id
-    - rating
-    - minutes
-    - ingredients
-    - techniques
-    - calories
-    - n_steps 
-    - submitted
+    """
+    )
 
+    cols = st.columns(4)
+    columns = [
+        "recipe_id",
+        "rating",
+        "minutes",
+        "ingredients",
+        "techniques",
+        "calories",
+        "n_steps",
+        "submitted",
+    ]
+
+    for i, col in enumerate(cols):
+        with col:
+            st.markdown(
+                f"""
+                <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                    <strong>{columns[i]}</strong>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with cols[i]:
+            if i + 4 < len(columns):
+                st.markdown(
+                    f"""
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                        <strong>{columns[i + 4]}</strong>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+    st.write(
+        """
+    
+    Des fonctions permettent de rajouter les colonnes correspondant aux moyennes des recettes et le nombre de commentaires par recette.
 
     Après avoir créé notre collection et inséré nos données, nous avons pu nous connecter à notre base de données via une classe Python créée pour l'occasion.
     Cependant, la version gratuite de MongoDB Atlas nous a limité dans le téléchargement de nos données. Le téléchargement étant limité à 10 Go sur une période glissante de 7 jours, nous avons au cours de nos tests épuisé notre quota de téléchargement.
     Nous avons donc abandonné l'utilisation de MongoDB Atlas pour une base de données locale réduite à 120 Mo.
+    
+    Les colonnes sont alors renommées :
     """
     )
+    cols = st.columns(5)
+    columns = [
+        "Nom",
+        "Note moyenne",
+        "Nombre de commentaires",
+        "Date de publication de la recette",
+        "Durée de la recette (minutes)",
+        "Ingrédients",
+        "Calories",
+        "Techniques utilisées",
+        "Nombre d'étapes",
+        "Dates des commentaires",
+    ]
+
+    for i, col in enumerate(cols):
+        with col:
+            st.markdown(
+                f"""
+                <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                    <strong>{columns[i]}</strong>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with cols[i]:
+            if i + 4 < len(columns):
+                st.markdown(
+                    f"""
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; margin-bottom:10px;">
+                        <strong>{columns[i + 4]}</strong>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
 
 if __name__ == "__main__":
 
     main()
-
-# TODO : Raconter mieux lhistoire du pretaitement
