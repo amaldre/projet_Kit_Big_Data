@@ -172,7 +172,7 @@ def test_initialize_recipes_df_unexpected_error(tmp_path, monkeypatch, caplog):
 def test_compute_trend_valid_data():
     df = pd.DataFrame(
         {
-            "Date de publication de la recette": pd.date_range(start="2021-01-01", periods=24, freq="M"),
+            "Date de publication de la recette": pd.date_range(start="2021-01-01", periods=24, freq="ME"),
             "count": [10 * i for i in range(1, 25)],
         }
     )

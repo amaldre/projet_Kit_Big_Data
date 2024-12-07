@@ -15,7 +15,7 @@ def mock_session_state():
     """
     session_state = {
         "recipes_df": pd.DataFrame({
-            "submitted": pd.date_range(start="1999-01-01", periods=100, freq="Y"),
+            "submitted": pd.date_range(start="1999-01-01", periods=100, freq="YE"),
             "comment_count": range(100),
             "mean_rating": [4.5] * 100,
             "minutes": [30] * 100
@@ -45,7 +45,7 @@ def test_main(
     mock_load_css.return_value = None
 
     mock_compute_trend.return_value = pd.DataFrame({
-        "Date": pd.date_range(start="2000-01-01", periods=20, freq="Y"),
+        "Date": pd.date_range(start="2000-01-01", periods=20, freq="YE"),
         "Trend": range(20)
     })
 
