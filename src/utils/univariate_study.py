@@ -305,18 +305,12 @@ class UnivariateStudy(BaseStudy):
         Set axis labels, scale, and grid for the plot.
         """
         ax.set_title(self.name, fontsize=16, pad=20, weight='bold')
+        ax.set_xlabel(self.axis_x, fontsize=16)
+        ax.set_ylabel("Nombre de recettes", fontsize=16)
         if self.log_axis_x:
-            ax.set_xlabel("log " + self.axis_x, fontsize=16)
             ax.set_xscale("log")
-        else:
-            ax.set_xlabel(self.axis_x, fontsize=16)
-
         if self.log_axis_y:
-            ax.set_ylabel("log Nombre de recettes", fontsize=16)
             ax.set_yscale("log")
-        else:
-            ax.set_ylabel("Nombre de recettes", fontsize=16)
-
         ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.4)
         st.pyplot(fig, clear_figure=True)
         return True
@@ -346,7 +340,7 @@ class UnivariateStudy(BaseStudy):
                         self.chosen_filters = chosen_filters
                         self.range_filters = range_filters
 
-                    with st.form(self.key):
+                    with st.form(self.key, border=False):
                         pos = 0
                         col = st.columns(2)
                         with col[pos]:
@@ -438,7 +432,7 @@ class UnivariateStudy(BaseStudy):
                                 with col2:
                                     if st.form_submit_button(label="Supprimer le graphe"):
                                         self.delete = True
-                                        st.experimental_rerun()
+                                        st.rerun()
 
                             else:
                                 col1, col2 = st.columns(2)

@@ -35,6 +35,9 @@ if "graph" not in st.session_state:
 if "recipes_df" not in st.session_state:
     st.session_state["recipes_df"] = initialize_recipes_df("data/clean_cloud_df.csv")
 
+if "count_graph_total" not in st.session_state:
+    st.session_state["count_graph_total"] = 0
+
 
 def main():
     """
@@ -91,6 +94,7 @@ def main():
             logger.info(
                 f"Graphique supprime. Nombre de graphiques restants: {len(st.session_state['graph'])}"
             )
+            st.rerun()
         else:
             graph.display_graph(free=True)
 
@@ -99,15 +103,17 @@ def main():
     with col1:
         try:
             if st.button("Ajout graphe univarié"):
-                name = f"graph {len(st.session_state["graph"]) + 1}"
+                name = f"Graphe univarié"
                 study = UnivariateStudy(
                     dataframe=st.session_state["recipes_df"],
+                    key=f'free graph {st.session_state["count_graph_total"]}',
                     axis_x_list=axis_x_univar,
                     filters=filters,
-                    key=name,
+                    name=name,
                     plot_type="density",
                 )
                 st.session_state["graph"].append(study)
+                st.session_state["count_graph_total"] += 1
                 st.rerun()
         except Exception as e:
             logger.error(
@@ -120,16 +126,19 @@ def main():
     with col2:
         try:
             if st.button("Ajout graphe bivarié"):
-                name = f"graph {len(st.session_state["graph"]) + 1}"
+                name = f"Graphe bivarié"
+                
                 study = BivariateStudy(
                     dataframe=st.session_state["recipes_df"],
+                    key=f'free graph {st.session_state["count_graph_total"]}',
                     axis_x_list=axis_x_list,
                     axis_y_list=axis_y_list,
                     filters=filters,
-                    key=name,
+                    name=name,
                     plot_type="scatter",
                 )
                 st.session_state["graph"].append(study)
+                st.session_state["count_graph_total"] += 1
                 st.rerun()
         except Exception as e:
             logger.error(

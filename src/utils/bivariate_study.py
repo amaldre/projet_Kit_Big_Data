@@ -188,16 +188,13 @@ class BivariateStudy(BaseStudy):
 
             ax.set_title(self.name, fontsize=16, pad=20, weight='bold')
             if self.plot_type != "density map":
+                ax.set_xlabel(self.axis_x, fontsize=16)
+                ax.set_ylabel(self.axis_y, fontsize=16)
                 if self.log_axis_x :
-                    ax.set_xlabel("log " + self.axis_x, fontsize=16)
                     ax.set_xscale("log")
-                else:
-                    ax.set_xlabel(self.axis_x, fontsize=16)
                 if self.log_axis_y:
-                    ax.set_ylabel("log " + self.axis_y, fontsize=16)
                     ax.set_yscale("log")
-                else:
-                    ax.set_ylabel(self.axis_y, fontsize=16)
+                
             else:
                 if self.log_axis_x :
                     ax.set_xlabel("log " + self.axis_x, fontsize=16)
