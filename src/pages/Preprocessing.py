@@ -25,6 +25,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 PATH_DATA = "data/"
 RAW_RECIPE = "RAW_recipes_sample.csv"
 RAW_INTERACTIONS = "RAW_interactions_sample.csv"
+DF_FINAL = "clean_recipe_df.csv"
 
 # ---- Page Streamlit ----
 try:
@@ -294,7 +295,9 @@ def main():
     Cependant, la version gratuite de MongoDB Atlas nous a limité dans le téléchargement de nos données. Le téléchargement étant limité à 10 Go sur une période glissante de 7 jours, nous avons au cours de nos tests épuisé notre quota de téléchargement.
     Nous avons donc abandonné l'utilisation de MongoDB Atlas pour une base de données locale réduite à 120 Mo.
     
-    Les colonnes sont alors renommées :
+    Nous avons finalement opté pour une base de données locale, qui nous a permis de continuer le développement de notre application.
+    
+    Les colonnes sont alors renommées comme suit :
     """
     )
     cols = st.columns(5)
@@ -331,6 +334,16 @@ def main():
                     """,
                     unsafe_allow_html=True,
                 )
+
+    df_final = load_data(PATH_DATA, DF_FINAL)
+
+    # Afficher les données brutes si elles existent
+    if not df_final.empty:
+        st.write("Le dataframe final est alors le suivant :")
+        st.dataframe(df_final.head(5))
+    else:
+        st.warning("Fichier clean_recipe_df.csv introuvable.")
+        logger.warning("clean_recipe_df.csv introuvable.")
 
 
 if __name__ == "__main__":
