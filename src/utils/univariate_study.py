@@ -214,7 +214,7 @@ class UnivariateStudy(BaseStudy):
 
         all_filters = [f for f in self.filters if f != axis_x]
         chosen_filters = st.multiselect(
-            label="filters",
+            label="Filtres",
             default=default_values,
             options=all_filters,
             key=("filters" + self.key + str(self.iteration)),

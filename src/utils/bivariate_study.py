@@ -167,7 +167,7 @@ class BivariateStudy(BaseStudy):
             filtre for filtre in self.filters if (filtre != axis_x and filtre != axis_y)
         ]
         chosen_filters = st.multiselect(
-            label="filters",
+            label="Filtres",
             default=default_values,
             options=filters,
             key=("filters" + self.key + str(self.iteration)),

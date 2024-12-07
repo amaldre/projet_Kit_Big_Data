@@ -113,7 +113,7 @@ def main():
                     (Timestamp('2001-10-01 00:00:00'), 
                      Timestamp('2010-10-01 00:00:00')), 
                      "chosen_filters":[]
-                     },
+                },
             )
             st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"] = nb_recette_temps_active_study
 
@@ -132,8 +132,8 @@ def main():
                     (Timestamp('2001-10-01 00:00:00'),
                      Timestamp('2010-10-01 00:00:00')),
                      "chosen_filters":['Date de publication de la recette']
-                     },
-                )
+                },
+            )
             st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"] = comment_box_blot
 
             mean_rating_box_blot = UnivariateStudy(
@@ -151,31 +151,14 @@ def main():
                     (Timestamp('2001-10-01 00:00:00'), 
                      Timestamp('2010-10-01 00:00:00')), 
                      "chosen_filters":['Date de publication de la recette']
-                     },
-                )
+                },
+            )
             st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"] = mean_rating_box_blot
 
             min_popular_recipes = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
                 key="Duree recettes populaires",
                 name="Duree recettes populaires",
-                axis_x="Durée de la recette (minutes)",
-                axis_y="Nombre de commentaires",
-                filters=["Note moyenne"],
-                plot_type="scatter",
-                default_values={
-                    "Durée de la recette (minutes)": (1, 279),
-                    "Nombre de commentaires": (100, 1613),
-                    "Note moyenne": (4, 5),
-                    "chosen_filters": ["Note moyenne"],
-                },
-            )
-            st.session_state["locked_graphs"]["Duree recettes populaires"] = min_popular_recipes
-
-            nb_steps_recipes = BivariateStudy(
-                dataframe=st.session_state["recipes_df"],
-                key="Nombre d'étapes des recettes populaires",
-                name="Nombre d'étapes des recettes populaires",
                 axis_x="Durée de la recette (minutes)",
                 axis_y="Nombre de commentaires", filters=['Note moyenne'],
                 plot_type="density map",
@@ -186,14 +169,34 @@ def main():
                     "Nombre de commentaires": (5, 1613),
                     "Note moyenne":(0, 5),
                     "chosen_filters":['Note moyenne']
-                    }
-                )
+                },
+            )
+            st.session_state["locked_graphs"]["Duree recettes populaires"] = min_popular_recipes
+
+            nb_steps_recipes = BivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Nombre d'étapes des recettes populaires",
+                name="Nombre d'étapes des recettes populaires",
+                axis_x="Nombre d'étapes",
+                axis_y="Nombre de commentaires",
+                filters=['Note moyenne'],
+                plot_type="density map",
+                log_axis_x=False,
+                log_axis_y=False,
+                default_values={
+                    "Nombre d'étapes": (3, 37),
+                    "Nombre de commentaires": (5, 1613),
+                    "Note moyenne":(4, 5),
+                    "chosen_filters":['Note moyenne']
+                },
+                
+            )
             st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"] = nb_steps_recipes
 
             nb_ing_recipes = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
-                key="Nombre d'ingrédients des recettes populaires",
-                name="Nombre d'ingrédients des recettes populaires",
+                key="Nombre d'ingrédients par recette",
+                name="Nombre d'ingrédients par recette",
                 axis_x="Nombre d'ingrédients", 
                 axis_y="Nombre de commentaires", 
                 filters=['Note moyenne'], 
@@ -205,9 +208,9 @@ def main():
                     "Nombre de commentaires": (5, 1613), 
                     "Note moyenne":(4, 5), 
                     "chosen_filters":['Note moyenne'],
-                    },
-                )
-            st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"] = nb_ing_recipes
+                },
+            )
+            st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"] = nb_ing_recipes
 
             popular_ing = UnivariateStudy(
                 dataframe=st.session_state["recipes_df"],
@@ -221,13 +224,13 @@ def main():
                     "Ingrédients": 10,
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
-                    },
+                },
             )
             st.session_state["locked_graphs"]["Ingrédients les plus populaires"] = popular_ing
 
             calories_recipes = BivariateStudy(
-                key="Calories des recettes populaires",
                 dataframe=st.session_state["recipes_df"],
+                key="Calories des recettes populaires",
                 name="Calories des recettes populaires",
                 axis_x="Calories",
                 axis_y="Nombre de commentaires",
@@ -238,8 +241,8 @@ def main():
                     "Nombre de commentaires": (5, 1613), 
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
-                    },
-                )
+                },
+            )
             st.session_state["locked_graphs"]["Calories des recettes populaires"] = calories_recipes
 
             popular_techniques = UnivariateStudy(
@@ -255,9 +258,27 @@ def main():
                     "Techniques utilisées": 10,
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
-                    },
+                },
             )
             st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"] = popular_techniques
+
+            nb_techniques_recipes = BivariateStudy(
+                dataframe=st.session_state["recipes_df"],
+                key="Nombre de techniques de cuisine différentes par recettes",
+                axis_x="Nombre de techniques utilisées",
+                axis_y="Nombre de commentaires",
+                filters=['Note moyenne'],
+                plot_type="density map",
+                log_axis_x=False,
+                log_axis_y=False,
+                default_values={
+                    "Nombre de techniques utilisées": (0, 14),
+                    "Nombre de commentaires": (1, 1613),
+                    "Note moyenne":(4, 5),
+                    "chosen_filters":['Note moyenne']
+                },
+            )
+            st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"] = nb_techniques_recipes 
 
             st.session_state["first_load"] = False
             logger.info("Graphiques initialises avec succes.")
@@ -337,10 +358,10 @@ def main():
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].name}")
 
-        st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"].display_graph(
+        st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].display_graph(
             explanation=explanation_graph_1
         )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'ingrédients des recettes populaires"].name}")
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].name}")
 
         st.session_state["locked_graphs"]["Calories des recettes populaires"].display_graph(
             explanation=explanation_graph_1
@@ -356,6 +377,11 @@ def main():
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].name}")
+
+        st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].display_graph(
+            explanation=explanation_graph_1
+        )
+        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].name}")
         
         
     except Exception as e:
