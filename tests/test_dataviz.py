@@ -26,6 +26,7 @@ def test_main_add_univariate_graph(mock_st):
     mock_st.session_state = {
         "graph": [],
         "recipes_df": MagicMock(),
+        "count_graph_total": 0,
     }
     mock_st.columns.return_value = [MagicMock(), MagicMock()]
     mock_st.button.side_effect = [True, False]  # Mock du clic sur le bouton univarié
@@ -47,6 +48,7 @@ def test_main_add_bivariate_graph(mock_st):
     mock_st.session_state = {
         "graph": [],
         "recipes_df": MagicMock(),
+        "count_graph_total": 0,
     }
     mock_st.columns.return_value = [MagicMock(), MagicMock()]
     mock_st.button.side_effect = [False, True]  # Mock du clic sur le bouton bivarié
