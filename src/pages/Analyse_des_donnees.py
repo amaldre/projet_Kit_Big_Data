@@ -35,7 +35,6 @@ def main():
     try:
         # Creation of all the graphs displayed in the page
         if st.session_state["first_load"]:
-            print(st.session_state["recipes_df"].head())
             trend = compute_trend(st.session_state["recipes_df"])
             logger.info("Tendance calculee avec succes.")
 
@@ -334,8 +333,8 @@ def main():
         - Sur cette période un grand nombre de recette dépasse les 20 commentaires et 
         les records de nombre de commentaires sont établis pour les recettes publié dans cet intervalle, 
         atteignant plus de 1600 commentaires pour les meilleurs recettes.
-        - De plus, une concentration très important de recettes publiés à ce moment ont entre 1 et 20 commentaires (en jaune et cyan sur le graphe),
-        notamment entre 2006 et 2009 qui ont la plus fort concentration recette à 1 commentaires.Cette tendance montre une effervescence de recettes, 
+        - De plus, une concentration très importante de recettes publiées à ce moment ont entre 1 et 20 commentaires (en jaune et cyan sur le graphe),
+        notamment entre 2006 et 2009 qui ont la plus fort concentration recette à 1 commentaires. Cette tendance montre une effervescence de recettes, 
         mais que ces recettes n'attirent pas forcemment beaucoup de personnes, remmettant en cause la qualité des recettes.
         """
 
@@ -406,14 +405,15 @@ def main():
         conclusion_part_2 = """
         D'après cette analyse, deux critères peuvent définir la popularité d'une recette. 
         Tout d'abord, l'élément le plus discriminant est le nombre de commentaires par recettes 
-        car seul très peu de recettes réussissent à attirer l'engagement des utilisateurs.
+        car seulement très peu de recettes réussissent à attirer l'engagement des utilisateurs.
          
         Un second élément moins représentatif est la note moyenne permettant de supprimer les recettes dépréciées, 
-        mais ne permettant pas de juger seul de l'attractivité d'une recette.
+        mais qui ne permet pas de juger à lui seul l'attractivité d'une recette.
 
         Dans le reste de cette étude on se placera dans ces conditions : 
         - nombre de commentaires par recette : supérieur ou égale à 5
         - note moyenne : supérieur ou égale à 4
+        Avec ces filtres, 38918 recettes sont considérées comme populaires et seront étudiées. 
         """
 
         with st.container(border=True):
@@ -422,6 +422,8 @@ def main():
         
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
+
+        st.write("")
         
 
         explanation_graph_ = """

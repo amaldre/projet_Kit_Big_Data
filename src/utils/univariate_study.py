@@ -256,11 +256,11 @@ class UnivariateStudy(BaseStudy):
         Draw a histogram plot.
         """
 
-        if self.axis_x == "Date de publication de la recette":
+        if self.axis_x == "Date de publication de la recette" and isinstance(self.range_axis_x[1], pd.Timestamp):
             nb_bin = self.range_axis_x[1].year - self.range_axis_x[0].year
         else:
             nb_bin = 25
-        print(nb_bin)
+
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.histplot(data=x, ax=ax, bins=nb_bin)
         fig.patch.set_alpha(0)
