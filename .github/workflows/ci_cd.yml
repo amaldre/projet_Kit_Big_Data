@@ -1,0 +1,60 @@
+name: Python CI for Pytest
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Récupérer le code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Étape 2 : Installer Python
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.12.3'
+
+      # Étape 3 : Mettre en cache l'environnement virtuel
+      - name: Install cache
+        uses: actions/cache@v3
+        id: cache-venv
+        with:
+          path: ./.venv/
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-
+
+      # Étape 4 : Installer les dépendances si le cache est manquant
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+        if: steps.cache-venv.outputs.cache-hit != 'true'
+      
+      # Étape 5 : Vérifier les dépendances installées
+      - name: Check installed packages
+        run: ./.venv/bin/pip list
+      
+      - name: Run pylint
+        run: |
+          ./.venv/bin/pylint src/utils
+        continue-on-error: true
+
+      # Étape 6 : Exécuter les tests avec pytest
+      - name: Run tests
+        env: 
+          PYTHONPATH: ./src
+        run: ./.venv/bin/pytest --cov=scripts --cov=src --cov-report term-missing tests/

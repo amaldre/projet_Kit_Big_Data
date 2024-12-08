@@ -129,7 +129,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.env_test/
 env_projet_kit_big_data/
 .env_projet_kit_big_data
 environnement_projet_bigdata
@@ -169,9 +168,16 @@ cython_debug/
 #Dataset
 Dataset/
 dataset/
-data/
 
 TP_EDA/
 
+#Models 
+models/
+
+archives
 archive
 sujet
+projet.pdf
+app.log
+
+.env_test/

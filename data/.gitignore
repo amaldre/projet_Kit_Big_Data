@@ -1,0 +1,12 @@
+*
+
+
+!us_states.geojson
+!.gitignore
+!RAW_recipes_sample.csv
+!RAW_interactions_sample.csv
+!bertopic_chart/topics_model.csv
+!bertopic_chart/visualization.html
+!bertopic_chart/visualization_topics.html
+!Food_data_drawio.html
+!clean_recipe_df.csv
