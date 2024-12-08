@@ -3,4 +3,4 @@ import sys
 
 python_executable = sys.executable
 
-subprocess.run([python_executable, "-m", "streamlit", "run", "src/App.py"])
+subprocess.run([python_executable, "-m", "streamlit", "run", "src/MangeTaData.py"])
