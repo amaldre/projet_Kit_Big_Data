@@ -8,7 +8,7 @@ import streamlit as st
 import geopandas as gpd
 from shapely.geometry import Point, Polygon
 
-from src.pages.TEST_carte import main, load_geojson, load_recipes_data, generate_random_points, create_scrolling_banner
+from src.pages.5_Carte import main, load_geojson, load_recipes_data, generate_random_points, create_scrolling_banner
 
 
 def test_create_scrolling_banner():
@@ -129,9 +129,9 @@ def test_generate_random_points_exception_handling(mock_recipes_data):
 @patch('streamlit.error')
 @patch('streamlit.slider')
 @patch('streamlit.checkbox')
-@patch('src.pages.TEST_carte.load_geojson')
-@patch('src.pages.TEST_carte.load_recipes_data')
-@patch('src.pages.TEST_carte.generate_random_points')
+@patch('src.pages.5_Carte.load_geojson')
+@patch('src.pages.5_Carte.load_recipes_data')
+@patch('src.pages.5_Carte.generate_random_points')
 def test_main(
     mock_generate_random_points, mock_load_recipes_data, mock_load_geojson,
     mock_checkbox, mock_slider, mock_st_error, mock_st_success, mock_st_write,

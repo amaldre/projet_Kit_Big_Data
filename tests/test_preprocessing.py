@@ -4,16 +4,16 @@ from unittest.mock import patch, MagicMock, mock_open
 import pandas as pd
 import streamlit as st
 
-from src.pages.Preprocessing import main
+from src.pages.4_Preprocessing import main
 
 @patch('streamlit.title')
 @patch('streamlit.write')
 @patch('streamlit.success')
 @patch('streamlit.error')
 @patch('streamlit.header')
-@patch("src.pages.Preprocessing.st.components.v1.html")
-@patch("src.pages.Preprocessing.load_data")
-@patch("src.pages.Preprocessing.load_css")
+@patch("src.pages.4_Preprocessing.st.components.v1.html")
+@patch("src.pages.4_Preprocessing.load_data")
+@patch("src.pages.4_Preprocessing.load_css")
 @patch("builtins.open", mock_open(read_data="<html><body>Visualisation de topics</body></html>"))
 
 def test_main(

@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from src.pages.DataViz import main
+from src.pages.3_DataViz import main
 
-@patch("src.pages.DataViz.st")  # Mock Streamlit
+@patch("src.pages.3_DataViz.st")  # Mock Streamlit
 def test_main(mock_st):
     # Configuration des mocks
     mock_st.session_state = {
@@ -20,7 +20,7 @@ def test_main(mock_st):
     mock_st.button.assert_any_call("Ajout graphe univarié")  # Vérifie le bouton univarié
     mock_st.button.assert_any_call("Ajout graphe bivarié")  # Vérifie le bouton bivarié
 
-@patch("src.pages.DataViz.st")
+@patch("src.pages.3_DataViz.st")
 def test_main_add_univariate_graph(mock_st):
     # Mocking session_state et boutons
     mock_st.session_state = {
@@ -32,7 +32,7 @@ def test_main_add_univariate_graph(mock_st):
     mock_st.button.side_effect = [True, False]  # Mock du clic sur le bouton univarié
 
     # Appel de la fonction principale
-    with patch("src.pages.DataViz.UnivariateStudy") as mock_univariate_study:
+    with patch("src.pages.3_DataViz.UnivariateStudy") as mock_univariate_study:
         mock_instance = MagicMock()
         mock_univariate_study.return_value = mock_instance
         main()
@@ -42,7 +42,7 @@ def test_main_add_univariate_graph(mock_st):
         mock_univariate_study.assert_called_once()
         mock_st.rerun.assert_called_once()
 
-@patch("src.pages.DataViz.st")
+@patch("src.pages.3_DataViz.st")
 def test_main_add_bivariate_graph(mock_st):
     # Mocking session_state et boutons
     mock_st.session_state = {
@@ -54,7 +54,7 @@ def test_main_add_bivariate_graph(mock_st):
     mock_st.button.side_effect = [False, True]  # Mock du clic sur le bouton bivarié
 
     # Appel de la fonction principale
-    with patch("src.pages.DataViz.BivariateStudy") as mock_bivariate_study:
+    with patch("src.pages.3_DataViz.BivariateStudy") as mock_bivariate_study:
         mock_instance = MagicMock()
         mock_bivariate_study.return_value = mock_instance
         main()
@@ -64,7 +64,7 @@ def test_main_add_bivariate_graph(mock_st):
         mock_bivariate_study.assert_called_once()
         mock_st.rerun.assert_called_once()
 
-@patch("src.pages.DataViz.st")
+@patch("src.pages.3_DataViz.st")
 def test_main_error_handling(mock_st):
     # Mocking session_state et boutons
     mock_st.session_state = {
@@ -75,7 +75,7 @@ def test_main_error_handling(mock_st):
     mock_st.button.side_effect = [True, False]  # Mock du clic sur le bouton univarié
 
     # Force une exception dans UnivariateStudy
-    with patch("src.pages.DataViz.UnivariateStudy", side_effect=Exception("Test Error")):
+    with patch("src.pages.3_DataViz.UnivariateStudy", side_effect=Exception("Test Error")):
         main()
 
         # Vérifie qu'une erreur a été loguée et affichée

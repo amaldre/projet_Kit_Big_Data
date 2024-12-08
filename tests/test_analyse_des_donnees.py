@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import streamlit as st
 
-from src.pages.Analyse_des_donnees import main
+from src.pages.1_Analyse_des_donnees import main
 
 
 @pytest.fixture
@@ -26,11 +26,11 @@ def mock_session_state():
     return session_state
 
 
-@patch("src.pages.Analyse_des_donnees.st")
-@patch("src.pages.Analyse_des_donnees.load_css")
-@patch("src.pages.Analyse_des_donnees.compute_trend")
-@patch("src.pages.Analyse_des_donnees.BivariateStudy")
-@patch("src.pages.Analyse_des_donnees.UnivariateStudy")
+@patch("src.pages.1_Analyse_des_donnees.st")
+@patch("src.pages.1_Analyse_des_donnees.load_css")
+@patch("src.pages.1_Analyse_des_donnees.compute_trend")
+@patch("src.pages.1_Analyse_des_donnees.BivariateStudy")
+@patch("src.pages.1_Analyse_des_donnees.UnivariateStudy")
 def test_main(
     mock_univariate_study,
     mock_bivariate_study,
@@ -67,7 +67,7 @@ def test_main(
     }
 
     # Exécuter la fonction main
-    with patch("src.pages.Analyse_des_donnees.st", mock_st):
+    with patch("src.pages.1_Analyse_des_donnees.st", mock_st):
         mock_st.title = MagicMock()
         mock_st.header = MagicMock()
         mock_st.error = MagicMock()
@@ -103,10 +103,10 @@ def test_main(
 
 
 # Exception handling
-@patch("src.pages.Analyse_des_donnees.compute_trend")
-@patch("src.pages.Analyse_des_donnees.BivariateStudy")
-@patch("src.pages.Analyse_des_donnees.UnivariateStudy")
-@patch("src.pages.Analyse_des_donnees.load_css")
+@patch("src.pages.1_Analyse_des_donnees.compute_trend")
+@patch("src.pages.1_Analyse_des_donnees.BivariateStudy")
+@patch("src.pages.1_Analyse_des_donnees.UnivariateStudy")
+@patch("src.pages.1_Analyse_des_donnees.load_css")
 def test_main_exception_handling(
     mock_load_css,
     mock_UnivariateStud,
