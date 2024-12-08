@@ -93,7 +93,7 @@ Le code suit les normes PEP 8, utilise le type hinting et des docstrings. Un pip
 
   ```bash
     cd src/documentation
-    make html
+    ./make.bat html
 ```
 Consultez ensuite src/documentation/build/html/index.html.
 
