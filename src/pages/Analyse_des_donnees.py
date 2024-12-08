@@ -544,7 +544,7 @@ def main():
             logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].name}")
 
         with st.container(border=True):
-            st.write("explication_graph_9")
+            st.write(explication_graph_9)
         
         
     except Exception as e:
