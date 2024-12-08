@@ -37,11 +37,11 @@ def test_load_geojson(mock_geojson_read):
 def test_load_recipes_data():
     mock_csv_read = pd.DataFrame(
         {
-            "submitted": ["2021-01-01", "2021-01-02"],
+            "Date de publication de la recette": ["2021-01-01", "2021-01-02"],
         }
     )
     with patch("pandas.read_csv", return_value=mock_csv_read) as mock_read_csv:
-        path = "data/cloud_df.csv"
+        path = "data/clean_cloud_df.csv"
         result = load_recipes_data(path)
 
         print("Result:", result)
