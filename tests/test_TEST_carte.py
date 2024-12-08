@@ -13,54 +13,9 @@ from src.pages.Simulation_Carte import (
     load_geojson,
     load_recipes_data,
     generate_random_points,
-    create_scrolling_banner,
 )
 
 
-def test_create_scrolling_banner():
-    texte = "Test Banner"
-    expected_html = """
-        <style>
-        .scrolling-banner {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #f0f2f6; /* Couleur de fond du bandeau */
-            overflow: hidden;
-            height: 50px; /* Hauteur du bandeau */
-            z-index: 9999; /* Assure que le bandeau reste au-dessus des autres elements */
-        }
-
-        .scrolling-banner h1 {
-            position: absolute;
-            width: 100%;
-            height: 50px;
-            line-height: 50px;
-            margin: 0;
-            font-size: 24px;
-            color: #4CAF50; /* Couleur du texte */
-            text-align: center;
-            transform: translateX(100%);
-            animation: scroll-left 10s linear infinite;
-        }
-
-        /* Animation pour le defilement du texte */
-        @keyframes scroll-left {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
-        }
-        </style>
-
-        <div class="scrolling-banner">
-            <h1>Test Banner</h1>
-        </div>
-        """
-    result = create_scrolling_banner(texte)
-    assert result.strip() == expected_html.strip()
 
 
 @pytest.fixture
