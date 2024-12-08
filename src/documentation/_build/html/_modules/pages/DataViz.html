@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.DataViz &mdash; Documentation de notre application Streamlit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Documentation de notre application Streamlit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Documentation de notre application Streamlit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.DataViz</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.DataViz</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Page permettant de visualiser les donnees de maniere interactive.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">utils.bivariate_study</span> <span class="kn">import</span> <span class="n">BivariateStudy</span>
+<span class="kn">from</span> <span class="nn">utils.univariate_study</span> <span class="kn">import</span> <span class="n">UnivariateStudy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">from</span> <span class="nn">utils.load_functions</span> <span class="kn">import</span> <span class="n">initialize_recipes_df</span><span class="p">,</span> <span class="n">load_css</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span><span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;MangeTaData&quot;</span><span class="p">,</span> <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;images/favicon_mangetadata.png&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;wide&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Charger le CSS</span>
+<span class="n">load_css</span><span class="p">(</span><span class="s2">&quot;src/style.css&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Analyse interactive des données&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Cette page vous permet d&#39;explorer et de visualiser les données de manière interactive. Voici comment vous pouvez l&#39;utiliser :&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;1️⃣ Ajouter des graphiques&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;**Graphiques univariés** : Cliquez sur le bouton **Ajout graphe univarié** pour créer un graphique analysant une seule variable (ex. : distribution des calories, durée des recettes, etc.).&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;**Graphiques bivariés** : Cliquez sur le bouton **Ajout graphe bivarié** pour comparer deux variables (ex. : relation entre le nombre d&#39;ingrédients et les calories).&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;2️⃣Personnaliser vos graphiques&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">- Après avoir ajouté un graphique, vous pouvez :</span>
+<span class="s2">  - Sélectionner la ou les variables à analyser.</span>
+<span class="s2">  - Appliquer des filtres pour restreindre les données affichées.</span>
+<span class="s2">- Chaque graphique s&#39;adapte automatiquement à vos paramètres.</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;3️⃣Supprimer des graphiques&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Si un graphique n&#39;est plus nécessaire, une option de suppression est disponible. La page sera rechargée pour mettre à jour l&#39;affichage.&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;4️⃣Liste des variables&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Voici la liste des variables que vous pouvez utiliser pour créer vos graphiques :&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">- **Note moyenne** : Note moyenne des recettes</span>
+<span class="s2">- **Nombre de commentaires** : Nombre de commentaires sur la recette</span>
+<span class="s2">- **Date de publication de la recette** : Date de publication de la recette</span>
+<span class="s2">- **Durée de la recette (minutes)** : Durée de la recette en minutes</span>
+<span class="s2">- **Calories** : Nombre de calories</span>
+<span class="s2">- **Nombre d&#39;étapes** : Nombre d&#39;étapes de la recettes</span>
+<span class="s2">- **Nombre d&#39;ingrédients** : Nombre d&#39;ingrédients de la recette</span>
+<span class="s2">- **Nombre de techniques utilisées** : Nombre de techniques utilisées dans la recette</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;5️⃣Exemple de graphique&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;**Voici comment créer un graph univarié de la note moyenne sur les recettes ayant un nombre d&#39;étape inférieur à 10** :&quot;</span><span class="p">)</span>
+<span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">1. Appuyez sur Ajout graphe univarié</span>
+<span class="s2">2. Sélectionnez la variable Note moyenne</span>
+<span class="s2">3. Sélectionnez le filtre Nombre d&#39;étapes</span>
+<span class="s2">4. Faites glisser le slider à droite pour arriver jusqu&#39;à 10</span>
+<span class="s2">         &quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;**Bonne exploration !** 🚀&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Initialisation de la session</span>
+<span class="k">if</span> <span class="s2">&quot;graph&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">if</span> <span class="s2">&quot;recipes_df&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">initialize_recipes_df</span><span class="p">(</span><span class="s2">&quot;data/clean_cloud_df.csv&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s2">&quot;count_graph_total&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;count_graph_total&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../pages.html#pages.DataViz.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main function of the page DataViz. It allows to dispzlay and delete graphs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Definition des variables</span>
+    <span class="n">axis_x_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Nombre de commentaires&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Date de publication de la recette&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Durée de la recette (minutes)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Calories&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;étapes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;ingrédients&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre de techniques utilisées&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">axis_y_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Nombre de commentaires&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Date de publication de la recette&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Durée de la recette (minutes)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Calories&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;étapes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;ingrédients&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre de techniques utilisées&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Nombre de commentaires&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Date de publication de la recette&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Durée de la recette (minutes)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Calories&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;étapes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;ingrédients&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre de techniques utilisées&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">axis_x_univar</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Nombre de commentaires&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Date de publication de la recette&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Durée de la recette (minutes)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Calories&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ingrédients&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Techniques utilisées&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;étapes&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre d&#39;ingrédients&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Nombre de techniques utilisées&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Affichage des graphiques existants</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">graph</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">graph</span><span class="o">.</span><span class="n">delete</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Graphique supprime. Nombre de graphiques restants: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">display_graph</span><span class="p">(</span><span class="n">free</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Ajout graphe univarié&quot;</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Graphe univarié&quot;</span>
+                <span class="n">study</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                    <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                    <span class="n">key</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;free graph </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;count_graph_total&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">axis_x_list</span><span class="o">=</span><span class="n">axis_x_univar</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;count_graph_total&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur lors de l&#39;affichage ou de la suppression d&#39;un graphique: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Une erreur est survenue lors de l&#39;affichage ou de la suppression d&#39;un graphique.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Ajout graphe bivarié&quot;</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Graphe bivarié&quot;</span>
+                
+                <span class="n">study</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                    <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                    <span class="n">key</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;free graph </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;count_graph_total&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">axis_x_list</span><span class="o">=</span><span class="n">axis_x_list</span><span class="p">,</span>
+                    <span class="n">axis_y_list</span><span class="o">=</span><span class="n">axis_y_list</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;scatter&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">study</span><span class="p">)</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;count_graph_total&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Erreur lors de l&#39;affichage ou de la suppression d&#39;un graphique: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Une erreur est survenue lors de l&#39;affichage ou de la suppression d&#39;un graphique.&quot;</span>
+            <span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

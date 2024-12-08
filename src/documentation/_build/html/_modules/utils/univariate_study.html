@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.univariate_study &mdash; Documentation de notre application Streamlit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Documentation de notre application Streamlit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Documentation de notre application Streamlit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils.univariate_study</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.univariate_study</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">Module de classe pour l&#39;analyse univariée et la visualisation des données d&#39;un dataframe.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">utils.base_study</span> <span class="kn">import</span> <span class="n">BaseStudy</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="UnivariateStudy">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy">[docs]</a>
+<span class="k">class</span> <span class="nc">UnivariateStudy</span><span class="p">(</span><span class="n">BaseStudy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to perform univariate data analysis and visualization on a dataframe.</span>
+<span class="sd">    Supports filtering, axis transformations, and multiple plot types.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">,</span>
+        <span class="n">dataframe</span><span class="p">,</span>
+        <span class="n">plot_type</span><span class="p">,</span>
+        <span class="n">axis_x_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">axis_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">default_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">graph_pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x_list</span> <span class="o">=</span> <span class="n">axis_x_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="n">plot_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_draw</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="o">=</span> <span class="n">default_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span> <span class="o">=</span> <span class="n">default_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_x</span> <span class="o">=</span> <span class="n">log_axis_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_y</span> <span class="o">=</span> <span class="n">log_axis_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_pad</span> <span class="o">=</span> <span class="n">graph_pad</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># No special cleanup required</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="UnivariateStudy.print_self">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.print_self">[docs]</a>
+    <span class="k">def</span> <span class="nf">print_self</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print current object attributes for debugging.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UnivariateStudy.save_graph">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.save_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the graph configuration to Streamlit output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving object attributes with key=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">range_filters_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chosen_filter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span><span class="p">):</span>
+                <span class="n">range_filters_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">chosen_filter</span><span class="si">}</span><span class="s1">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">, &#39;</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;axis_x=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="si">}</span><span class="s1">&quot;, filters=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span><span class="si">}</span><span class="s1">, plot_type=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span><span class="si">}</span><span class="s1">&quot;, </span><span class="se">\</span>
+<span class="s1">                log_axis_x=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">log_axis_x</span><span class="si">}</span><span class="s1">, log_axis_y=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">log_axis_y</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="o">+</span> <span class="s2">&quot;default_values={&quot;</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="si">}</span><span class="s1">&quot;: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="o">+</span> <span class="n">range_filters_str</span>
+            <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;&quot;chosen_filters&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+        <span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__set_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display a select box to choose the axis_x variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis_x</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">selectbox</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;axis_x&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x_list</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;axis_x&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Axes defined: axis_x=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axis_x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">axis_x</span>
+
+    <span class="k">def</span> <span class="nf">__set_number_ingredients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a slider for selecting the number of ingredients or techniques to display.</span>
+
+<span class="sd">        :param axis: axis to create the slider for</span>
+<span class="sd">        :type axis: str</span>
+<span class="sd">        :return: slider widget</span>
+<span class="sd">        :rtype: streamlit.slider</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">:</span>
+            <span class="n">default_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default_value</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">15</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Creating a slider for &#39;</span><span class="si">%s</span><span class="s2">&#39; with min=</span><span class="si">%d</span><span class="s2">, max=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">slider</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Plage de valeurs pour : </span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">min_val</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">max_val</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">default_value</span><span class="p">,</span>
+            <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="n">axis</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__set_range_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine the appropriate input widget (slider/date input) based on column type.</span>
+
+<span class="sd">        :param axis: axis to create the range for</span>
+<span class="sd">        :type axis: str</span>
+<span class="sd">        :return: range widget</span>
+<span class="sd">        :rtype: streamlit.slider or streamlit.date_input</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Ingrédients&quot;</span><span class="p">,</span> <span class="s2">&quot;Techniques utilisées&quot;</span><span class="p">):</span>
+            <span class="n">range_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_number_ingredients</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">:</span>
+            <span class="n">range_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BaseStudy__set_date</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">range_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BaseStudy__create_slider_from_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Range defined for axis </span><span class="si">%s</span><span class="s2">: range_axis_x=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">range_axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">range_axis</span>
+
+<div class="viewcode-block" id="UnivariateStudy.get_data_points">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.get_data_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">axis_x</span><span class="p">,</span> <span class="n">range_axis_x</span><span class="p">,</span> <span class="n">chosen_filters</span><span class="p">,</span> <span class="n">range_filters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract data points for the selected axis and filters.</span>
+
+<span class="sd">        :param df: dataframe to extract data from</span>
+<span class="sd">        :type df: pandas.DataFrame</span>
+<span class="sd">        :param axis_x: axis x</span>
+<span class="sd">        :type axis_x: str</span>
+<span class="sd">        :param range_axis_x: range for axis x</span>
+<span class="sd">        :type range_axis_x: tuple</span>
+<span class="sd">        :param chosen_filters: filters to apply</span>
+<span class="sd">        :type chosen_filters: list</span>
+<span class="sd">        :param range_filters: range for filters</span>
+<span class="sd">        :type range_filters: list</span>
+<span class="sd">        :return: data points for axis x and recipe_id</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis_x</span><span class="p">]</span> <span class="o">+</span> <span class="n">chosen_filters</span>
+        <span class="k">if</span> <span class="s2">&quot;recipe_id&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;recipe_id&quot;</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">axis_x</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="n">axis_x</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">range_axis_x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">axis_x</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">range_axis_x</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="k">if</span> <span class="n">chosen_filters</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chosen_filter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chosen_filters</span><span class="p">):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">chosen_filter</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">chosen_filter</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chosen_filter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chosen_filter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">[</span><span class="s2">&quot;chosen_filters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span>
+
+        <span class="k">if</span> <span class="s2">&quot;recipe_id&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">axis_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;recipe_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">axis_x</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="UnivariateStudy.get_data_points_ingredients">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.get_data_points_ingredients">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_points_ingredients</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">axis_x</span><span class="p">,</span> <span class="n">range_axis_x</span><span class="p">,</span> <span class="n">chosen_filters</span><span class="p">,</span> <span class="n">range_filters</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract and count data points for ingredients or techniques.</span>
+
+<span class="sd">        :param df: dataframe to extract data from</span>
+<span class="sd">        :type df: pandas.DataFrame</span>
+<span class="sd">        :param axis_x: axis x</span>
+<span class="sd">        :type axis_x: str</span>
+<span class="sd">        :param range_axis_x: range for axis x</span>
+<span class="sd">        :type range_axis_x: tuple</span>
+<span class="sd">        :param chosen_filters: filters to apply</span>
+<span class="sd">        :type chosen_filters: list</span>
+<span class="sd">        :param range_filters: range for filters</span>
+<span class="sd">        :type range_filters: list</span>
+<span class="sd">        :return: data points for axis x, count of elements, and recipe_id</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis_x</span><span class="p">]</span> <span class="o">+</span> <span class="n">chosen_filters</span>
+        <span class="k">if</span> <span class="s2">&quot;recipe_id&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">columns</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;recipe_id&quot;</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
+
+        <span class="c1"># Apply filters</span>
+        <span class="k">if</span> <span class="n">chosen_filters</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chosen_filter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chosen_filters</span><span class="p">):</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">chosen_filter</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">chosen_filter</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">]</span>
+
+        <span class="c1"># Save axis and filters</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axis_x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">range_axis_x</span><span class="p">}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chosen_filter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chosen_filter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">[</span><span class="s2">&quot;chosen_filters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span>
+
+        <span class="c1"># Count top elements</span>
+        <span class="n">elements_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item_list</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">axis_x</span><span class="p">]:</span>
+            <span class="n">elements_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">item_list</span><span class="p">)</span>
+
+        <span class="n">element_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">elements_list</span><span class="p">)</span>
+        <span class="n">top_elements</span> <span class="o">=</span> <span class="n">element_counts</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="n">range_axis_x</span><span class="p">)</span>
+        <span class="n">nb_elts_display</span> <span class="o">=</span> <span class="p">[</span><span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">top_elements</span><span class="p">]</span>
+        <span class="n">count_elts</span> <span class="o">=</span> <span class="p">[</span><span class="n">element_counts</span><span class="p">[</span><span class="n">elt</span><span class="p">]</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">nb_elts_display</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;recipe_id&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nb_elts_display</span><span class="p">,</span> <span class="n">count_elts</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;recipe_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">return</span> <span class="n">nb_elts_display</span><span class="p">,</span> <span class="n">count_elts</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display and handle filter selection widgets.</span>
+
+<span class="sd">        :param axis_x: axis x</span>
+<span class="sd">        :type axis_x: str</span>
+<span class="sd">        :return: selected filters and their ranges</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">default_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span><span class="p">[</span><span class="s2">&quot;chosen_filters&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default_values</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">all_filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="k">if</span> <span class="n">f</span> <span class="o">!=</span> <span class="n">axis_x</span><span class="p">]</span>
+        <span class="n">chosen_filters</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multiselect</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Filtres&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="n">default_values</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">all_filters</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;filters&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)),</span>
+        <span class="p">)</span>
+        <span class="n">range_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">chosen_filter</span> <span class="ow">in</span> <span class="n">chosen_filters</span><span class="p">:</span>
+            <span class="n">range_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_range_axis</span><span class="p">(</span><span class="n">chosen_filter</span><span class="p">)</span>
+            <span class="n">range_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">range_axis</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Selected filters: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">chosen_filters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">chosen_filters</span><span class="p">,</span> <span class="n">range_filters</span>
+
+<div class="viewcode-block" id="UnivariateStudy.graph_boxplot">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.graph_boxplot">[docs]</a>
+    <span class="k">def</span> <span class="nf">graph_boxplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a boxplot.</span>
+
+<span class="sd">        :param x: data points for the boxplot</span>
+<span class="sd">        :type x: list</span>
+<span class="sd">        :return: True if the plot was drawn successfully</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_graph</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nombre de recettes prises en compte dans le graphe : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="UnivariateStudy.graph_density">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.graph_density">[docs]</a>
+    <span class="k">def</span> <span class="nf">graph_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a density (KDE) plot.</span>
+
+<span class="sd">        :param x: data points for the density plot</span>
+<span class="sd">        :type x: list</span>
+<span class="sd">        :return: plot object</span>
+<span class="sd">        :rtype: matplotlib.pyplot.Figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_graph</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nombre de recettes prises en compte dans le graphe : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="UnivariateStudy.graph_histogram">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.graph_histogram">[docs]</a>
+    <span class="k">def</span> <span class="nf">graph_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a histogram plot.</span>
+
+<span class="sd">        :param x: data points for the histogram</span>
+<span class="sd">        :type x: list</span>
+<span class="sd">        :return: plot object</span>
+<span class="sd">        :rtype: matplotlib.pyplot.Figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">==</span> <span class="s2">&quot;Date de publication de la recette&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span>
+        <span class="p">):</span>
+            <span class="n">nb_bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">year</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nb_bin</span> <span class="o">=</span> <span class="mi">25</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">nb_bin</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_graph</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nombre de recettes affichées dans le graphe : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="UnivariateStudy.graph_bar_elts">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.graph_bar_elts">[docs]</a>
+    <span class="k">def</span> <span class="nf">graph_bar_elts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_elts_display</span><span class="p">,</span> <span class="n">count_elts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a bar plot for ingredients or techniques.</span>
+
+<span class="sd">        :param nb_elts_display: elements to display</span>
+<span class="sd">        :type nb_elts_display: list</span>
+<span class="sd">        :param count_elts: count of elements</span>
+<span class="sd">        :type count_elts: list</span>
+<span class="sd">        :return: plot object</span>
+<span class="sd">        :rtype: matplotlib.pyplot.Figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">nb_elts_display</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">count_elts</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_graph</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nombre d&#39;éléments affichées dans le graphe : </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">count_elts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">recipes_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display the selected graph type and related data.</span>
+
+<span class="sd">        :param x: abscissa data points</span>
+<span class="sd">        :type x: list</span>
+<span class="sd">        :param y: ordinate data points</span>
+<span class="sd">        :type y: list</span>
+<span class="sd">        :param recipes_id: list of recipe ids</span>
+<span class="sd">        :type recipes_id: list</span>
+<span class="sd">        :return: plot object</span>
+<span class="sd">        :rtype: matplotlib.pyplot.Figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_pad</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_pad</span><span class="p">])</span>
+        <span class="k">with</span> <span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">==</span> <span class="s2">&quot;boxplot&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_boxplot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">==</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_density</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">==</span> <span class="s2">&quot;histogram&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_histogram</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bar_ingredients&quot;</span><span class="p">,</span> <span class="s2">&quot;bar_techniques&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_bar_elts</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">recipes_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">display_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;recipe_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">recipes_id</span><span class="p">)]</span>
+            <span class="n">display_df</span> <span class="o">=</span> <span class="n">display_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
+                <span class="n">by</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span>
+                <span class="s2">&quot;Recettes avec le plus de commentaires (avec les filtres actuels)&quot;</span>
+            <span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">display_df</span><span class="p">,</span> <span class="n">hide_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="UnivariateStudy.axis_graph">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.axis_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">axis_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set axis labels, scale, and grid for the plot.</span>
+
+<span class="sd">        :param fig: figure object</span>
+<span class="sd">        :type fig: matplotlib.pyplot.Figure</span>
+<span class="sd">        :param ax: axis object</span>
+<span class="sd">        :type ax: matplotlib.pyplot.Axes</span>
+<span class="sd">        :return: plot object</span>
+<span class="sd">        :rtype: matplotlib.pyplot.Figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Nombre de recettes&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_x</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_y</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">pyplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">clear_figure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="UnivariateStudy.display_graph">
+<a class="viewcode-back" href="../../utils.html#utils.univariate_study.UnivariateStudy.display_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">free</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">explanation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main method to display the graph and handle interaction with the filters and controls.</span>
+
+<span class="sd">        :param free: condition pour choisir les axes et les filtres additionnels, defaults to False</span>
+<span class="sd">        :type free: bool, optional</span>
+<span class="sd">        :param explanation: explication du graphique, defaults to None</span>
+<span class="sd">        :type explanation: str, optional</span>
+<span class="sd">        :return: True if the plot was drawn successfully</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Displaying graph for instance with key=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">chosen_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">range_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;**</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">**&quot;</span><span class="p">)</span>
+                <span class="n">graph_container</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+                <span class="k">with</span> <span class="n">graph_container</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;**Filtres**&quot;</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="n">free</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">free</span><span class="p">:</span>
+                        <span class="n">axis_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_axis</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">axis_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_range_axis</span><span class="p">(</span><span class="n">axis_x</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+                        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Filtres additionnels&quot;</span><span class="p">)</span>
+                        <span class="n">chosen_filters</span><span class="p">,</span> <span class="n">range_filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__filters</span><span class="p">(</span><span class="n">axis_x</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">chosen_filters</span> <span class="o">=</span> <span class="n">chosen_filters</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">range_filters</span> <span class="o">=</span> <span class="n">range_filters</span>
+
+                    <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">form</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                        <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">col</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="n">col</span><span class="p">[</span><span class="n">pos</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">axis_x</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_x</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+                                    <span class="s2">&quot;log axis_x&quot;</span><span class="p">,</span>
+                                    <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;log axis_x&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)),</span>
+                                    <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_axis_x</span><span class="p">,</span>
+                                <span class="p">)</span>
+                                <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_x</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">with</span> <span class="n">col</span><span class="p">[</span><span class="n">pos</span><span class="p">]:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">log_axis_y</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+                                <span class="s2">&quot;log axis_y&quot;</span><span class="p">,</span>
+                                <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;log axis_y&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">)),</span>
+                                <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_axis_y</span><span class="p">,</span>
+                            <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">axis_x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Ingrédients&quot;</span><span class="p">,</span> <span class="s2">&quot;Techniques utilisées&quot;</span><span class="p">):</span>
+                            <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">col3</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                            <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tracer un diagramme en barre&quot;</span>
+                                <span class="p">):</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="p">(</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points_ingredients</span><span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                                            <span class="n">chosen_filters</span><span class="p">,</span>
+                                            <span class="n">range_filters</span><span class="p">,</span>
+                                        <span class="p">)</span>
+                                    <span class="p">)</span>
+                                    <span class="k">if</span> <span class="n">axis_x</span> <span class="o">==</span> <span class="s2">&quot;Ingrédients&quot;</span><span class="p">:</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="s2">&quot;bar_ingredients&quot;</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="s2">&quot;bar_techniques&quot;</span>
+
+                            <span class="k">if</span> <span class="n">free</span><span class="p">:</span>
+                                <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Supprimer le graphe&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span> <span class="o">=</span> <span class="kc">True</span>
+                                        <span class="n">st</span><span class="o">.</span><span class="n">experimental_rerun</span><span class="p">()</span>
+                                <span class="k">with</span> <span class="n">col3</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Paramètres du graphe&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">save_graph</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Réinitialiser le graphe&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span>
+                                        <span class="n">range_filters_save</span> <span class="o">=</span> <span class="p">[</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span><span class="n">filters</span><span class="p">]</span>
+                                            <span class="k">for</span> <span class="n">filters</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span>
+                                                <span class="s2">&quot;chosen_filters&quot;</span>
+                                            <span class="p">]</span>
+                                        <span class="p">]</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points_ingredients</span><span class="p">(</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">],</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span>
+                                                    <span class="s2">&quot;chosen_filters&quot;</span>
+                                                <span class="p">],</span>
+                                                <span class="n">range_filters_save</span><span class="p">,</span>
+                                            <span class="p">)</span>
+                                        <span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+                                        <span class="n">graph_container</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+                                        <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">free</span><span class="p">:</span>
+                                <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">col3</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+                                <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tracer un graphe box plot&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points</span><span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                                            <span class="n">chosen_filters</span><span class="p">,</span>
+                                            <span class="n">range_filters</span><span class="p">,</span>
+                                        <span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="s2">&quot;boxplot&quot;</span>
+
+                                <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tracer un graphe de densité&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points</span><span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                                            <span class="n">chosen_filters</span><span class="p">,</span>
+                                            <span class="n">range_filters</span><span class="p">,</span>
+                                        <span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="s2">&quot;density&quot;</span>
+
+                                <span class="k">with</span> <span class="n">col3</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tracer un histogramme&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points</span><span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                                            <span class="n">chosen_filters</span><span class="p">,</span>
+                                            <span class="n">range_filters</span><span class="p">,</span>
+                                        <span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">plot_type</span> <span class="o">=</span> <span class="s2">&quot;histogram&quot;</span>
+
+                                <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                                <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Paramètres du graphe&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">save_graph</span><span class="p">()</span>
+
+                                <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Supprimer le graphe&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span> <span class="o">=</span> <span class="kc">True</span>
+                                        <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                                <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Trace le graphe&quot;</span><span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points</span><span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                                            <span class="n">chosen_filters</span><span class="p">,</span>
+                                            <span class="n">range_filters</span><span class="p">,</span>
+                                        <span class="p">)</span>
+                                <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">form_submit_button</span><span class="p">(</span>
+                                        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Réinitialiser le graphe&quot;</span>
+                                    <span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">default_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span>
+                                        <span class="n">range_filters_save</span> <span class="o">=</span> <span class="p">[</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span>
+                                            <span class="k">for</span> <span class="n">filt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span>
+                                                <span class="s2">&quot;chosen_filters&quot;</span>
+                                            <span class="p">]</span>
+                                        <span class="p">]</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points</span><span class="p">(</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">],</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">default_values_save</span><span class="p">[</span><span class="s2">&quot;chosen_filters&quot;</span><span class="p">],</span>
+                                            <span class="n">range_filters_save</span><span class="p">,</span>
+                                        <span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+                                        <span class="n">graph_container</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+                                        <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_draw</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="o">=</span> <span class="n">axis_x</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Ingrédients&quot;</span><span class="p">,</span> <span class="s2">&quot;Techniques utilisées&quot;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points_ingredients</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                                <span class="n">chosen_filters</span><span class="p">,</span>
+                                <span class="n">range_filters</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_points</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">axis_x</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">range_axis_x</span><span class="p">,</span>
+                            <span class="n">chosen_filters</span><span class="p">,</span>
+                            <span class="n">range_filters</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">first_draw</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">__draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipes_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">explanation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">explanation</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

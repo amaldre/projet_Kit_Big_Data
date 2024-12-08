@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.Analyse_des_donnees &mdash; Documentation de notre application Streamlit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Documentation de notre application Streamlit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Documentation de notre application Streamlit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.Analyse_des_donnees</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.Analyse_des_donnees</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Page de l&#39;application dédiée à l&#39;analyse des données.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">from</span> <span class="nn">utils.bivariate_study</span> <span class="kn">import</span> <span class="n">BivariateStudy</span>
+<span class="kn">from</span> <span class="nn">utils.univariate_study</span> <span class="kn">import</span> <span class="n">UnivariateStudy</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">Timestamp</span>
+<span class="kn">from</span> <span class="nn">utils.load_functions</span> <span class="kn">import</span> <span class="n">compute_trend</span><span class="p">,</span> <span class="n">load_df</span><span class="p">,</span> <span class="n">initialize_recipes_df</span><span class="p">,</span> <span class="n">load_css</span>
+
+<span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span><span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;MangeTaData&quot;</span><span class="p">,</span> <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;images/favicon_mangetadata.png&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;wide&quot;</span><span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="s2">&quot;recipes_df&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">initialize_recipes_df</span><span class="p">(</span><span class="s2">&quot;data/clean_cloud_df.csv&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="s2">&quot;first_load&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;first_load&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">if</span> <span class="s2">&quot;locked_graphs&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../pages.html#pages.Analyse_des_donnees.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fonction principale de la page Analyse des données.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Analyse des data&quot;</span><span class="p">)</span>
+    <span class="n">load_css</span><span class="p">(</span><span class="s2">&quot;src/style.css&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Creation of all the graphs displayed in the page</span>
+        <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;first_load&quot;</span><span class="p">]:</span>
+            <span class="n">trend</span> <span class="o">=</span> <span class="n">compute_trend</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">])</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tendance calculee avec succes.&quot;</span><span class="p">)</span>
+
+            <span class="n">nb_recette_par_annee_study</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">trend</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Moyenne glissante du nombre de recettes par mois&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Moyenne glissante du nombre de recettes du temps&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Moyenne glissante&quot;</span><span class="p">,</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;plot&quot;</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;1999-08-01 00:00:00&quot;</span><span class="p">),</span>
+                        <span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;2018-12-1 00:00:00&quot;</span><span class="p">),</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;Moyenne glissante&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2268</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Moyenne glissante du nombre de recettes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_recette_par_annee_study</span>
+
+            <span class="n">nb_recette_temps_study</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Nombre de recettes par an&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Nombre de recettes par an&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Date de publication de la recette&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Date de publication de la recette&quot;</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;2000-01-01 00:00:00&quot;</span><span class="p">),</span>
+                        <span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;2018-01-01 00:00:00&quot;</span><span class="p">),</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de recettes par an&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_recette_temps_study</span>
+
+            
+
+            <span class="n">nb_commentaire_par_annee_study</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires par recette en fonction du temps&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires par recette en fonction du temps&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Date de publication de la recette&quot;</span><span class="p">,</span>
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density map&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Date de publication de la recette&quot;</span><span class="p">:</span> <span class="p">(</span>
+                        <span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;1999-08-06 00:00:00&quot;</span><span class="p">),</span>
+                        <span class="n">Timestamp</span><span class="p">(</span><span class="s2">&quot;2018-12-04 00:00:00&quot;</span><span class="p">),</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de commentaires par recette en fonction du temps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_commentaire_par_annee_study</span>
+
+            <span class="n">nb_recette_temps_active_study</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Nombre de recettes durant le pic d&#39;activité du site&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Nombre de recettes durant le pic d&#39;activité du site&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Date de publication de la recette&quot;</span><span class="p">,</span> 
+                <span class="n">filters</span><span class="o">=</span><span class="p">[],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;histogram&quot;</span><span class="p">,</span> 
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Date de publication de la recette&quot;</span><span class="p">:</span> 
+                    <span class="p">(</span><span class="n">Timestamp</span><span class="p">(</span><span class="s1">&#39;2002-01-01 00:00:00&#39;</span><span class="p">),</span> 
+                     <span class="n">Timestamp</span><span class="p">(</span><span class="s1">&#39;2010-01-01 00:00:00&#39;</span><span class="p">)),</span> 
+                     <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[]</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de recettes durant le pic d&#39;activité du site&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_recette_temps_active_study</span>
+
+            <span class="n">comment_box_blot</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Distribution du nombre de commentaires par recette&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Distribution du nombre de commentaires par recette&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;boxplot&quot;</span><span class="p">,</span> 
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span> 
+                <span class="p">},</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Distribution du nombre de commentaires par recette&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment_box_blot</span>
+
+            <span class="n">mean_rating_box_blot</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Distribution de la note moyenne des recettes&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Distribution de la note moyenne des recettes&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Note moyenne&quot;</span><span class="p">,</span> 
+                <span class="n">filters</span><span class="o">=</span><span class="p">[],</span> 
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;boxplot&quot;</span><span class="p">,</span> 
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> 
+                <span class="p">},</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Distribution de la note moyenne des recettes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_rating_box_blot</span>
+
+            <span class="n">min_popular_recipes</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Durée des recettes populaires&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Durée recettes populaires&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Durée de la recette (minutes)&quot;</span><span class="p">,</span>
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density map&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Durée de la recette (minutes)&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1750</span><span class="p">),</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span>
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Durée des recettes populaires&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_popular_recipes</span>
+
+            <span class="n">nb_steps_recipes</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Nombre d&#39;étapes des recettes populaires&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Nombre d&#39;étapes des recettes populaires&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Nombre d&#39;étapes&quot;</span><span class="p">,</span>
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density map&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Nombre d&#39;étapes&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">37</span><span class="p">),</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span>
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre d&#39;étapes des recettes populaires&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_steps_recipes</span>
+
+            <span class="n">nb_ing_recipes</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Nombre d&#39;ingrédients par recette&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Nombre d&#39;ingrédients par recette&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Nombre d&#39;ingrédients&quot;</span><span class="p">,</span> 
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span> 
+                <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">],</span> 
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density map&quot;</span><span class="p">,</span> 
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Nombre d&#39;ingrédients&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> 
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span> 
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> 
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">],</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre d&#39;ingrédients par recette&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_ing_recipes</span>
+
+            <span class="n">popular_ing</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Ingrédients les plus populaires&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ingrédients les plus populaires&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Ingrédients&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;bar_ingredients&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Ingrédients&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Ingrédients les plus populaires&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">popular_ing</span>
+
+            <span class="n">calories_recipes</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Calories des recettes populaires&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Calories des recettes populaires&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Calories&quot;</span><span class="p">,</span>
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">],</span> <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density map&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Calories&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">19383</span><span class="p">),</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span> 
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">]</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Calories des recettes populaires&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calories_recipes</span>
+
+            <span class="n">popular_techniques</span> <span class="o">=</span> <span class="n">UnivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Techniques de cuisine les plus populaires&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Techniques de cuisine les plus populaires&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Techniques utilisées&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;bar_techniques&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Techniques utilisées&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span>
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">,</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Techniques de cuisine les plus populaires&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">popular_techniques</span>
+
+            <span class="n">nb_techniques_recipes</span> <span class="o">=</span> <span class="n">BivariateStudy</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;recipes_df&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="s2">&quot;Nombre de techniques de cuisine différentes par recettes&quot;</span><span class="p">,</span>
+                <span class="n">axis_x</span><span class="o">=</span><span class="s2">&quot;Nombre de techniques utilisées&quot;</span><span class="p">,</span>
+                <span class="n">axis_y</span><span class="o">=</span><span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">,</span>
+                <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">],</span>
+                <span class="n">plot_type</span><span class="o">=</span><span class="s2">&quot;density map&quot;</span><span class="p">,</span>
+                <span class="n">log_axis_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">log_axis_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">default_values</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;Nombre de techniques utilisées&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span>
+                    <span class="s2">&quot;Nombre de commentaires&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1613</span><span class="p">),</span>
+                    <span class="s2">&quot;Note moyenne&quot;</span><span class="p">:(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                    <span class="s2">&quot;chosen_filters&quot;</span><span class="p">:[</span><span class="s1">&#39;Note moyenne&#39;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="n">graph_pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de techniques de cuisine différentes par recettes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_techniques_recipes</span> 
+
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;first_load&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Graphiques initialises avec succes.&quot;</span><span class="p">)</span>
+
+            
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Dans cette page, diverses analyses seront effectuées sur les données sur les recettes fournies par le site MangeTaMain, </span>
+<span class="s2">                 notamment le nombre de recettes publiées, leur note moyenne et le nombre de commentaires,</span>
+<span class="s2">                 les ingrédients ou techniques de cuisine utilisés, etc. </span>
+<span class="s2">                 Le but de cette étude est d&#39;évaluer les performances du site au cours du temps et de comprendre les facteurs de succès </span>
+<span class="s2">                 des recettes les plus populaires, afin de déterminer le type de recettes à partager et à promouvoir afin de redynamiser l&#39;activité sur la plateforme.&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Page layout </span>
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;1️⃣ Analyse de la fréquentation du site&quot;</span><span class="p">)</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Tout d&#39;abord, il s&#39;agira d&#39;étudier la fréquentation du site au cours des années </span>
+<span class="s2">                 à travers l&#39;évolution du nombre de recettes ainsi que le nombre de commentaires par recette.&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">explanation_graph_1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observations :**</span>
+<span class="s2">        - Ce graphe représente la moyenne glissante par mois du nombre de recettes entre 2000 et 2018</span>
+<span class="s2">        - Une forte croissance des contributions est visible entre 2000 et 2002, puis une stagnation entre 2002 et 2004 suivie d&#39;une deuxième phase de croissance en 2008, </span>
+<span class="s2">        - Le pic d&#39;activité maximale est atteint autour de 2007 et 2008 avec plus de 2000 recettes par mois.</span>
+<span class="s2">        - À partir de 2008, une chute significative et prolongée est observée, atteignant presque zéro entre 2016 et 2018.&quot;&quot;&quot;</span>
+
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Moyenne glissante du nombre de recettes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">(</span>
+            <span class="n">explanation</span><span class="o">=</span><span class="n">explanation_graph_1</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Moyenne glissante du nombre de recettes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span> <span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de recettes par an&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de recettes par an&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span> <span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de recettes durant le pic d&#39;activité du site&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de recettes durant le pic d&#39;activité du site&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">explanation_graph_2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            **Observations :**</span>
+<span class="s2">            - Ces deux graphes représentent le nombre de recettes publiées par an sur deux plages d&#39;années différentes :</span>
+<span class="s2">            1.Celui de droite offrant une vue d&#39;ensemble sur toute la période couverte par les données, entre 2000 et 2018</span>
+<span class="s2">            (Les recettes en bordure, fin 1999 et début 2018 sont omises pour avoir des intervalles correspondant à des années entières, </span>
+<span class="s2">            mais ces recettes restent consultables en changeant les dates des filtres)</span>
+<span class="s2">            2.Celui de gauche se focalise sur la phase de plus grande affluence du site entre 2002 et 2010. </span>
+<span class="s2">            - La tendance du nombre de publications de recettes précedemment observée est en accord avec ces graphes avec </span>
+<span class="s2">            comme années culminantes 2007 et 2008 comptant respectivement 26 539 et 23 238 recettes, puis une chute de l&#39;activité après 2008.</span>
+<span class="s2">            - De plus, il est intéressant de noter que le pic d&#39;activité représente 151 367 recettes sur 176 287 au total, soit </span>
+<span class="s2">            environ 85 </span><span class="si">% d</span><span class="s2">e toutes les recettes publiées.</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">explanation_graph_2</span><span class="p">)</span>
+            
+
+        <span class="n">explanation_graph_3</span> <span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observations :**</span>
+<span class="s2">        - Ce graphe est une carte de densité représentant l&#39;évolution du nombre de commentaires par recette sur la période étudiée.</span>
+<span class="s2">        Une forte activité des utilisateurs se traduisant par un nombre de commentaires par recette peut être observée dès 2000 jusqu&#39;en 2009, </span>
+<span class="s2">        ce qui est une plage temporelle plus étendue comparée au pic d&#39;activité du nombre de recettes publiées.</span>
+<span class="s2">        - Sur cette période un grand nombre de recettes dépasse les 20 commentaires et </span>
+<span class="s2">        les records de nombre de commentaires sont établis pour les recettes publiées dans cet intervalle, </span>
+<span class="s2">        atteignant plus de 1600 commentaires pour les meilleures recettes.</span>
+<span class="s2">        - De plus, une concentration très importante de recettes publiées à ce moment ont entre 1 et 20 commentaires (en jaune et cyan sur le graphe),</span>
+<span class="s2">        notamment entre 2006 et 2009 avec la plus forte concentration recette à 1 commentaires. Cette tendance montre une effervescence de recettes, </span>
+<span class="s2">        mais que ces recettes n&#39;attirent pas forcément beaucoup de personnes, remettant en cause la qualité des recettes.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de commentaires par recette en fonction du temps&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">(</span>
+            <span class="n">explanation</span><span class="o">=</span><span class="n">explanation_graph_3</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de commentaires par recette en fonction du temps&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">conclusion_part_1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Interprétation :**</span>
+<span class="s2">        - Après une forte croissance jusqu&#39;en 2009, Le site a connu un fort déclin jusqu&#39;à aujourd&#39;hui, illustré par la diminution marquée de l&#39;activité des utilisateurs</span>
+<span class="s2">        dans la création de recettes et de l&#39;engagement des utilisateurs dans l&#39;espace commentaire.  </span>
+
+<span class="s2">        - Cette baisse d&#39;activité peut être expliquée par plusieurs facteurs :</span>
+<span class="s2">          1. **Concurrence croissante** : Avec l&#39;émergence de plateformes sociales comme YouTube, Instagram, et des sites concurrents, le site aurait pu perdre son attractivité.</span>
+<span class="s2">          2. **Fatigue des contributeurs** : Les créateurs pourraient avoir perdu intérêt ou ne pas être suffisamment motivés pour continuer à enrichir la plateforme.</span>
+<span class="s2">          3. **Manque d&#39;innovation** : Si le site n&#39;a pas évolué pour répondre aux nouvelles attentes des utilisateurs (fonctionnalités modernes, gamification, etc.), il aurait pu perdre de l&#39;engagement.</span>
+<span class="s2">          4. **Facteurs externes** : La crise économique de 2008 a pu engendrer un manque de moyens pour s&#39;investir dans la cuisine maison. </span>
+<span class="s2">        </span>
+<span class="s2">        - La question des solutions pour remédier à cette tendance et revitaliser le site peut se poser.</span>
+<span class="s2">          La démarche proposée dans la suite de l&#39;étude est d&#39;analyser en profondeur les recettes les plus populaires ayant porté </span>
+<span class="s2">          le site durant son âge d&#39;or, engendrant de l&#39;attractivité et de l&#39;engagement de la part de ses utilisateurs.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">conclusion_part_1</span><span class="p">)</span>
+        
+
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;2️⃣ Définition d&#39;une recette de populaire&quot;</span><span class="p">)</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Dans cette deuxième partie, il conviendra de comprendre ce qui définit la popularité d&#39;une recette</span>
+<span class="s2">                 Deux axes principaux seront explorés : la note moyenne et le nombre de commentaires des recettes&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">explanation_graph_4</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observations :**</span>
+<span class="s2">        Ce graphe de type boîte à moustaches illustre la distribution du nombre de commentaires par recette. </span>
+<span class="s2">        Plus précisément, d&#39;après celui-ci, on observe :</span>
+<span class="s2">        - une médianne située aux alentours de 2 commentaires par recettes</span>
+<span class="s2">        - 25</span><span class="si">% d</span><span class="s2">es meilleurs recettes en termes de nombre de commentaires ont 5 ou plus de commentaires (Troisième quartile).</span>
+
+<span class="s2">        La distribution du nombre de commentaires par recette est très polarisée en faveur des recettes avec peu de commentaires</span>
+<span class="s2">        avec la grande majorité des recettes ayant en dessous de 5 commentaires, </span>
+<span class="s2">        une médiane situé à 2 commentaires et un grand nombre à 1 commentaire (63 084 recettes, soit 35 %).</span>
+<span class="s2">        Cette analyse confirme le rapport quantité/attractivité à améliorer, évoqué dans la première partie.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Distribution du nombre de commentaires par recette&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">(</span>
+            <span class="n">explanation</span><span class="o">=</span><span class="n">explanation_graph_4</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Distribution du nombre de commentaires par recette&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">explanation_graph_5</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observations :**</span>
+<span class="s2">        Ce graphe de type boîte à moustaches représente la distribution des notes moyennes des recettes. </span>
+<span class="s2">        Plus précisément, d&#39;après celui-ci, on observe :</span>
+<span class="s2">        - une médianne située aux alentours de la note moyenne de 4,6 par recette</span>
+<span class="s2">        - seulement 25</span><span class="si">% d</span><span class="s2">es recettes sont notés 4 ou moins (1er quartile).</span>
+
+<span class="s2">        Ce critère est moins représentatif des meilleures recettes car la majorité des recettes sont notées 4 ou plus. </span>
+<span class="s2">        De plus, des exemples de recettes très populaires, mais avec notes en dessous de la médiane sont présents dans la dataframe ci-dessus</span>
+<span class="s2">        (par exemple : la recette &quot;best banana bread&quot; est notée 4,186 en moyenne).</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Distribution de la note moyenne des recettes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">(</span>
+            <span class="n">explanation</span><span class="o">=</span><span class="n">explanation_graph_5</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Distribution de la note moyenne des recettes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">conclusion_part_2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Interprétation :**</span>
+<span class="s2">        D&#39;après cette analyse, deux critères peuvent définir la popularité d&#39;une recette. </span>
+<span class="s2">        Tout d&#39;abord, l&#39;élément le plus discriminant est le nombre de commentaires par recette </span>
+<span class="s2">        car seulement très peu de recettes réussissent à attirer l&#39;engagement des utilisateurs.</span>
+<span class="s2">         </span>
+<span class="s2">        Un second élément moins représentatif est la note moyenne sui permet de supprimer les recettes dépréciées, </span>
+<span class="s2">        mais qui ne permet pas de juger à lui seul l&#39;attractivité d&#39;une recette.</span>
+
+<span class="s2">        Dans le reste de cette étude on se placera dans ces conditions : </span>
+<span class="s2">        - nombre de commentaires par recette : supérieur ou égal à 5</span>
+<span class="s2">        - note moyenne : supérieure ou égale à 4</span>
+<span class="s2">        Avec ces filtres, 38 918 recettes sont considérées comme populaires et seront étudiées. </span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">conclusion_part_2</span><span class="p">)</span>
+
+        
+
+        <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;3️⃣ Caractéristiques des recettes populaires&quot;</span><span class="p">)</span>
+        
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Après avoir déterminé les critères définissant les recettes populaires, leurs caractéristiques internes peuvent être explicitées </span>
+<span class="s2">                    afin de comprendre la source de leur popularité. En effet, des analyses seront effectuées sur la logistique, les ingrédients et </span>
+<span class="s2">                    les techniques employées pour identifier les facteurs de succès d&#39;une recette.&quot;&quot;&quot;</span><span class="p">)</span>
+    
+
+        <span class="n">explanation_graph_6</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observations :**</span>
+<span class="s2">        Concernant le graphe sur la durée des recettes populaires :</span>
+<span class="s2">        - La majorité des recettes populaires sont relativement courtes, avec une durée de préparation inférieure à 100 minutes.</span>
+<span class="s2">        Ces recettes ont tendance à avoir un nombre de commentaires plus élevé, avec une grande concentration de recettes à plus de 50 commentaires (log Nombre de commentaires = 4) </span>
+<span class="s2">        ainsi que presque toutes les recettes à plus de 400 commentaires (log Nombre de commentaires = 6).</span>
+<span class="s2">        - Cependant certaines recettes longues restent populaires en moins grande proportion entre 200 et 750 minutes, et un pic peut être observé aux alentours de 1000 minutes.</span>
+<span class="s2">        Enfin, certaines recettes très longues ont un bon nombre de commentaires observables en élargissant le filtre sur la durée de la recette. </span>
+
+<span class="s2">        Concernant le graphe sur le nombre d&#39;étapes des recettes populaires :</span>
+<span class="s2">        - Une très grande concentration de recettes populaires peut être observée pour un nombre d&#39;étapes inférieurs à 17, </span>
+<span class="s2">        puis une baisse entre 17 et 25 et au-delà, les recettes ont peu de commentaires.</span>
+
+<span class="s2">        **Interprétations :**</span>
+<span class="s2">        Les recettes relativement courtes et avec peu d&#39;étapes semblent être **plus populaires**</span>
+<span class="s2">        Une interprétation possible car elles sont **plus simples et rapides à réaliser** ne nécessitant pas un investissement temporel</span>
+<span class="s2">        ou une aptitude à exécuter une procédure complexe.</span>
+<span class="s2">        Ces recettes sont alors plus faciles d&#39;accès et s&#39;adressent à un plus grand public, d&#39;où leur popularité.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Durée des recettes populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Durée des recettes populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre d&#39;étapes des recettes populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre d&#39;étapes des recettes populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">explanation_graph_6</span><span class="p">)</span>
+
+        <span class="n">explication_graph_7</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observations**</span>
+<span class="s2">        Concernant le nombre d&#39;ingrédients par recette :</span>
+<span class="s2">        - Les recettes populaires ont un nombre d&#39;ingrédients situé entre 4 et 16 ingrédients. </span>
+<span class="s2">        Cette plage de valeurs, bien que relativement large, permet tout de même d&#39;inférer que les recettes populaires ont moins de 16 ingrédients.</span>
+
+<span class="s2">        Concernant la nature de leurs ingrédients :</span>
+<span class="s2">        - Dans le top 10, des ingrédients on retrouve les condiments ordinaires tels que le sel, le sucre, l&#39;huile et l&#39;eau </span>
+<span class="s2">        - D&#39;autres ingrédients moins ordinaires mais tout de même communs, se retrouve dans les ingrédients les plus utilisés</span>
+<span class="s2">        comme les oeufs, les gousses d&#39;ail et oignons à tendance salée (les oeufs se trouvant aussi dans les recettes sucrées)</span>
+
+<span class="s2">        **Interprétations**</span>
+<span class="s2">        Le nombre et la nature des ingrédients semblent jouer un rôle dans la popularité d&#39;une recette. </span>
+<span class="s2">        En effet, un nombre d&#39;ingrédients non excessif ainsi que des ingrédients communs peuvent être</span>
+<span class="s2">        des indicateurs d&#39;une recette populaire. Cette observation rejoint la notion d&#39;accessibilité des recettes </span>
+<span class="s2">        leur permettant d&#39;attirer un large éventail d&#39;utilisateurs, ne nécessitant qu&#39;un nombre limité d&#39;ingrédients,</span>
+<span class="s2">        généralement présents dans la plupart des cuisines.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        
+
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre d&#39;ingrédients par recette&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre d&#39;ingrédients par recette&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Ingrédients les plus populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Ingrédients les plus populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">explication_graph_7</span><span class="p">)</span>
+
+        <span class="n">explication_graph_8</span> <span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observation :**</span>
+<span class="s2">        Le graphe montre une concentration des recettes populaires pour un nombre de calories situé </span>
+<span class="s2">        entre 54 (log Calories = 4) et 1100 (log Calories = 7). En effet, cet intervalle compte environ 35000 recettes, </span>
+<span class="s2">        soit environ 95</span><span class="si">% d</span><span class="s2">es recettes</span>
+<span class="s2">        - Plus particulièrement, une forte densité de recettes populaires est remarquée entre 190 (log Calories = 5,25) et </span>
+<span class="s2">        520 (log Calories = 6,25) calories, correspondant à des repas sains ou à des snacks. Dans cet intervalle se trouvent </span>
+<span class="s2">        19344 des recettes soit 50 </span><span class="si">% d</span><span class="s2">es recettes.</span>
+
+<span class="s2">        Cette analyse calorique permet de conclure que les recettes à faible apport calorique sont les plus populaires notamment entre 190 et 520 calories.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Calories des recettes populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">(</span>
+            <span class="n">explanation</span><span class="o">=</span><span class="n">explication_graph_8</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Calories des recettes populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">explication_graph_9</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Observation :**</span>
+<span class="s2">        Les graphes analysent le nombre et le type des techniques de cuisine utilisées dans les recettes populaires.</span>
+
+<span class="s2">        Concernant le nombre de techniques par recette, un grand nombre de recettes utilise au plus 6 techniques, dont les plus commentées (avec plus de 400 commentaires).</span>
+<span class="s2">        Ensuite, une baisse de popularité peut être constatée jusqu&#39;à 10 techniques par recettes et au-delà, les recettes sont peu commentées.</span>
+
+<span class="s2">        Concernant les techniques employées, la &quot;cuisson au four&quot; et &quot;combiner&quot; semblent être proéminente par rapport aux autres avec plus de 50 000 recettes.</span>
+<span class="s2">        Puis &quot;verser&quot;, &quot;faire bouillir&quot;, &quot;faire fondre&quot;. La plupart de ces techniques sont basiques mais ne permettent pas de différencier un type de recettes particulier </span>
+<span class="s2">        car elles sont trop génériques. Cependant, la &quot;cuisson au four&quot; étant en tête des réponses semble indiquer que les recettes au four sont particulièrement appréciées.</span>
+
+<span class="s2">        Donc, les recettes populaires utilisent peu de technique de cuisine différentes et notamment la cuisson au four. Cette tendance réaffirme que la popularité </span>
+<span class="s2">        est liée à l&#39;accessibilité de la recette utilisant peu de techniques, lesquelles sont simples. </span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">columns</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col1</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de techniques de cuisine différentes par recettes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Nombre de techniques de cuisine différentes par recettes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">col2</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Techniques de cuisine les plus populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">display_graph</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Graphique affiche : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;locked_graphs&quot;</span><span class="p">][</span><span class="s2">&quot;Techniques de cuisine les plus populaires&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">explication_graph_9</span><span class="p">)</span>
+
+        <span class="n">conclusion</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        **Conclusion :**</span>
+<span class="s2">        Dans cette étude, l&#39;évolution de la tendance a indiqué que le site, ayant connu une période de haute fréquentation entre 2002 et 2010, </span>
+<span class="s2">        semble aujourd&#39;hui en manque d&#39;activité. Pour tenter de redynamiser le site, une analyse sur la popularité des recettes a été effectuée et </span>
+<span class="s2">        a permis de déterminer les facteurs de succès d&#39;une recette, à savoir une note moyenne d&#39;au moins 4 et un nombre de commentaires d&#39;au moins 5. </span>
+<span class="s2">        Enfin, les caractéristiques des recettes ainsi défini ont été examinées, permettant d&#39;extraire les points clés de la popularité d&#39;une recette.</span>
+<span class="s2">        Ainsi une recette populaire doit être accessible au plus grand nombre d&#39;utilisateurs en étant rapide, simple et peu calorique utilsant des techniques et ingrédients</span>
+<span class="s2">        basiques et suivant un protocole concis. </span>
+
+<span class="s2">        Plus précisement, les recettes les plus populaires présentent ces caractéristiques :</span>
+<span class="s2">        - moins de 100 minutes et moins de 17 étapes</span>
+<span class="s2">        - entre 4 et 16 ingrédients, de préférence communs</span>
+<span class="s2">        - moins de 6 techniques de cuisine, de préférence basiques</span>
+<span class="s2">        - entre 190 et 520 calories</span>
+
+<span class="s2">        Une deuxième étude utilisant le topic modeling est disponible dans la page &quot;Clustering&quot;.</span>
+<span class="s2">        Celle-ci se concentre plus sur le rapprochement des recettes populaires pour fournir des exemples et types </span>
+<span class="s2">        concrets de recettes. </span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">(</span><span class="n">border</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">conclusion</span><span class="p">)</span>
+        
+        
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur dans la fonction principale : </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Une erreur est survenue lors de l&#39;execution de l&#39;application.&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
