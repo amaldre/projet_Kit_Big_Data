@@ -88,7 +88,7 @@ def test_main(
         assert "Nombre de commentaires par recette en fonction du temps" in mock_st.session_state["locked_graphs"]
         assert "Nombre de recettes durant le pic d'activité du site" in mock_st.session_state["locked_graphs"]
         assert "Distribution du nombre de commentaires par recette" in mock_st.session_state["locked_graphs"]
-        assert "Duree recettes populaires" in mock_st.session_state["locked_graphs"]
+        assert "Durée des recettes populaires" in mock_st.session_state["locked_graphs"]
 
         # Vérifier que la première charge est désactivée
         assert not mock_st.session_state["first_load"]
