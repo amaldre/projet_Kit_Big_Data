@@ -355,17 +355,17 @@ def main():
 
         conclusion_part_1 = """
         **Interprétation :**
-        - Après une forte croissance jusqu'en 2009, Le site a connu un fort déclin jusqu'à aujoud'hui, qui s'illustre par la diminution marquée de l'activité des utilisateurs
-        dans la création de recettes et de l'engagement utilisateurs dans l'espace commentaire.  
+        - Après une forte croissance jusqu'en 2009, Le site a connu un fort déclin jusqu'à aujourd'hui, illustré par la diminution marquée de l'activité des utilisateurs
+        dans la création de recettes et de l'engagement des utilisateurs dans l'espace commentaire.  
 
-        - Cette baisse d'activité peut être expliquer par plusieurs facteurs :
+        - Cette baisse d'activité peut être expliquée par plusieurs facteurs :
           1. **Concurrence croissante** : Avec l'émergence de plateformes sociales comme YouTube, Instagram, et des sites concurrents, le site aurait pu perdre son attractivité.
           2. **Fatigue des contributeurs** : Les créateurs pourraient avoir perdu intérêt ou ne pas être suffisamment motivés pour continuer à enrichir la plateforme.
           3. **Manque d'innovation** : Si le site n'a pas évolué pour répondre aux nouvelles attentes des utilisateurs (fonctionnalités modernes, gamification, etc.), il aurait pu perdre de l'engagement.
-          4. **Facteurs externes** : La crise économique de 2008 a pu engendrée un manque de moyens pour s'investir dans la cuisine maison. 
+          4. **Facteurs externes** : La crise économique de 2008 a pu engendrer un manque de moyens pour s'investir dans la cuisine maison. 
         
-        - La question des solutions de comment remedier à cette tendance et revitaliser le site peut se poser.
-          La démarche proposée dans la suite de l'étude est d'analyser en profondeur les recettes les plus populaires ayant portées 
+        - La question des solutions pour remédier à cette tendance et revitaliser le site peut se poser.
+          La démarche proposée dans la suite de l'étude est d'analyser en profondeur les recettes les plus populaires ayant porté 
           le site durant son âge d'or, engendrant de l'attractivité et de l'engagement de la part de ses utilisateurs.
         """
         with st.container(border=True):
@@ -374,20 +374,20 @@ def main():
 
         st.header("2️⃣ Définition d'une recette de populaire")
 
-        st.write("""Dans cette deuxième partie, il conviendra comprendre ce qui définit la popularatié d'une recette
-                 Deux axes pricipaux seront explorées : la note moyenne et le nombre de commentaire des recettes""")
+        st.write("""Dans cette deuxième partie, il conviendra de comprendre ce qui définit la popularité d'une recette
+                 Deux axes principaux seront explorés : la note moyenne et le nombre de commentaires des recettes""")
 
         explanation_graph_4 = """
         **Observations :**
-        Ce graphe de type boite à moustache illustre la distribution du nombre de commentaires par recette. 
-        Plus précisemment, d'après celui-ci, on observe :
-        - une médianne situé au alentours de 2 commentaires par recettes
-        - 25% des meilleurs recettes en terme de nombre de commentaires ont 5 ou plus de commentaires (Troisième quartile).
+        Ce graphe de type boîte à moustaches illustre la distribution du nombre de commentaires par recette. 
+        Plus précisément, d'après celui-ci, on observe :
+        - une médianne située aux alentours de 2 commentaires par recettes
+        - 25% des meilleurs recettes en termes de nombre de commentaires ont 5 ou plus de commentaires (Troisième quartile).
 
         La distribution du nombre de commentaires par recette est très polarisée en faveur des recettes avec peu de commentaires
         avec la grande majorité des recettes ayant en dessous de 5 commentaires, 
-        une médiane situé à 2 commentaires et un grand nombre à 1 commentaire (63084 recettes soit 35%).
-        Cette analyse confirme le rapport quantité/attractivité à améliorer évoqué dans la première partie.
+        une médiane situé à 2 commentaires et un grand nombre à 1 commentaire (63 084 recettes, soit 35 %).
+        Cette analyse confirme le rapport quantité/attractivité à améliorer, évoqué dans la première partie.
         """
 
         st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].display_graph(
@@ -397,14 +397,14 @@ def main():
 
         explanation_graph_5 = """
         **Observations :**
-        Ce graphe de type boite à moustache représente la distribution des notes moyennes des recettes. 
-        Plus précisemment, d'après celui-ci, on observe :
-        - une médianne située au alentours de la note moyenne de 4,6 commentaires par recette
+        Ce graphe de type boîte à moustaches représente la distribution des notes moyennes des recettes. 
+        Plus précisément, d'après celui-ci, on observe :
+        - une médianne située aux alentours de la note moyenne de 4,6 par recette
         - seulement 25% des recettes sont notés 4 ou moins (1er quartile).
 
-        Ce critère est moins représentatif des meilleurs recettes car la majorité des recettes sont notés 4 ou plus. 
-        De plus, des exemples de recettes très populaires mais avec notes en dessous de la médiane sont présents dans la dataframe ci-dessus
-        (exemple : la recette "best banana bread" est notée 4,186 en moyenne).
+        Ce critère est moins représentatif des meilleures recettes car la majorité des recettes sont notées 4 ou plus. 
+        De plus, des exemples de recettes très populaires, mais avec notes en dessous de la médiane sont présents dans la dataframe ci-dessus
+        (par exemple : la recette "best banana bread" est notée 4,186 en moyenne).
         """
 
         st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].display_graph(
@@ -415,16 +415,16 @@ def main():
         conclusion_part_2 = """
         **Interprétation :**
         D'après cette analyse, deux critères peuvent définir la popularité d'une recette. 
-        Tout d'abord, l'élément le plus discriminant est le nombre de commentaires par recettes 
+        Tout d'abord, l'élément le plus discriminant est le nombre de commentaires par recette 
         car seulement très peu de recettes réussissent à attirer l'engagement des utilisateurs.
          
-        Un second élément moins représentatif est la note moyenne permettant de supprimer les recettes dépréciées, 
+        Un second élément moins représentatif est la note moyenne sui permet de supprimer les recettes dépréciées, 
         mais qui ne permet pas de juger à lui seul l'attractivité d'une recette.
 
         Dans le reste de cette étude on se placera dans ces conditions : 
-        - nombre de commentaires par recette : supérieur ou égale à 5
-        - note moyenne : supérieur ou égale à 4
-        Avec ces filtres, 38918 recettes sont considérées comme populaires et seront étudiées. 
+        - nombre de commentaires par recette : supérieur ou égal à 5
+        - note moyenne : supérieure ou égale à 4
+        Avec ces filtres, 38 918 recettes sont considérées comme populaires et seront étudiées. 
         """
 
         with st.container(border=True):
@@ -434,9 +434,9 @@ def main():
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
         
-        st.write("""Après avoir déterminer les critères définissant les recettes populaires, leurs caractériques internes peuvent être explicitées 
+        st.write("""Après avoir déterminé les critères définissant les recettes populaires, leurs caractéristiques internes peuvent être explicitées 
                     afin de comprendre la source de leur popularité. En effet, des analyses seront effectuées sur la logistique, les ingrédients et 
-                    les techniques employées pour comprendre les facteurs de succès d'une recette.""")
+                    les techniques employées pour identifier les facteurs de succès d'une recette.""")
     
 
         explanation_graph_6 = """
@@ -445,16 +445,16 @@ def main():
         - La majorité des recettes populaires sont relativement courtes, avec une durée de préparation inférieure à 100 minutes.
         Ces recettes ont tendance à avoir un nombre de commentaires plus élevé, avec une grande concentration de recettes à plus de 50 commentaires (log Nombre de commentaires = 4) 
         ainsi que presque toutes les recettes à plus de 400 commentaires (log Nombre de commentaires = 6).
-        - Cependant certaines recettes longues restent populaires en moins grande proportion entre 200 et 750 minutes, et un pic peut être observé au alentours de 1000 minutes.
-        Enfin, certaines recettes très longues ont un bon nombre de commentaires observables en allogeant le filtre sur la durée de la recette. 
+        - Cependant certaines recettes longues restent populaires en moins grande proportion entre 200 et 750 minutes, et un pic peut être observé aux alentours de 1000 minutes.
+        Enfin, certaines recettes très longues ont un bon nombre de commentaires observables en élargissant le filtre sur la durée de la recette. 
 
         Concernant le graphe sur le nombre d'étapes des recettes populaires :
-        - Un très grande concentration des recettes populaires peut être observés pour un nombre d'étapes inférieurs à 17, 
+        - Une très grande concentration de recettes populaires peut être observée pour un nombre d'étapes inférieurs à 17, 
         puis une baisse entre 17 et 25 et au-delà, les recettes ont peu de commentaires.
 
         **Interprétations :**
-        Les recettes relativement courtes et avec peu d'étapes sempblent être **plus populaires**
-        Une interprétation possible car elles sont **plus simples et rapides à réaliser** ne necissitant pas un iventissement temporelle
+        Les recettes relativement courtes et avec peu d'étapes semblent être **plus populaires**
+        Une interprétation possible car elles sont **plus simples et rapides à réaliser** ne nécessitant pas un investissement temporel
         ou une aptitude à exécuter une procédure complexe.
         Ces recettes sont alors plus faciles d'accès et s'adressent à un plus grand public, d'où leur popularité.
         """
@@ -473,22 +473,20 @@ def main():
         explication_graph_7 = """
         **Observations**
         Concernant le nombre d'ingrédients par recette :
-        - Les recettes populaires ont une nombre d'ingrédients situé entre 4 et 16 ingrédients. 
-        Cette plage de valeurs est assez large permet tout de même d'inférer que les recettes populaires ont moins de 16 ingrédients.
+        - Les recettes populaires ont un nombre d'ingrédients situé entre 4 et 16 ingrédients. 
+        Cette plage de valeurs, bien que relativement large, permet tout de même d'inférer que les recettes populaires ont moins de 16 ingrédients.
 
-        Concernant la nature de ses ingrédients :
-        - Dans le top 10, des ingrédients on retrouve les condiments ordinaires tels que le sel, sucre, l'huile, l'eau ou le
-        - D'autre ingrédients moins ordinaire mais tout de même communs, se retrouve dans les ingrédients les plus utilisés
-        comme les oeufs, les gousses d'ail, oignons à tendance salée (les oeufs se trouvant aussi dans les recettes sucrées)
+        Concernant la nature de leurs ingrédients :
+        - Dans le top 10, des ingrédients on retrouve les condiments ordinaires tels que le sel, le sucre, l'huile et l'eau 
+        - D'autres ingrédients moins ordinaires mais tout de même communs, se retrouve dans les ingrédients les plus utilisés
+        comme les oeufs, les gousses d'ail et oignons à tendance salée (les oeufs se trouvant aussi dans les recettes sucrées)
 
         **Interprétations**
         Le nombre et la nature des ingrédients semblent jouer un rôle dans la popularité d'une recette. 
-        En effet, un nombre d'ingrédients non excessif ainsi que que des ingrédients communs peuvent être
-        des indicateurs d'une recette populaire. Cette observation rejoint la notion d'acessibilité des recettes 
-        leur permettant d'attirer un large éventail d'utilisateurs, ne nécessitant qu'un nombre limité d'ingrédients et
+        En effet, un nombre d'ingrédients non excessif ainsi que des ingrédients communs peuvent être
+        des indicateurs d'une recette populaire. Cette observation rejoint la notion d'accessibilité des recettes 
+        leur permettant d'attirer un large éventail d'utilisateurs, ne nécessitant qu'un nombre limité d'ingrédients,
         généralement présents dans la plupart des cuisines.
-
-
         """
         
 
@@ -506,13 +504,13 @@ def main():
         explication_graph_8 ="""
         **Observation :**
         Le graphe montre une concentration des recettes populaires pour un nombre de calories situé 
-        entre 54 (log Calories = 4) et 1100 (log Calories = 7). En effet, dans cet intervalle compte environ 35000 recettes, 
+        entre 54 (log Calories = 4) et 1100 (log Calories = 7). En effet, cet intervalle compte environ 35000 recettes, 
         soit environ 95% des recettes
         - Plus particulièrement, une forte densité de recettes populaires est remarquée entre 190 (log Calories = 5,25) et 
-        520 (log Calories = 6,25) calories correspondant à des repas sains ou à des snacks. Dans cet intervalle se trouvent 
+        520 (log Calories = 6,25) calories, correspondant à des repas sains ou à des snacks. Dans cet intervalle se trouvent 
         19344 des recettes soit 50 % des recettes.
 
-        Cette étude calorique permet de déduire que les recettes à faible apport caloriques sont les plus populaires notamment entre 190 et 520 calories.
+        Cette analyse calorique permet de conclure que les recettes à faible apport calorique sont les plus populaires notamment entre 190 et 520 calories.
         """
 
         st.session_state["locked_graphs"]["Calories des recettes populaires"].display_graph(
@@ -522,17 +520,17 @@ def main():
 
         explication_graph_9 = """
         **Observation :**
-        Les graphes analysent le nombre et le type des techniques de cuisine utlisées dans les recettes populaires.
+        Les graphes analysent le nombre et le type des techniques de cuisine utilisées dans les recettes populaires.
 
-        Concernant le nombre de techniques par recette, un grand nombre de recettes utilise au plus 6 techniques, dont les plus commenté (avec plus de 400 commentaires).
+        Concernant le nombre de techniques par recette, un grand nombre de recettes utilise au plus 6 techniques, dont les plus commentées (avec plus de 400 commentaires).
         Ensuite, une baisse de popularité peut être constatée jusqu'à 10 techniques par recettes et au-delà, les recettes sont peu commentées.
 
-        Pour le techniques employées, la "cuisson au four" et "combiner" semblent être proéminente par rapport aux autres avec plus de 50 000 recettes.
+        Concernant les techniques employées, la "cuisson au four" et "combiner" semblent être proéminente par rapport aux autres avec plus de 50 000 recettes.
         Puis "verser", "faire bouillir", "faire fondre". La plupart de ces techniques sont basiques mais ne permettent pas de différencier un type de recettes particulier 
-        car elles sont trop génériques. Cependant, la "cuisson au four" étant en tête des réponses semble indiquer que les recettes au four sont très appréciées.
+        car elles sont trop génériques. Cependant, la "cuisson au four" étant en tête des réponses semble indiquer que les recettes au four sont particulièrement appréciées.
 
-        Donc, les recettes populaires utilisent peu de technique de cuisine différentes et notamment la cuisson au four. Ce tendance réaffirme que la popularité 
-        est liée à l'accessibilité de la recette utilisant peu de techniques, qui sont en plus simples. 
+        Donc, les recettes populaires utilisent peu de technique de cuisine différentes et notamment la cuisson au four. Cette tendance réaffirme que la popularité 
+        est liée à l'accessibilité de la recette utilisant peu de techniques, lesquelles sont simples. 
         """
         
         col1, col2 = st.columns(2)
@@ -549,19 +547,19 @@ def main():
         conclusion = """
         **Conclusion :**
         Dans cette étude, l'évolution de la tendance a indiqué que le site, ayant connu une période de haute fréquentation entre 2002 et 2010, 
-        semble aujourd'hui en manque d'activité. Pour tenter de redynamiser le site, une analyse sur la popularité des recettes a été effectué et 
-        a permis de déterminer les facteurs de succès d'une recette étant une note moyenne de 4 minimun et un nombre de commentaires d'au moins 5. 
+        semble aujourd'hui en manque d'activité. Pour tenter de redynamiser le site, une analyse sur la popularité des recettes a été effectuée et 
+        a permis de déterminer les facteurs de succès d'une recette, à savoir une note moyenne d'au moins 4 et un nombre de commentaires d'au moins 5. 
         Enfin, les caractéristiques des recettes ainsi défini ont été examinées, permettant d'extraire les points clés de la popularité d'une recette.
-        Ainsi une recette populaire doit accessible au plus grand nombre d'utilisateurs en étant rapide, simple, peu caloriques utilsant des techniques et ingrédients
+        Ainsi une recette populaire doit être accessible au plus grand nombre d'utilisateurs en étant rapide, simple et peu calorique utilsant des techniques et ingrédients
         basiques et suivant un protocole concis. 
 
         Plus précisement, les recettes les plus populaires présentent ces caractéristiques :
-        - moins de 100 minuntes et moins de 17 étapes
+        - moins de 100 minutes et moins de 17 étapes
         - entre 4 et 16 ingrédients, de préférence communs
         - moins de 6 techniques de cuisine, de préférence basiques
         - entre 190 et 520 calories
 
-        Une deuxième étude sous forme de topic modeling est disponible dans la page "Clustering".
+        Une deuxième étude utilisant le topic modeling est disponible dans la page "Clustering".
         Celle-ci se concentre plus sur le rapprochement des recettes populaires pour fournir des exemples et types 
         concrets de recettes. 
         """
