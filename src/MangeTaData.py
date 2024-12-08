@@ -25,6 +25,8 @@ if "recipes_df" not in st.session_state:
 
 
 def main():
+    # Configuration de l'application Streamlit
+    st.title("Mange ta main")
 
     st.markdown(
         """
