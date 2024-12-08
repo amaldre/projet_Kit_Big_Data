@@ -26,7 +26,48 @@ load_css("src/style.css")
 
 st.title("DataViz")
 
-st.markdown("Dans cette page, parcourez librement les donnees")
+st.write("Cette page vous permet d'explorer et de visualiser les données de manière interactive. Voici comment vous pouvez l'utiliser :")
+
+st.header("1️⃣ Ajouter des graphiques")
+
+st.write("**Graphiques univariés** : Cliquez sur le bouton **Ajout graphe univarié** pour créer un graphique analysant une seule variable (ex. : distribution des calories, durée des recettes, etc.).")
+st.write("**Graphiques bivariés** : Cliquez sur le bouton **Ajout graphe bivarié** pour comparer deux variables (ex. : relation entre le nombre d'ingrédients et les calories).")
+
+st.header("2️⃣Personnaliser vos graphiques")
+st.markdown("""
+- Après avoir ajouté un graphique, vous pouvez :
+  - Sélectionner la ou les variables à analyser.
+  - Appliquer des filtres pour restreindre les données affichées.
+- Chaque graphique s'adapte automatiquement à vos paramètres.
+""")
+st.header("3️⃣Supprimer des graphiques")
+st.write("Si un graphique n'est plus nécessaire, une option de suppression est disponible. La page sera rechargée pour mettre à jour l'affichage.")
+
+st.header("4️⃣Liste des variables!")
+
+st.write("Voici la liste des variables que vous pouvez utiliser pour créer vos graphiques :")
+st.write("""
+- **Note moyenne** : Note moyenne des recettes
+- **Nombre de commentaires** : Nombre de commentaires sur la recette
+- **Date de publication de la recette** : Date de publication de la recette
+- **Durée de la recette (minutes)** : Durée de la recette en minutes
+- **Calories** : Nombre de calories
+- **Nombre d'étapes** : Nombre d'étapes de la recettes
+- **Nombre d'ingrédients** : Nombre d'ingrédients de la recette
+- **Nombre de techniques utilisées** : Nombre de techniques utilisées dans la recette
+""")
+
+st.header("5️⃣Exemple de graphique")
+
+st.write("**Voici comment créer un graph univarié de la note moyenne sur les recettes ayant un nombre d'étape inférieur à 10** :")
+st.write("""
+1. Appuyez sur Ajout graphe univarié
+2. Sélectionnez la variable Note moyenne
+3. Sélectionnez le filtre Nombre d'étapes
+4. Faites glisser le slider à droite pour arriver jusqu'à 10
+         """)
+
+
 
 # Initialisation de la session
 if "graph" not in st.session_state:
@@ -41,7 +82,7 @@ if "count_graph_total" not in st.session_state:
 
 def main():
     """
-    Main function of the page DataViz. It allows to display and delete graphs.
+    Main function of the page DataViz. It allows to dispzlay and delete graphs.
     """
     # Definition des variables
     axis_x_list = [
