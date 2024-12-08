@@ -11,9 +11,6 @@ import importlib
 # Charger dynamiquement le module
 main = importlib.import_module("src.pages.1_Analyse_des_donnees").main
 
-# Utiliser une fonction ou une classe du module
-resultat = analyse_module.ma_fonction()
-
 
 @pytest.fixture
 def mock_session_state():
