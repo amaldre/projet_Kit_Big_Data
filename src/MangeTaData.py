@@ -9,7 +9,9 @@ import logging
 from logging_config import setup_logging
 from utils.load_functions import initialize_recipes_df, load_css
 
-st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
+st.set_page_config(
+    page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide"
+)
 
 # Initialiser le logger
 setup_logging()  # Configuration
@@ -26,9 +28,9 @@ if "recipes_df" not in st.session_state:
 
 def main():
     # Configuration de l'application Streamlit
-    col1, col2, col3 = st.columns([2,3,2])
+    col1, col2, col3 = st.columns([2, 3, 2])
     with col2:
-      st.image("images/MangeTaData.png")
+        st.image("images/MangeTaData.png")
     st.title("Mange ta main")
 
     st.markdown(
@@ -44,10 +46,9 @@ def main():
         2. **Clustering** : Analyse approfondie des données de recettes grâce au clustering.
         3. **Dataviz** : Créez vos propres graphiques à partir des données.
         4. **Preprocessing** : Détails sur les méthodes utilisées dans l'analyse.
-        5. **Carte** : Un exemple fictif d'analyse géographique.
+        5. **Simulation Carte** : Un exemple fictif d'analyse géographique.
         """
     )
-
 
 
 if __name__ == "__main__":
