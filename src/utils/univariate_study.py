@@ -278,7 +278,7 @@ class UnivariateStudy(BaseStudy):
         fig.patch.set_alpha(0)
         ax.set_facecolor((0, 0, 0, 0))
         self.axis_graph(fig, ax)
-        st.write(f"Nombre de recettes affichées dans le graphe : {sum(count_elts)}")
+        st.write(f"Nombre d'éléments affichées dans le graphe : {sum(count_elts)}")
         return True
 
     def __draw_graph(self, x, y, recipes_id):
@@ -394,6 +394,27 @@ class UnivariateStudy(BaseStudy):
                                 with col3:
                                     if st.form_submit_button(label="Paramètres du graphe"):
                                         self.save_graph()
+                            else:
+                                with col2:
+                                    if st.form_submit_button(label="Réinitialiser le graphe"):
+                                        self.axis_x = axis_x
+                                        self.default_values = self.default_values_save
+                                        range_filters_save = [
+                                            self.default_values_save[filters]
+                                            for filters in self.default_values_save[
+                                                "chosen_filters"
+                                            ]
+                                        ]
+                                        self.x, self.recipes_id = self.get_data_points_ingredients(
+                                            self.dataframe,
+                                            self.axis_x,
+                                            self.default_values_save[self.axis_x],
+                                            self.default_values_save["chosen_filters"],
+                                            range_filters_save,
+                                        )
+                                        self.iteration += 1
+                                        graph_container.empty()
+                                        st.rerun()
 
                         else:
                             if free:
@@ -461,7 +482,7 @@ class UnivariateStudy(BaseStudy):
                                         self.axis_x = axis_x
                                         self.default_values = self.default_values_save
                                         range_filters_save = [
-                                            self.default_values_save[filt]
+                                            self.default_values_save["filters"]
                                             for filt in self.default_values_save[
                                                 "chosen_filters"
                                             ]

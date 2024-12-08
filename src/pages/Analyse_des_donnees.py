@@ -214,13 +214,14 @@ def main():
                 key="Ingrédients les plus populaires",
                 name="Ingrédients les plus populaires",
                 axis_x="Ingrédients",
-                filters=['Note moyenne'],
+                filters=['Note moyenne',"Nombre de commentaires"],
                 plot_type="bar_ingredients",
                 log_axis_x=False, log_axis_y=False,
                 default_values={
                     "Ingrédients": 10,
                     "Note moyenne":(4, 5),
-                    "chosen_filters":['Note moyenne']
+                    "Nombre de commentaires": (5, 1613),
+                    "chosen_filters":['Note moyenne',"Nombre de commentaires"]
                 },
                 graph_pad=1,
             )
@@ -248,14 +249,15 @@ def main():
                 key="Techniques de cuisine les plus populaires",
                 name="Techniques de cuisine les plus populaires",
                 axis_x="Techniques utilisées",
-                filters=['Note moyenne'],
+                filters=['Note moyenne',"Nombre de commentaires"],
                 plot_type="bar_techniques",
                 log_axis_x=False,
                 log_axis_y=False,
                 default_values={
                     "Techniques utilisées": 10,
+                    "Nombre de commentaires": (5, 1613),
                     "Note moyenne":(4, 5),
-                    "chosen_filters":['Note moyenne']
+                    "chosen_filters":['Note moyenne',"Nombre de commentaires"]
                 },
                 graph_pad=1,
             )
@@ -272,7 +274,7 @@ def main():
                 log_axis_y=False,
                 default_values={
                     "Nombre de techniques utilisées": (0, 14),
-                    "Nombre de commentaires": (1, 1613),
+                    "Nombre de commentaires": (5, 1613),
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
                 },
@@ -448,7 +450,7 @@ def main():
 
         Concernant le graphe sur le nombre d'étapes des recettes populaires :
         - Un très grande concentration des recettes populaires peut être observés pour un nombre d'étapes inférieurs à 17, 
-        puis une baisse entre 17 et 25 et au delà, les recettes ont peu de commentaires.
+        puis une baisse entre 17 et 25 et au-delà, les recettes ont peu de commentaires.
 
         **Interprétations :**
         Les recettes relativement courtes et avec peu d'étapes sempblent être **plus populaires**
@@ -471,8 +473,22 @@ def main():
         explication_graph_7 = """
         **Observations**
         Concernant le nombre d'ingrédients par recette :
-        - Les recettes populaires ont une nombre d'ingrédients assez bas comptant entre _ et _ ingrédients. 
-        
+        - Les recettes populaires ont une nombre d'ingrédients situé entre 4 et 16 ingrédients. 
+        Cette plage de valeurs est assez large permet tout de même d'inférer que les recettes populaires ont moins de 16 ingrédients.
+
+        Concernant la nature de ses ingrédients :
+        - Dans le top 10, des ingrédients on retrouve les condiments ordinaires tels que le sel, sucre, l'huile, l'eau ou le
+        - D'autre ingrédients moins ordinaire mais tout de même communs, se retrouve dans les ingrédients les plus utilisés
+        comme les oeufs, les gousses d'ail, oignons à tendance salée (les oeufs se trouvant aussi dans les recettes sucrées)
+
+        **Interprétations**
+        Le nombre et la nature des ingrédients semblent jouer un rôle dans la popularité d'une recette. 
+        En effet, un nombre d'ingrédients non excessif ainsi que que des ingrédients communs peuvent être
+        des indicateurs d'une recette populaire. Cette observation rejoint la notion d'acessibilité des recettes 
+        leur permettant d'attirer un large éventail d'utilisateurs, ne nécessitant qu'un nombre limité d'ingrédients et
+        généralement présents dans la plupart des cuisines.
+
+
         """
         
 
@@ -484,10 +500,40 @@ def main():
             st.session_state["locked_graphs"]["Ingrédients les plus populaires"].display_graph()
             logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Ingrédients les plus populaires"].name}")
 
+        with st.container(border=True):
+            st.write(explication_graph_7)
+
+        explication_graph_8 ="""
+        **Observation :**
+        Le graphe montre une concentration des recettes populaires pour un nombre de calories situé 
+        entre 54 (log Calories = 4) et 1100 (log Calories = 7). En effet, dans cet intervalle compte environ 35000 recettes, 
+        soit environ 95% des recettes
+        - Plus particulièrement, une forte densité de recettes populaires est remarquée entre 190 (log Calories = 5,25) et 
+        520 (log Calories = 6,25) calories correspondant à des repas sains ou à des snacks. Dans cet intervalle se trouvent 
+        19344 des recettes soit 50 % des recettes.
+
+        Cette étude calorique permet de déduire que les recettes à faible apport caloriques sont les plus populaires notamment entre 190 et 520 calories.
+        """
+
         st.session_state["locked_graphs"]["Calories des recettes populaires"].display_graph(
-            explanation=explanation_graph_1
+            explanation=explication_graph_8
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Calories des recettes populaires"].name}")
+
+        explication_graph_9 = """
+        **Observation :**
+        Les graphes analysent le nombre et le type des techniques de cuisine utlisées dans les recettes populaires.
+
+        Concernant le nombre de techniques par recette, un grand nombre de recettes utilise au plus 6 techniques, dont les plus commenté (avec plus de 400 commentaires).
+        Ensuite, une baisse de popularité peut être constatée jusqu'à 10 techniques par recettes et au-delà, les recettes sont peu commentées.
+
+        Pour le techniques employées, la "cuisson au four" et "combiner" semblent être proéminente par rapport aux autres avec plus de 50 000 recettes.
+        Puis "verser", "faire bouillir", "faire fondre". La plupart de ces techniques sont basiques mais ne permettent pas de différencier un type de recettes particulier 
+        car elles sont trop génériques. Cependant, la "cuisson au four" étant en tête des réponses semble indiquer que les recettes au four sont très appréciées.
+
+        Donc, les recettes populaires utilisent peu de technique de cuisine différentes et notamment la cuisson au four. Ce tendance réaffirme que la popularité 
+        est liée à l'accessibilité de la recette utilisant peu de techniques, qui sont en plus simples. 
+        """
         
         col1, col2 = st.columns(2)
         with col1:
