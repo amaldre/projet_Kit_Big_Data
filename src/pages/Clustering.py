@@ -15,7 +15,7 @@ from utils.load_functions import load_data, load_css
 logger = logging.getLogger(os.path.basename(__file__))
 
 # Parametrage de Streamlit
-st.set_page_config(page_title="Explication Pretraitement", layout="wide")
+st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
 
 
 def main():
@@ -104,7 +104,7 @@ def main():
     escaped_html = html.escape(html_string)
 
     iframe_code = f"""
-        <iframe srcdoc="{escaped_html}" width="700" height="700" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
+        <iframe srcdoc="{escaped_html}" width="700" height="700" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ffffff;"></iframe>
     """
 
     st.components.v1.html(iframe_code, height=715, width=715)
@@ -127,7 +127,7 @@ def main():
 
     # Créer le code HTML de l'iframe avec des styles pour les bords arrondis
     iframe_code = f"""
-        <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
+        <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ffffff;"></iframe>
     """
 
     st.components.v1.html(iframe_code, height=820)

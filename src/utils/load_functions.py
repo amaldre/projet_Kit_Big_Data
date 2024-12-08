@@ -8,6 +8,7 @@ import logging
 import pandas as pd
 import statsmodels.api as sm
 import streamlit as st
+import base64 
 
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -26,7 +27,7 @@ def load_csv(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
     return pd.read_csv(file_path)
 
-
+@st.cache_data
 def load_css(file_name):
     """
     Charge un fichier CSS et l'applique à la page Streamlit.
@@ -38,6 +39,7 @@ def load_css(file_name):
         with open(file_name, encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
             logger.info("CSS chargé avec succès depuis '%s'.", file_name)
+        load_background()
     except FileNotFoundError:
         error_message = f"Le fichier CSS '{file_name}' est introuvable."
         logger.error(error_message)
@@ -47,6 +49,30 @@ def load_css(file_name):
             "Une erreur inattendue s'est produite lors du chargement du CSS : %s", e
         )
         st.error(f"Une erreur inattendue s'est produite : {e}")
+
+def load_background():
+    with open("images/background.png", "rb") as img_file:
+        base64_image = base64.b64encode(img_file.read()).decode()
+    page_bg_img = f'''
+    <style>
+    .stSidebar {{
+        background-image: url("data:image/jpeg;base64,{base64_image}");
+        background-size: cover;
+        
+    }}
+    .stSidebar::before {{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.80);  /* Semi-transparent white overlay */
+    }}
+    <style>
+    '''
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+    return True
 
 
 def load_df(file_path):

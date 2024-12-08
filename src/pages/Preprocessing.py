@@ -29,7 +29,7 @@ DF_FINAL = "clean_recipe_df.csv"
 
 # ---- Page Streamlit ----
 try:
-    st.set_page_config(page_title="Explication Prétraitement", layout="wide")
+    st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
 except Exception as e:
     logger.error(f"Erreur lors de la configuration de la page : {e}")
     st.error("Une erreur s'est produite lors de la configuration de la page.")
@@ -86,7 +86,7 @@ def main():
 
     # Créer le code HTML de l'iframe avec des styles pour les bords arrondis
     iframe_code = f"""
-        <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ebcdac;"></iframe>
+        <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ffffff;"></iframe>
     """
 
     st.components.v1.html(iframe_code, height=820)

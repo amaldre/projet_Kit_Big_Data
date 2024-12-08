@@ -18,7 +18,7 @@ import os
 
 logger = logging.getLogger(os.path.basename(__file__))
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
 
 
 # Charger le CSS
