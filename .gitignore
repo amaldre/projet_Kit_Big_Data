@@ -129,6 +129,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env_test/
 env_projet_kit_big_data/
 .env_projet_kit_big_data
 environnement_projet_bigdata
