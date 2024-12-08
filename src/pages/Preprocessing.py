@@ -137,9 +137,7 @@ def main():
         """
     )
 
-    st.header("3️⃣ Visualisation de la Fusion")
-
-    st.header("4️⃣ Suppression des Valeurs Aberrantes")
+    st.header("3️⃣ Suppression des Valeurs Aberrantes")
     st.write(
         """
     Certaines recettes « troll » ou mal renseignées sont supprimées :
@@ -165,7 +163,7 @@ def main():
             logger.error(f"Erreur lors de la suppression des valeurs aberrantes : {e}")
             st.error("Une erreur est survenue lors du nettoyage des données.")
 
-    st.header("5️⃣ Nettoyage et Tokenisation des Textes")
+    st.header("4️⃣ Nettoyage et Tokenisation des Textes")
     st.write(
         """
     Les descriptions et noms des recettes sont nettoyés et tokenisés :
@@ -188,7 +186,7 @@ def main():
         logger.error(f"Erreur lors du nettoyage des textes : {e}")
         st.error("Impossible de nettoyer les textes.")
 
-    st.header("6️⃣ Mise en place d'une Base de Données")
+    st.header("5️⃣ Mise en place d'une Base de Données")
     st.write(
         """
     Afin de déployer notre application, une base de données MongoDB a été mise en place.
