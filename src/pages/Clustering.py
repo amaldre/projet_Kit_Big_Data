@@ -79,7 +79,7 @@ def main():
         st.warning("Fichier topics_model.csv introuvable.")
         logger.warning("topics_model.csv introuvable.")
 
-    st.header("3️⃣ Analyse des topics")
+    st.header("3️⃣Analyse des topics")
 
     st.write(
         """
