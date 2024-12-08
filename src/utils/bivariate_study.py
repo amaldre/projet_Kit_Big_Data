@@ -19,6 +19,12 @@ logger = logging.getLogger(__name__)
 
 
 class BivariateStudy(BaseStudy):
+    """
+    Classe pour l'analyse bivariée.
+
+    :param BaseStudy: Classe parente
+    :type BaseStudy: Class
+    """
 
     def __init__(
         self,
@@ -71,6 +77,12 @@ class BivariateStudy(BaseStudy):
 
     # Méthode d'affichage des attributs
     def save_graph(self):
+        """
+        Méthode pour sauvegarder les attributs du graphe.
+
+        :return: True si la sauvegarde a réussi
+        :rtype: bool
+        """
         logger.info("Sauvegarde des attributs de l'objet Study avec key='%s'", self.key)
         range_filters = ""
         if self.chosen_filters is not None:
@@ -98,6 +110,12 @@ class BivariateStudy(BaseStudy):
         return True
 
     def __set_axis(self):
+        """
+        Méthode pour définir les axes du graphique.
+
+        :return: Les axes du graphique
+        :rtype: tuple
+        """
         axis_x = st.selectbox(
             label="axis_x",
             options=self.axis_x_list,
@@ -105,7 +123,7 @@ class BivariateStudy(BaseStudy):
         )
         axis_y = st.selectbox(
             label="axis_y",
-            options=[axis for axis in self.axis_y_list if axis !=axis_x],
+            options=[axis for axis in self.axis_y_list if axis != axis_x],
             key=("axis_y" + self.key + str(self.iteration)),
         )
 
@@ -122,6 +140,26 @@ class BivariateStudy(BaseStudy):
         chosen_filters,
         range_filters,
     ):
+        """
+        Méthode pour obtenir les points de données pour le graphique.
+
+        :param df: dataframe
+        :type df: pandas.DataFrame
+        :param axis_x: axe x
+        :type axis_x: str
+        :param axis_y: axe y
+        :type axis_y: str
+        :param range_axis_x: plage de l'axe x
+        :type range_axis_x: tuple
+        :param range_axis_y: plage de l'axe y
+        :type range_axis_y: tuple
+        :param chosen_filters: filtres choisis
+        :type chosen_filters: list
+        :param range_filters: plages des filtres
+        :type range_filters: list
+        :return: Les points de données pour le graphique
+        :rtype: tuple
+        """
         columns = [axis_x, axis_y] + chosen_filters
         if "recipe_id" in self.dataframe.columns:
             columns += ["recipe_id"]
@@ -152,6 +190,14 @@ class BivariateStudy(BaseStudy):
             return df[axis_x].values, df[axis_y].values, None
 
     def __set_range_axis(self, axis):
+        """
+        Méthode pour définir la plage de l'axe.
+
+        :param axis: axe
+        :type axis: str
+        :return: plage de l'axe
+        :rtype: tuple
+        """
 
         if self.dataframe[axis].dtype == "datetime64[ns]":
             range_axis = self._BaseStudy__set_date(axis)
@@ -161,6 +207,16 @@ class BivariateStudy(BaseStudy):
         return range_axis
 
     def __filters(self, axis_x, axis_y):
+        """
+        Méthode pour définir les filtres.
+
+        :param axis_x: axe x
+        :type axis_x: str
+        :param axis_y: axe y
+        :type axis_y: str
+        :return: Les filtres choisis et leurs plages
+        :rtype: tuple
+        """
         if self.default_values is not None:
             default_values = self.default_values["chosen_filters"]
         else:
@@ -183,22 +239,34 @@ class BivariateStudy(BaseStudy):
         return chosen_filters, range_filters
 
     def __draw_plot(self, x, y, recipes_id):
+        """
+        Méthode pour dessiner le graphique.
+
+        :param x: abscisse des points
+        :type x: list
+        :param y: ordonnée des points
+        :type y: list
+        :param recipes_id: id des recettes
+        :type recipes_id: list
+        :return: True si le dessin a réussi
+        :rtype: bool
+        """
         col = st.columns([self.graph_pad, 30, self.graph_pad])
         with col[1]:
 
             fig, ax = plt.subplots(figsize=(10, 6))
 
-            ax.set_title(self.name, fontsize=16, pad=20, weight='bold')
+            ax.set_title(self.name, fontsize=16, pad=20, weight="bold")
             if self.plot_type != "density map":
                 ax.set_xlabel(self.axis_x, fontsize=16)
                 ax.set_ylabel(self.axis_y, fontsize=16)
-                if self.log_axis_x :
+                if self.log_axis_x:
                     ax.set_xscale("log")
                 if self.log_axis_y:
                     ax.set_yscale("log")
-                
+
             else:
-                if self.log_axis_x :
+                if self.log_axis_x:
                     ax.set_xlabel("log " + self.axis_x, fontsize=16)
                     x = np.log(x)
                 else:
@@ -227,18 +295,27 @@ class BivariateStudy(BaseStudy):
                 )
                 fig.colorbar(hb, shrink=1, aspect=40, pad=0.02)
 
-            ax.grid(True, which="both", linestyle="-", linewidth=0.7, alpha=0.4, color="grey")
+            ax.grid(
+                True,
+                which="both",
+                linestyle="-",
+                linewidth=0.7,
+                alpha=0.4,
+                color="grey",
+            )
 
             # Fond transparent
             ax.set_facecolor((0, 0, 0, 0))
             fig.patch.set_alpha(0)
-            ax.tick_params(axis='both', labelsize=14) 
+            ax.tick_params(axis="both", labelsize=14)
 
             st.pyplot(fig)
             st.write(f"Nombre de recettes affichées dans le graphe : {len(x)}")
 
         if "recipe_id" in self.dataframe.columns:
-            with st.expander(f"Meilleures recettes selon le critère : {self.axis_y} (avec les filtres actuels)"):
+            with st.expander(
+                f"Meilleures recettes selon le critère : {self.axis_y} (avec les filtres actuels)"
+            ):
                 display_df = self.dataframe[
                     self.dataframe["recipe_id"].isin(recipes_id)
                 ]
@@ -248,8 +325,17 @@ class BivariateStudy(BaseStudy):
                 st.dataframe(display_df, hide_index=True)
         return True
 
-
     def display_graph(self, free=False, explanation=None):
+        """
+        Méthode pour afficher le graphique.
+
+        :param free: condition pour choisir les axes et les filtres additionnels, defaults to False
+        :type free: bool, optional
+        :param explanation: explication du graphique, defaults to None
+        :type explanation: str, optional
+        :return: True si l'affichage a réussi
+        :rtype: bool
+        """
         self.default_values = self.default_values_save
         logger.info("Affichage du graphique pour l'instance avec key='%s'", self.key)
         chosen_filters = []
@@ -316,7 +402,9 @@ class BivariateStudy(BaseStudy):
 
                             if self.default_values_save is not None:
                                 with col[1]:
-                                    if st.form_submit_button(label="Réinitialiser le graphe"):
+                                    if st.form_submit_button(
+                                        label="Réinitialiser le graphe"
+                                    ):
                                         self.default_values = self.default_values_save
                                         self.axis_x = axis_x
                                         self.axis_y = axis_y
@@ -363,7 +451,9 @@ class BivariateStudy(BaseStudy):
                                     self.plot_type = "plot"
 
                             with col[1]:
-                                if st.form_submit_button(label="Tracer un nuage de points"):
+                                if st.form_submit_button(
+                                    label="Tracer un nuage de points"
+                                ):
                                     self.axis_x = axis_x
                                     self.axis_y = axis_y
                                     self.x, self.y, self.recipes_id = (
@@ -380,7 +470,9 @@ class BivariateStudy(BaseStudy):
                                     self.plot_type = "scatter"
 
                             with col[2]:
-                                if st.form_submit_button(label="Tracer une carte de densité"):
+                                if st.form_submit_button(
+                                    label="Tracer une carte de densité"
+                                ):
                                     self.axis_x = axis_x
                                     self.axis_y = axis_y
                                     self.x, self.y, self.recipes_id = (

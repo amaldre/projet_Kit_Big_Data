@@ -57,6 +57,7 @@ class UnivariateStudy(BaseStudy):
         self.log_axis_x = log_axis_x
         self.log_axis_y = log_axis_y
         self.graph_pad = graph_pad
+
     def __del__(self):
         # No special cleanup required
         return
@@ -102,7 +103,12 @@ class UnivariateStudy(BaseStudy):
 
     def __set_number_ingredients(self, axis):
         """
-        Create a slider for selecting the number of ingredients or techniques to display.
+        Creates a slider for selecting the number of ingredients or techniques to display.
+
+        :param axis: axis to create the slider for
+        :type axis: str
+        :return: slider widget
+        :rtype: streamlit.slider
         """
         if self.default_values is not None and axis in self.default_values:
             default_value = self.default_values[axis]
@@ -125,6 +131,11 @@ class UnivariateStudy(BaseStudy):
     def __set_range_axis(self, axis):
         """
         Determine the appropriate input widget (slider/date input) based on column type.
+
+        :param axis: axis to create the range for
+        :type axis: str
+        :return: range widget
+        :rtype: streamlit.slider or streamlit.date_input
         """
         if axis in ("Ingrédients", "Techniques utilisées"):
             range_axis = self.__set_number_ingredients(axis)
@@ -138,6 +149,19 @@ class UnivariateStudy(BaseStudy):
     def get_data_points(self, df, axis_x, range_axis_x, chosen_filters, range_filters):
         """
         Extract data points for the selected axis and filters.
+
+        :param df: dataframe to extract data from
+        :type df: pandas.DataFrame
+        :param axis_x: axis x
+        :type axis_x: str
+        :param range_axis_x: range for axis x
+        :type range_axis_x: tuple
+        :param chosen_filters: filters to apply
+        :type chosen_filters: list
+        :param range_filters: range for filters
+        :type range_filters: list
+        :return: data points for axis x and recipe_id
+        :rtype: tuple
         """
         columns = [axis_x] + chosen_filters
         if "recipe_id" in self.dataframe.columns:
@@ -168,6 +192,19 @@ class UnivariateStudy(BaseStudy):
     ):
         """
         Extract and count data points for ingredients or techniques.
+
+        :param df: dataframe to extract data from
+        :type df: pandas.DataFrame
+        :param axis_x: axis x
+        :type axis_x: str
+        :param range_axis_x: range for axis x
+        :type range_axis_x: tuple
+        :param chosen_filters: filters to apply
+        :type chosen_filters: list
+        :param range_filters: range for filters
+        :type range_filters: list
+        :return: data points for axis x, count of elements, and recipe_id
+        :rtype: tuple
         """
         columns = [axis_x] + chosen_filters
         if "recipe_id" in self.dataframe.columns:
@@ -207,6 +244,11 @@ class UnivariateStudy(BaseStudy):
     def __filters(self, axis_x):
         """
         Display and handle filter selection widgets.
+
+        :param axis_x: axis x
+        :type axis_x: str
+        :return: selected filters and their ranges
+        :rtype: tuple
         """
         if self.default_values is not None:
             default_values = self.default_values["chosen_filters"]
@@ -230,6 +272,11 @@ class UnivariateStudy(BaseStudy):
     def graph_boxplot(self, x):
         """
         Draw a boxplot.
+
+        :param x: data points for the boxplot
+        :type x: list
+        :return: True if the plot was drawn successfully
+        :rtype: bool
         """
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.boxplot(data=x, ax=ax, orient="h")
@@ -242,6 +289,11 @@ class UnivariateStudy(BaseStudy):
     def graph_density(self, x):
         """
         Draw a density (KDE) plot.
+
+        :param x: data points for the density plot
+        :type x: list
+        :return: plot object
+        :rtype: matplotlib.pyplot.Figure
         """
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.kdeplot(data=x, ax=ax, linewidth=2)
@@ -254,9 +306,16 @@ class UnivariateStudy(BaseStudy):
     def graph_histogram(self, x):
         """
         Draw a histogram plot.
+
+        :param x: data points for the histogram
+        :type x: list
+        :return: plot object
+        :rtype: matplotlib.pyplot.Figure
         """
 
-        if self.axis_x == "Date de publication de la recette" and isinstance(self.range_axis_x[1], pd.Timestamp):
+        if self.axis_x == "Date de publication de la recette" and isinstance(
+            self.range_axis_x[1], pd.Timestamp
+        ):
             nb_bin = self.range_axis_x[1].year - self.range_axis_x[0].year
         else:
             nb_bin = 25
@@ -272,6 +331,13 @@ class UnivariateStudy(BaseStudy):
     def graph_bar_elts(self, nb_elts_display, count_elts):
         """
         Draw a bar plot for ingredients or techniques.
+
+        :param nb_elts_display: elements to display
+        :type nb_elts_display: list
+        :param count_elts: count of elements
+        :type count_elts: list
+        :return: plot object
+        :rtype: matplotlib.pyplot.Figure
         """
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.barplot(x=nb_elts_display, y=count_elts)
@@ -284,6 +350,15 @@ class UnivariateStudy(BaseStudy):
     def __draw_graph(self, x, y, recipes_id):
         """
         Display the selected graph type and related data.
+
+        :param x: abscissa data points
+        :type x: list
+        :param y: ordinate data points
+        :type y: list
+        :param recipes_id: list of recipe ids
+        :type recipes_id: list
+        :return: plot object
+        :rtype: matplotlib.pyplot.Figure
         """
         col = st.columns([self.graph_pad, 30, self.graph_pad])
         with col[1]:
@@ -298,9 +373,9 @@ class UnivariateStudy(BaseStudy):
 
         if recipes_id is not None:
             display_df = self.dataframe[self.dataframe["recipe_id"].isin(recipes_id)]
-            display_df = display_df.sort_values(by="Nombre de commentaires", ascending=False)[
-                :10
-            ]
+            display_df = display_df.sort_values(
+                by="Nombre de commentaires", ascending=False
+            )[:10]
             with st.expander(
                 "Recettes avec le plus de commentaires (avec les filtres actuels)"
             ):
@@ -310,8 +385,15 @@ class UnivariateStudy(BaseStudy):
     def axis_graph(self, fig, ax):
         """
         Set axis labels, scale, and grid for the plot.
+
+        :param fig: figure object
+        :type fig: matplotlib.pyplot.Figure
+        :param ax: axis object
+        :type ax: matplotlib.pyplot.Axes
+        :return: plot object
+        :rtype: matplotlib.pyplot.Figure
         """
-        ax.set_title(self.name, fontsize=16, pad=20, weight='bold')
+        ax.set_title(self.name, fontsize=16, pad=20, weight="bold")
         ax.set_xlabel(self.axis_x, fontsize=16)
         ax.set_ylabel("Nombre de recettes", fontsize=16)
         if self.log_axis_x:
@@ -325,6 +407,13 @@ class UnivariateStudy(BaseStudy):
     def display_graph(self, free=False, explanation=None):
         """
         Main method to display the graph and handle interaction with the filters and controls.
+
+        :param free: condition pour choisir les axes et les filtres additionnels, defaults to False
+        :type free: bool, optional
+        :param explanation: explication du graphique, defaults to None
+        :type explanation: str, optional
+        :return: True if the plot was drawn successfully
+        :rtype: bool
         """
         self.default_values = self.default_values_save
         logger.info("Displaying graph for instance with key='%s'", self.key)
@@ -370,7 +459,9 @@ class UnivariateStudy(BaseStudy):
                         if axis_x in ("Ingrédients", "Techniques utilisées"):
                             col1, col2, col3 = st.columns(3)
                             with col1:
-                                if st.form_submit_button(label="Tracer un diagramme en barre"):
+                                if st.form_submit_button(
+                                    label="Tracer un diagramme en barre"
+                                ):
                                     self.axis_x = axis_x
                                     self.x, self.y, self.recipes_id = (
                                         self.get_data_points_ingredients(
@@ -385,18 +476,24 @@ class UnivariateStudy(BaseStudy):
                                         self.plot_type = "bar_ingredients"
                                     else:
                                         self.plot_type = "bar_techniques"
-                            
+
                             if free:
                                 with col2:
-                                    if st.form_submit_button(label="Supprimer le graphe"):
+                                    if st.form_submit_button(
+                                        label="Supprimer le graphe"
+                                    ):
                                         self.delete = True
                                         st.experimental_rerun()
                                 with col3:
-                                    if st.form_submit_button(label="Paramètres du graphe"):
+                                    if st.form_submit_button(
+                                        label="Paramètres du graphe"
+                                    ):
                                         self.save_graph()
                             else:
                                 with col2:
-                                    if st.form_submit_button(label="Réinitialiser le graphe"):
+                                    if st.form_submit_button(
+                                        label="Réinitialiser le graphe"
+                                    ):
                                         self.axis_x = axis_x
                                         self.default_values = self.default_values_save
                                         range_filters_save = [
@@ -405,12 +502,16 @@ class UnivariateStudy(BaseStudy):
                                                 "chosen_filters"
                                             ]
                                         ]
-                                        self.x, self.recipes_id = self.get_data_points_ingredients(
-                                            self.dataframe,
-                                            self.axis_x,
-                                            self.default_values_save[self.axis_x],
-                                            self.default_values_save["chosen_filters"],
-                                            range_filters_save,
+                                        self.x, self.recipes_id = (
+                                            self.get_data_points_ingredients(
+                                                self.dataframe,
+                                                self.axis_x,
+                                                self.default_values_save[self.axis_x],
+                                                self.default_values_save[
+                                                    "chosen_filters"
+                                                ],
+                                                range_filters_save,
+                                            )
                                         )
                                         self.iteration += 1
                                         graph_container.empty()
@@ -421,7 +522,9 @@ class UnivariateStudy(BaseStudy):
                                 col1, col2, col3 = st.columns(3)
 
                                 with col1:
-                                    if st.form_submit_button(label="Tracer un graphe box plot"):
+                                    if st.form_submit_button(
+                                        label="Tracer un graphe box plot"
+                                    ):
                                         self.axis_x = axis_x
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
@@ -433,7 +536,9 @@ class UnivariateStudy(BaseStudy):
                                         self.plot_type = "boxplot"
 
                                 with col2:
-                                    if st.form_submit_button(label="Tracer un graphe de densité"):
+                                    if st.form_submit_button(
+                                        label="Tracer un graphe de densité"
+                                    ):
                                         self.axis_x = axis_x
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
@@ -445,7 +550,9 @@ class UnivariateStudy(BaseStudy):
                                         self.plot_type = "density"
 
                                 with col3:
-                                    if st.form_submit_button(label="Tracer un histogramme"):
+                                    if st.form_submit_button(
+                                        label="Tracer un histogramme"
+                                    ):
                                         self.axis_x = axis_x
                                         self.x, self.recipes_id = self.get_data_points(
                                             self.dataframe,
@@ -458,11 +565,15 @@ class UnivariateStudy(BaseStudy):
 
                                 col1, col2, _ = st.columns(3)
                                 with col1:
-                                    if st.form_submit_button(label="Paramètres du graphe"):
+                                    if st.form_submit_button(
+                                        label="Paramètres du graphe"
+                                    ):
                                         self.save_graph()
 
                                 with col2:
-                                    if st.form_submit_button(label="Supprimer le graphe"):
+                                    if st.form_submit_button(
+                                        label="Supprimer le graphe"
+                                    ):
                                         self.delete = True
                                         st.rerun()
 
@@ -478,7 +589,9 @@ class UnivariateStudy(BaseStudy):
                                             range_filters,
                                         )
                                 with col2:
-                                    if st.form_submit_button(label="Réinitialiser le graphe"):
+                                    if st.form_submit_button(
+                                        label="Réinitialiser le graphe"
+                                    ):
                                         self.axis_x = axis_x
                                         self.default_values = self.default_values_save
                                         range_filters_save = [
@@ -502,14 +615,14 @@ class UnivariateStudy(BaseStudy):
                     self.axis_x = axis_x
                     if self.axis_x in ("Ingrédients", "Techniques utilisées"):
                         self.x, self.y, self.recipes_id = (
-                                        self.get_data_points_ingredients(
-                                            self.dataframe,
-                                            self.axis_x,
-                                            self.range_axis_x,
-                                            chosen_filters,
-                                            range_filters,
-                                        )
-                                    )
+                            self.get_data_points_ingredients(
+                                self.dataframe,
+                                self.axis_x,
+                                self.range_axis_x,
+                                chosen_filters,
+                                range_filters,
+                            )
+                        )
                     else:
                         self.x, self.recipes_id = self.get_data_points(
                             self.dataframe,
