@@ -48,11 +48,5 @@ def test_main(mock_load_css, mock_load_data, mock_html):
 
     mock_load_data.assert_called_once()
 
-    # # Vérifier que le CSS est chargé
-    # mock_load_css.assert_called_once_with("src/style.css")
-
-    # # Vérifier que les données sont chargées avec le chemin et fichier corrects
-    # mock_load_data.assert_called_once_with("data/bertopic_chart/", "topics_model.csv")
-
     # Vérifier que les visualisations HTML sont rendues
     assert mock_html.call_count == 2  # Une seule iframe rendue
