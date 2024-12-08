@@ -45,7 +45,7 @@ def test_main(
 
     main()
 
-    assert mock_st_title.call_count == 15
+    assert mock_st_title.call_count == 16
     mock_st_header.assert_called_once()
 
     assert mock_html.call_count == 1
