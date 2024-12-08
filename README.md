@@ -90,14 +90,14 @@ Le code suit les normes PEP 8, utilise le type hinting et des docstrings. Un pip
 
 ## Documentation
 
-  La documentation technique (classes, fonctions, modules) est générée par Sphinx.
+La documentation technique (classes, fonctions, modules) est générée par Sphinx.
+  Vous pouvez la consulter directement dans src/documentation/build/html/index.html.
   Pour la régénérer :
 
   ```bash
     cd src/documentation
-    make html
+    ./make.bat html
 ```
-Consultez ensuite src/documentation/build/html/index.html.
 
 ## Déploiement et CI/CD
 
