@@ -468,7 +468,12 @@ def main():
         with st.container(border=True):
             st.write(explanation_graph_6)
 
-
+        explication_graph_7 = """
+        **Observations**
+        Concernant le nombre d'ingrédients par recette :
+        - Les recettes populaires ont une nombre d'ingrédients assez bas comptant entre _ et _ ingrédients. 
+        
+        """
         
 
         col1, col2 = st.columns(2)
