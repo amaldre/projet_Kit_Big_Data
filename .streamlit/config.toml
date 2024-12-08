@@ -1,8 +1,8 @@
 [theme]
-primaryColor = "#e76d00"  # Couleur principale 
-backgroundColor = "#ebcdac" 
-secondaryBackgroundColor = "#a1815b"  
-textColor = "#55381f"  # Couleur du texte
+base="light"
+primaryColor="#679661"
+secondaryBackgroundColor="#bdbdbd"
+textColor="#000000"
 font = "sans serif"  # Police globale
 
 [server]
