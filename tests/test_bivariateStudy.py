@@ -9,8 +9,6 @@ from datetime import datetime
 from unittest.mock import patch, MagicMock
 from utils.bivariate_study import BivariateStudy
 
-# TODO: Implement Test fct
-
 
 def test_init_bivariate():
     # Créer un DataFrame d'exemple

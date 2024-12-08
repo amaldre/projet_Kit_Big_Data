@@ -327,28 +327,23 @@ from scripts.pipeline_preprocess import clean_colonne
 
 @patch("scripts.pipeline_preprocess.clean_and_tokenize")
 def test_clean_colonne(mock_clean_and_tokenize):
-    # Mock return value for clean_and_tokenize
     mock_clean_and_tokenize.side_effect = [
         ["cleaned", "text1"],
         ["cleaned", "text2"]
     ]
 
-    # Input data for the test
     data = pd.DataFrame({
         "text_column": ["Text to clean 1", "Text to clean 2"]
     })
     stopwords = {"to", "clean"}
 
-    # Call the function
     result = clean_colonne(data.copy(), "text_column", stopwords)
 
-    # Expected result
     expected = pd.DataFrame({
         "text_column": ["Text to clean 1", "Text to clean 2"],
         "cleaned_text_column": [["cleaned", "text1"], ["cleaned", "text2"]]
     })
 
-    # Verify the result
     pd.testing.assert_frame_equal(result, expected)
     mock_clean_and_tokenize.assert_any_call("Text to clean 1", stopwords)
     mock_clean_and_tokenize.assert_any_call("Text to clean 2", stopwords)
@@ -605,7 +600,6 @@ def test_preprocess(
     mock_create_mean_rating,
     mock_rename_column,
 ):
-    # Mock return values for the functions
     mock_load_data.side_effect = [
         pd.DataFrame({"id": [1, 2], "submitted": ["2021-01-01", "2021-01-02"], "rating": [[1, 1], [1, 1]]}),
         pd.DataFrame({"recipe_id": [1, 2], "date": ["2021-01-01", "2021-01-02"], "rating": [[1, 1], [1, 1]]}),
@@ -615,7 +609,6 @@ def test_preprocess(
 
     preprocess()
 
-    # Assert that the functions were called
     mock_load_nltk_resources.assert_called_once()
     assert mock_load_data.call_count == 3
     assert mock_change_to_date_time_format.call_count == 2

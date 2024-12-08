@@ -15,8 +15,8 @@ def mock_session_state():
 
 
 @patch("src.pages.Clustering.st.components.v1.html")  # Mock de l'iframe
-@patch("src.pages.Clustering.load_data")  # Mock de load_data
-@patch("src.pages.Clustering.load_css")  # Mock de load_css
+@patch("src.pages.Clustering.load_data")
+@patch("src.pages.Clustering.load_css")
 @patch(
     "builtins.open",
     mock_open(read_data="<html><body>Visualisation de topics</body></html>"),

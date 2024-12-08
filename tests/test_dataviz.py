@@ -3,14 +3,14 @@ from unittest.mock import patch, MagicMock
 from src.pages.DataViz import main
 
 
-@patch("src.pages.DataViz.st")  # Mock Streamlit
+@patch("src.pages.DataViz.st")
 def test_main(mock_st):
     # Configuration des mocks
     mock_st.session_state = {
-        "graph": [],  # Initialise la liste de graphes
-        "recipes_df": MagicMock(),  # Mock du DataFrame des recettes
+        "graph": [],
+        "recipes_df": MagicMock(),
     }
-    mock_st.columns.return_value = [MagicMock(), MagicMock()]  # Mock des colonnes
+    mock_st.columns.return_value = [MagicMock(), MagicMock()]
     mock_st.button.side_effect = [
         False,
         False,
