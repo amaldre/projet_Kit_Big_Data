@@ -116,68 +116,6 @@ def generate_random_points(recettes_par_années, _gdf):
         return pd.DataFrame()
 
 
-def create_scrolling_banner(texte: str):
-    """
-    Crée une bannière défilante avec le texte spécifié
-
-    :param texte: texte à afficher dans la bannière défilante
-    :type texte: str
-    :return: Code HTML pour la bannière défilante
-    :rtype: str
-    """
-    try:
-        scrolling_banner = (
-            """
-        <style>
-        .scrolling-banner {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #f0f2f6;
-            overflow: hidden;
-            height: 50px;
-            z-index: 9999; 
-        }
-
-        .scrolling-banner h1 {
-            position: absolute;
-            width: 100%;
-            height: 50px;
-            line-height: 50px;
-            margin: 0;
-            font-size: 24px;
-            color: #4CAF50;
-            text-align: center;
-            transform: translateX(100%);
-            animation: scroll-left 10s linear infinite;
-        }
-
-        @keyframes scroll-left {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
-        }
-        </style>
-
-        <div class="scrolling-banner">
-            <h1>"""
-            + texte
-            + """</h1>
-        </div>
-        """
-        )
-        logger.info("Bannière défilante créée avec succès.")
-        return scrolling_banner
-    except Exception as e:
-        logger.error(f"Erreur lors de la création de la bannière défilante: {e}")
-        st.error(
-            "Une erreur est survenue lors de la création de la bannière défilante."
-        )
-
-
 def main():
 
     st.title("Carte Data Food.com au cours des années")
