@@ -24,7 +24,7 @@ st.set_page_config(layout="wide")
 # Charger le CSS
 load_css("src/style.css")
 
-st.title("DataViz")
+st.title("Analyse interactive des données")
 
 st.write("Cette page vous permet d'explorer et de visualiser les données de manière interactive. Voici comment vous pouvez l'utiliser :")
 
@@ -43,7 +43,7 @@ st.markdown("""
 st.header("3️⃣Supprimer des graphiques")
 st.write("Si un graphique n'est plus nécessaire, une option de suppression est disponible. La page sera rechargée pour mettre à jour l'affichage.")
 
-st.header("4️⃣Liste des variables!")
+st.header("4️⃣Liste des variables")
 
 st.write("Voici la liste des variables que vous pouvez utiliser pour créer vos graphiques :")
 st.write("""
@@ -67,6 +67,7 @@ st.write("""
 4. Faites glisser le slider à droite pour arriver jusqu'à 10
          """)
 
+st.header("**Bonne exploration !** 🚀")
 
 
 # Initialisation de la session
