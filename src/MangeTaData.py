@@ -25,15 +25,13 @@ if "recipes_df" not in st.session_state:
 
 
 def main():
-    # Configuration de l'application Streamlit
-    st.title("Mange ta main")
 
     st.markdown(
         """
         Bienvenue sur cette application web ! Elle a pour but de proposer une analyse interactive 
-        des données du site **Mangetamain**, ancien leader dans la recommandation B2C de recettes 
+        des données du site **Food.com**, ancien leader dans la recommandation B2C de recettes 
         de cuisine à l'ancienne bio. L'analyse porte sur des données récoltées entre **1999 et 2018** et 
-        vise à expliquer les clés qui ont fait le succès de Mangetamain, tout en proposant des pistes 
+        vise à expliquer les clés qui ont fait le succès de Food.com, tout en proposant des pistes 
         pour lui faire regagner en popularité.
 
         ### Sections de l'application :
