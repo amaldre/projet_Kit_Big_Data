@@ -5,7 +5,14 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 import streamlit as st
 
-from src.pages.1_Analyse_des_donnees import main
+# from src.pages.1_Analyse_des_donnees import main
+import importlib
+
+# Charger dynamiquement le module
+main = importlib.import_module("src.pages.1_Analyse_des_donnees").main
+
+# Utiliser une fonction ou une classe du module
+resultat = analyse_module.ma_fonction()
 
 
 @pytest.fixture
@@ -14,14 +21,16 @@ def mock_session_state():
     Fixture pour initialiser le session_state mocké.
     """
     session_state = {
-        "recipes_df": pd.DataFrame({
-            "submitted": pd.date_range(start="1999-01-01", periods=100, freq="YE"),
-            "comment_count": range(100),
-            "mean_rating": [4.5] * 100,
-            "minutes": [30] * 100
-        }),
+        "recipes_df": pd.DataFrame(
+            {
+                "submitted": pd.date_range(start="1999-01-01", periods=100, freq="YE"),
+                "comment_count": range(100),
+                "mean_rating": [4.5] * 100,
+                "minutes": [30] * 100,
+            }
+        ),
         "first_load": True,
-        "locked_graphs": {}
+        "locked_graphs": {},
     }
     return session_state
 
@@ -36,7 +45,7 @@ def test_main(
     mock_bivariate_study,
     mock_compute_trend,
     mock_load_css,
-    mock_st
+    mock_st,
 ):
     """
     Test principal pour vérifier que la fonction main s'exécute correctement.
@@ -44,10 +53,12 @@ def test_main(
     # Mock des fonctions et classes
     mock_load_css.return_value = None
 
-    mock_compute_trend.return_value = pd.DataFrame({
-        "Date": pd.date_range(start="2000-01-01", periods=20, freq="YE"),
-        "Trend": range(20)
-    })
+    mock_compute_trend.return_value = pd.DataFrame(
+        {
+            "Date": pd.date_range(start="2000-01-01", periods=20, freq="YE"),
+            "Trend": range(20),
+        }
+    )
 
     mock_bivariate_instance = MagicMock()
     mock_bivariate_study.return_value = mock_bivariate_instance
@@ -56,14 +67,16 @@ def test_main(
     mock_univariate_study.return_value = mock_univariate_instance
 
     mock_st.session_state = {
-        "recipes_df": pd.DataFrame({
-            "submitted": pd.date_range(start="1999-01-01", periods=100, freq="YE"),
-            "comment_count": range(100),
-            "mean_rating": [4.5] * 100,
-            "minutes": [30] * 100
-        }),
+        "recipes_df": pd.DataFrame(
+            {
+                "submitted": pd.date_range(start="1999-01-01", periods=100, freq="YE"),
+                "comment_count": range(100),
+                "mean_rating": [4.5] * 100,
+                "minutes": [30] * 100,
+            }
+        ),
         "first_load": True,
-        "locked_graphs": {}
+        "locked_graphs": {},
     }
 
     # Exécuter la fonction main
