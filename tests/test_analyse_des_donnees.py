@@ -92,13 +92,20 @@ def test_main(
         assert mock_bivariate_study.call_count == 7
         assert mock_univariate_study.call_count == 6
 
-        # # Vérifier que les graphiques sont ajoutés au locked_graphs
-        # assert "Moyenne glissante du nombre de recettes" in mock_st.session_state["locked_graphs"]
-        # assert "Nombre de recettes en fonction du temps" in mock_st.session_state["locked_graphs"]
-        # assert "Nombre de commentaires par recette en fonction du temps" in mock_st.session_state["locked_graphs"]
-        # assert "Nombre de recettes durant le pic d'activité du site" in mock_st.session_state["locked_graphs"]
-        # assert "Distribution du nombre de commentaires par recette" in mock_st.session_state["locked_graphs"]
-        # assert "Durée des recettes populaires" in mock_st.session_state["locked_graphs"]
+        # Vérifier que les graphiques sont ajoutés au locked_graphs
+        assert "Moyenne glissante du nombre de recettes" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de recettes par an" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de commentaires par recette en fonction du temps" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de recettes durant le pic d'activité du site" in mock_st.session_state["locked_graphs"]
+        assert "Distribution du nombre de commentaires par recette" in mock_st.session_state["locked_graphs"]
+        assert "Distribution de la note moyenne des recettes" in mock_st.session_state["locked_graphs"]
+        assert "Durée des recettes populaires" in mock_st.session_state["locked_graphs"]
+        assert "Nombre d'étapes des recettes populaires" in mock_st.session_state["locked_graphs"]
+        assert "Nombre d'ingrédients par recette" in mock_st.session_state["locked_graphs"]
+        assert "Ingrédients les plus populaires" in mock_st.session_state["locked_graphs"]
+        assert "Calories des recettes populaires" in mock_st.session_state["locked_graphs"]
+        assert "Techniques de cuisine les plus populaires" in mock_st.session_state["locked_graphs"]
+        assert "Nombre de techniques de cuisine différentes par recettes" in mock_st.session_state["locked_graphs"]
 
         # Vérifier que la première charge est désactivée
         assert not mock_st.session_state["first_load"]
@@ -108,8 +115,21 @@ def test_main(
         assert mock_st.header.call_count == 1
 
         # Vérifier les affichages de graphiques
-        assert mock_bivariate_instance.display_graph.call_count == 1
-        assert mock_univariate_instance.display_graph.call_count == 0
+        mock_st.session_state["locked_graphs"]["Moyenne glissante du nombre de recettes"].display_graph.assert_called_once()
+        # mock_st.session_state["locked_graphs"]["Nombre de recettes par an"].display_graph.assert_called_once()
+        # mock_st.session_state["locked_graphs"]["Nombre de recettes durant le pic d'activité du site"].display_graph.assert_called_once()
+        mock_st.session_state["locked_graphs"]["Nombre de commentaires par recette en fonction du temps"].display_graph.assert_called_once()
+        # mock_st.session_state["locked_graphs"]["Distribution du nombre de commentaires par recette"].display_graph.assert_called_once()
+        # mock_st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].display_graph.assert_called_once()
+        mock_st.session_state["locked_graphs"]["Durée des recettes populaires"].display_graph.assert_called_once()
+        mock_st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].display_graph.assert_called_once()
+        mock_st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].display_graph.assert_called_once()
+        # mock_st.session_state["locked_graphs"]["Ingrédients les plus populaires"].display_graph.assert_called_once()
+        mock_st.session_state["locked_graphs"]["Calories des recettes populaires"].display_graph.assert_called_once()
+        mock_st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].display_graph.assert_called_once()
+        # mock_st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].display_graph.assert_called_once()
+
+        
 
 
 # Exception handling
