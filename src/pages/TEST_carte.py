@@ -179,7 +179,7 @@ def create_scrolling_banner(texte: str):
 def main():
 
     st.title("Carte Data Food.com au cours des années")
-    
+
     st.write(
         """
             Cette carte illustre le défi majeur auquel le site est confronté : 
@@ -246,7 +246,9 @@ def main():
     ]
     nombre_recettes = nombre_recettes.values[0] if not nombre_recettes.empty else 0
 
-    st.write(f"Année choisie : {st.session_state.année} avec {nombre_recettes} recettes.")
+    st.write(
+        f"Année choisie : {st.session_state.année} avec {nombre_recettes} recettes."
+    )
 
     geo_layer = pdk.Layer(
         "GeoJsonLayer",
@@ -316,10 +318,6 @@ def main():
     )
 
     st.altair_chart(chart, use_container_width=True)
-
-
-    scrolling_banner = create_scrolling_banner("Texte à faire defiler")
-    st.components.v1.html(scrolling_banner, height=60)
 
 
 if __name__ == "__main__":
