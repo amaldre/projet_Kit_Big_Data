@@ -4,22 +4,13 @@ Page expliquant les étapes de prétraitement des données.
 
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
-import ast
-import nltk
-import re
 from utils.dbapi import DBApi
 import logging
 from utils.load_functions import load_data, load_css
 import html
 
-
 logger = logging.getLogger(os.path.basename(__file__))
-
-# db = DBapi()
-# with db:
-#     df = pd.DataFrame(db.get_percentage_documents(per=0.0005))
 
 # Variables globales pour simuler les données
 PATH_DATA = "data/"
@@ -27,20 +18,20 @@ RAW_RECIPE = "RAW_recipes_sample.csv"
 RAW_INTERACTIONS = "RAW_interactions_sample.csv"
 DF_FINAL = "clean_recipe_df.csv"
 
-# ---- Page Streamlit ----
 try:
-    st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
+    st.set_page_config(
+        page_title="MangeTaData",
+        page_icon="images/favicon_mangetadata.png",
+        layout="wide",
+    )
 except Exception as e:
     logger.error(f"Erreur lors de la configuration de la page : {e}")
     st.error("Une erreur s'est produite lors de la configuration de la page.")
-
 
 load_css("src/style.css")
 
 
 def main():
-
-    # --- Titre et Introduction ---
     st.title("🌟 Explication du Prétraitement des Données")
     st.write(
         """
@@ -48,8 +39,6 @@ def main():
     ainsi que des visualisations pour mieux comprendre leur impact.
     """
     )
-
-    # --- Chargement des données ---
     st.header("Chargement des Données")
     st.write(
         """
@@ -62,16 +51,16 @@ def main():
     raw_recipes = load_data(PATH_DATA, RAW_RECIPE)
     raw_interactions = load_data(PATH_DATA, RAW_INTERACTIONS)
 
-    # Afficher les données brutes si elles existent
+    # Afficher les données brutes
     if not raw_recipes.empty:
-        st.write("Exemple de données brutes de RAW_recipe:")
+        st.write("Exemple de données brutes de RAW_recipes :")
         st.dataframe(raw_recipes.head(5))
     else:
         st.warning("Fichier RAW_recipes_sample.csv introuvable.")
         logger.warning("RAW_recipes_sample.csv introuvable.")
 
     if not raw_interactions.empty:
-        st.write("Exemple de données brutes de RAW_interactions:")
+        st.write("Exemple de données brutes de RAW_interactions :")
         st.dataframe(raw_interactions.head(5))
     else:
         st.warning("Fichier RAW_interactions_sample.csv introuvable.")
@@ -80,37 +69,33 @@ def main():
     with open("data/Food_data_drawio.html", "r", encoding="utf-8") as f:
         html_string = f.read()
 
-    # Échapper les guillemets du contenu HTML
-
     escaped_html = html.escape(html_string)
 
-    # Créer le code HTML de l'iframe avec des styles pour les bords arrondis
+    st.write("Drawio de la base de données brutes, données de Kaggle :")
     iframe_code = f"""
         <iframe srcdoc="{escaped_html}" width="1000" height="800" style="border: 2px solid #55381f; border-radius: 20px; background-color: #ffffff;"></iframe>
     """
 
     st.components.v1.html(iframe_code, height=820)
 
-    # --- Transformation des Données ---
-    st.header(" Transformation des Données")
+    st.header("Transformation des Données")
     st.write(
         """
     Plusieurs transformations sont appliquées pour préparer les données :
-    1. Les datasets doivent être nettoyés.
-        Pour cela, les recettes avec des valeurs manquantes sont supprimées.
-        Les recettes avec des valeurs aberrantes sont également supprimées.
-        Notamment celles avec un temps de cuisson excessif ou un nombre de steps nul.
-        Les 'Description' manquantes sont remplies avec le contenu de 'Name' pour combler les vides.
-        
-    2. Les données de RAW_interactions devaient être fusionnées avec RAW_recipes. Pour cela, les deux dataframes ont été merge sur la colonne `recipe_id`.
-    Les colonnes de interactions ont été transformées en listes pour faire correspondre chaque recette avec ses interactions, ses commentaires, ses reviews, etc.
+    1. Les jeux de données doivent être nettoyés.
+       - Les recettes avec des valeurs manquantes sont supprimées.
+       - Les recettes avec des valeurs aberrantes sont également supprimées, notamment celles avec un temps de cuisson excessif ou un nombre d’étapes nul.
+       - Les descriptions manquantes sont remplies avec le contenu de `name` pour combler les vides.
+       
+    2. Les données de `RAW_interactions` sont fusionnées avec `RAW_recipes`.
+       - Les deux DataFrames sont fusionnés sur la colonne `recipe_id`.
+       - Les colonnes d’interactions sont transformées en listes pour faire correspondre chaque recette à ses interactions, ses commentaires, ses reviews, etc.
 
-    3. Fusion des datasets `RAW_recipes` et `RAW_interactions`.
+    3. Fusion des jeux de données `RAW_recipes` et `RAW_interactions`.
 
     4. Nettoyage des descriptions et des noms.
-    Dans le but de réaliser un clustering, les descriptions et les noms des recettes sont nettoyés et tokenisés.
-    Les stopwords sont supprimés des textes.
-
+       - Dans le but de réaliser un clustering, les descriptions et les noms des recettes sont nettoyés et tokenisés.
+       - Les stopwords sont supprimés des textes.
     """
     )
 
@@ -133,57 +118,36 @@ def main():
                 "Erreur lors de la conversion des colonnes. Veuillez vérifier vos données."
             )
 
-    # --- Nettoyage des Données ---
     st.header("1️⃣ Nettoyage des Données")
     st.write(
         """
     Les colonnes contenant des valeurs manquantes sont remplacées ou supprimées :
     - La colonne `description` est remplie avec le contenu de `name` si elle est vide.
     - Les lignes avec `name` manquant sont supprimées.
-    """
+        """
     )
+    st.write("Nombre de recettes sans noms avant le prétraitement : *4980*")
 
-    # Visualisation des valeurs manquantes
-    if not raw_recipes.empty:
-        try:
-            st.write("Visualisation des valeurs manquantes dans les données brutes :")
-            missing_data = raw_recipes.isna().sum()
-            fig, ax = plt.subplots(figsize=(8, 4))
-            ax.barh(missing_data.index, missing_data.values)
-            ax.set_title("Valeurs manquantes par colonne")
-            ax.set_xlabel("Nombre de valeurs manquantes")
-            st.pyplot(fig)
-        except Exception as e:
-            logger.error(
-                f"Erreur lors de la visualisation des valeurs manquantes : {e}"
-            )
-            st.error("Impossible de visualiser les valeurs manquantes.")
-
-    # --- Préparation à la fusion des Données ---
-    st.header("2️⃣ Préparation à la fusion des Données")
+    st.header("2️⃣ Préparation à la Fusion des Données")
     st.write(
         """
-    Les données de RAW_interactions sont fusionnées avec RAW_recipes :
-    - Les deux datasets sont joints sur la colonne recipe_id.
-    - Les colonnes de RAW_interactions sont transformées en listes.
-    """
+    Les données de `RAW_interactions` sont fusionnées avec `RAW_recipes` :
+    - Les deux jeux de données sont joints sur la colonne `recipe_id`.
+    - Les colonnes de `RAW_interactions` sont transformées en listes.
+        """
     )
 
-    # --- Visualisation de la Fusion ---
     st.header("3️⃣ Visualisation de la Fusion")
 
-    # --- Suppression des Valeurs Aberrantes ---
     st.header("4️⃣ Suppression des Valeurs Aberrantes")
     st.write(
         """
-    Certaines recettes troll ou mal renseignées sont supprimées :
+    Certaines recettes « troll » ou mal renseignées sont supprimées :
     - Les recettes avec un temps de cuisson excessif.
-    - Les recettes avec un nombre de steps ou d'ingrédients nul.
-    - Après avoir séparré la colonne nutrion et n'avoir gardé que l'information sur les calories,
-        les recettes avec un nombre de calories excessif sont supprimées.
-    - Dans un soucis de taille de la base de données, le vecteurs des techniques
-        de cuisson est retransformé en mot. 
-    """
+    - Les recettes avec un nombre d’étapes ou d’ingrédients nul.
+    - Après avoir séparé la colonne `nutrition` et n’avoir gardé que l’information sur les calories, les recettes avec un nombre de calories excessif sont supprimées.
+    - Dans un souci de taille de la base de données, le vecteur des techniques de cuisson est retransformé en mots.
+        """
     )
 
     # Exemple fictif
@@ -201,14 +165,13 @@ def main():
             logger.error(f"Erreur lors de la suppression des valeurs aberrantes : {e}")
             st.error("Une erreur est survenue lors du nettoyage des données.")
 
-    # --- Nettoyage des Textes ---
     st.header("5️⃣ Nettoyage et Tokenisation des Textes")
     st.write(
         """
     Les descriptions et noms des recettes sont nettoyés et tokenisés :
     - Suppression des stopwords.
     - Tokenisation des phrases en mots.
-    """
+        """
     )
 
     try:
@@ -225,32 +188,14 @@ def main():
         logger.error(f"Erreur lors du nettoyage des textes : {e}")
         st.error("Impossible de nettoyer les textes.")
 
-    # --- Pipeline de Prétraitement ---
-    st.header("6️⃣ Visualisation du Pipeline")
-    from graphviz import Digraph
-
-    try:
-        dot = Digraph()
-        dot.node("A", "Chargement")
-        dot.node("B", "Fusion")
-        dot.node("C", "Nettoyage")
-        dot.node("D", "Suppression des Outliers")
-        dot.node("E", "Tokenisation")
-        dot.edges(["AB", "BC", "CD", "DE"])
-        st.graphviz_chart(dot)
-    except Exception as e:
-        logger.error(f"Erreur lors de la creation du pipeline visuel : {e}")
-        st.error("Impossible de visualiser le pipeline.")
-
-    # --- Mise en place d'une base de données ---
-    st.header("7️⃣ Mise en place d'une base de données")
+    st.header("6️⃣ Mise en place d'une Base de Données")
     st.write(
         """
-    Afin de déployer notre application, nous avons mis en place une base de données MongoDB.
+    Afin de déployer notre application, une base de données MongoDB a été mise en place.
     Nous avons alors tenté d'utiliser MongoDB Atlas.
-    Pour cela nous avons réduit le nombre de colonnes de notre base en supprimant les colonnes inutiles.
-    Nous avons alors gardé uniquement les colonnes suivantes car la version gratuite de MongoDB Atlas nous limitait à 512 Mo de données :
-    """
+    Pour cela, nous avons réduit le nombre de colonnes de notre base en supprimant les colonnes inutiles.
+    Nous avons gardé uniquement les colonnes suivantes car la version gratuite de MongoDB Atlas nous limitait à 512 Mo :
+        """
     )
 
     cols = st.columns(4)
@@ -275,8 +220,8 @@ def main():
                 """,
                 unsafe_allow_html=True,
             )
-        with cols[i]:
-            if i + 4 < len(columns):
+        if i + 4 < len(columns):
+            with cols[i]:
                 st.markdown(
                     f"""
                     <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
@@ -288,18 +233,16 @@ def main():
 
     st.write(
         """
+    Des fonctions permettent d’ajouter les colonnes correspondant aux moyennes des recettes et au nombre de commentaires.
     
-    Des fonctions permettent de rajouter les colonnes correspondant aux moyennes des recettes et le nombre de commentaires par recette.
-
-    Après avoir créé notre collection et inséré nos données, nous avons pu nous connecter à notre base de données via une classe Python créée pour l'occasion.
-    Cependant, la version gratuite de MongoDB Atlas nous a limité dans le téléchargement de nos données. Le téléchargement étant limité à 10 Go sur une période glissante de 7 jours, nous avons au cours de nos tests épuisé notre quota de téléchargement.
-    Nous avons donc abandonné l'utilisation de MongoDB Atlas pour une base de données locale réduite à 120 Mo.
-    
-    Nous avons finalement opté pour une base de données locale, qui nous a permis de continuer le développement de notre application.
+    Après avoir créé notre collection et inséré nos données, nous avons pu nous connecter à notre base via une classe Python dédiée.
+    Cependant, la version gratuite de MongoDB Atlas nous a limités dans le téléchargement des données (10 Go sur une période glissante de 7 jours), 
+    épuisant rapidement notre quota lors des tests. Nous avons donc abandonné MongoDB Atlas au profit d’une base locale réduite à 120 Mo.
     
     Les colonnes sont alors renommées comme suit :
-    """
+        """
     )
+
     cols = st.columns(5)
     columns = [
         "Nom",
@@ -324,8 +267,8 @@ def main():
                 """,
                 unsafe_allow_html=True,
             )
-        with cols[i]:
-            if i + 4 < len(columns):
+        if i + 4 < len(columns):
+            with cols[i]:
                 st.markdown(
                     f"""
                     <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
@@ -337,9 +280,9 @@ def main():
 
     df_final = load_data(PATH_DATA, DF_FINAL)
 
-    # Afficher les données brutes si elles existent
+    # afficher les données finales
     if not df_final.empty:
-        st.write("Le dataframe final est alors le suivant :")
+        st.write("Le DataFrame final est alors le suivant :")
         st.dataframe(df_final.head(5))
     else:
         st.warning("Fichier clean_recipe_df.csv introuvable.")
@@ -347,5 +290,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

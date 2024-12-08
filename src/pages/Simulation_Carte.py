@@ -15,7 +15,9 @@ import os
 from utils.load_functions import load_css
 
 logger = logging.getLogger(os.path.basename(__file__))
-st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
+st.set_page_config(
+    page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide"
+)
 
 load_css("src/style.css")
 
@@ -33,7 +35,7 @@ def load_geojson(path):
     try:
         gdf = gpd.read_file(path)
         gdf["geometry"] = gdf["geometry"].simplify(0.2, preserve_topology=True)
-        logger.info(f"GeoJSON charge avec succes depuis {path}.")
+        logger.info(f"GeoJSON chargé avec succès depuis {path}.")
         return gdf
     except Exception as e:
         logger.error(f"Erreur lors du chargement du fichier GeoJSON : {path}. {e}")
@@ -44,21 +46,21 @@ def load_geojson(path):
 @st.cache_data
 def load_recipes_data(path):
     """
-    Loads the submitted recursees and returns a dataframe
+    Charge les données de recettes soumises et retourne un DataFrame
 
-    :param path: path to the csv file
+    :param path: chemin vers le fichier CSV
     :type path: str
-    :return: DataFrame containing the recipes data
+    :return: DataFrame contenant les données de recettes
     :rtype: pd.DataFrame
     """
     try:
         df = pd.read_csv(path)
         df["submitted"] = pd.to_datetime(df["submitted"], errors="coerce")
         df["année"] = df["submitted"].dt.year
-        logger.info(f"Donnees de recettes chargées avec succes depuis {path}.")
+        logger.info(f"Données de recettes chargées avec succès depuis {path}.")
         return df
     except Exception as e:
-        logger.error(f"Erreur lors du chargement des donnees de recettes : {path}. {e}")
+        logger.error(f"Erreur lors du chargement des données de recettes : {path}. {e}")
         st.error("Erreur lors du chargement des données de recettes.")
         return pd.DataFrame()
 
@@ -66,20 +68,21 @@ def load_recipes_data(path):
 @st.cache_data
 def generate_random_points(recettes_par_années, _gdf):
     """
-    Generate random points within the US states geometry based on the number of recipes submitted each year
+    Génère des points aléatoires à l'intérieur de la géométrie des États-Unis
+    en fonction du nombre de recettes soumises chaque année.
 
-    :param recettes_par_ann: DataFrame containing the number of recipes submitted each year
-    :type recettes_par_ann: pd.DataFrame
-    :param _gdf: GeoDataFrame containing the US states geometry
+    :param recettes_par_années: DataFrame contenant le nombre de recettes par année
+    :type recettes_par_années: pd.DataFrame
+    :param _gdf: GeoDataFrame contenant la géométrie des États-Unis
     :type _gdf: gpd.GeoDataFrame
-    :return: DataFrame containing the random points
+    :return: DataFrame contenant les points aléatoires
     :rtype: pd.DataFrame
     """
     try:
         us_geometry = _gdf.union_all()
         data_points = []
 
-        for idx, row in recettes_par_années.iterrows():
+        for _, row in recettes_par_années.iterrows():
             année = row["année"]
             nombre_recettes = row["nombre_recettes"]
             n_points = max(nombre_recettes // 10, 1)
@@ -105,21 +108,21 @@ def generate_random_points(recettes_par_années, _gdf):
             data_points.extend(points)
 
         df_points = pd.DataFrame(data_points)
-        logger.info("Points aléatoires generes avec succes.")
+        logger.info("Points aléatoires générés avec succès.")
         return df_points
     except Exception as e:
-        logger.error(f"Erreur lors de la génération de points aleatoires : {e}")
+        logger.error(f"Erreur lors de la génération de points aléatoires : {e}")
         st.error("Erreur lors de la génération des points aléatoires.")
         return pd.DataFrame()
 
 
 def create_scrolling_banner(texte: str):
     """
-    Create a scrolling banner with the specified text
+    Crée une bannière défilante avec le texte spécifié
 
-    :param texte: text to display in the scrolling banner
+    :param texte: texte à afficher dans la bannière défilante
     :type texte: str
-    :return: HTML code for the scrolling banner
+    :return: Code HTML pour la bannière défilante
     :rtype: str
     """
     try:
@@ -130,10 +133,10 @@ def create_scrolling_banner(texte: str):
             position: fixed;
             top: 0;
             width: 100%;
-            background-color: #f0f2f6; /* Couleur de fond du bandeau */
+            background-color: #f0f2f6;
             overflow: hidden;
-            height: 50px; /* Hauteur du bandeau */
-            z-index: 9999; /* Assure que le bandeau reste au-dessus des autres elements */
+            height: 50px;
+            z-index: 9999; 
         }
 
         .scrolling-banner h1 {
@@ -143,13 +146,12 @@ def create_scrolling_banner(texte: str):
             line-height: 50px;
             margin: 0;
             font-size: 24px;
-            color: #4CAF50; /* Couleur du texte */
+            color: #4CAF50;
             text-align: center;
             transform: translateX(100%);
             animation: scroll-left 10s linear infinite;
         }
 
-        /* Animation pour le defilement du texte */
         @keyframes scroll-left {
             from {
                 transform: translateX(100%);
@@ -167,12 +169,12 @@ def create_scrolling_banner(texte: str):
         </div>
         """
         )
-        logger.info("Banniere defilante creee avec succes.")
+        logger.info("Bannière défilante créée avec succès.")
         return scrolling_banner
     except Exception as e:
-        logger.error(f"Erreur lors de la creation de la banniere defilante: {e}")
+        logger.error(f"Erreur lors de la création de la bannière défilante: {e}")
         st.error(
-            "Une erreur est survenue lors de la creation de la banniere defilante."
+            "Une erreur est survenue lors de la création de la bannière défilante."
         )
 
 
@@ -182,13 +184,13 @@ def main():
 
     st.write(
         """
-            Cette carte illustre le défi majeur auquel le site est confronté : 
-            la diminution de sa base d'utilisateurs. 
-            Les points sur la carte ne représentent pas les localisations réelles des utilisateurs, 
-            mais servent uniquement de visualisation symbolique. Chaque point correspond à 10 recettes soumises, 
-            mettant en lumière les tendances d'engagement des utilisateurs au fil du temps. 
-            Cette représentation permet d'identifier visuellement les périodes de croissance et 
-            de déclin pour mieux orienter les efforts de reconquête et d'amélioration.
+        Cette carte illustre le défi majeur auquel le site est confronté : 
+        la diminution de sa base d'utilisateurs. 
+        Les points sur la carte ne représentent pas les localisations réelles des utilisateurs, 
+        mais servent uniquement de visualisation symbolique. Chaque point correspond à 10 recettes soumises, 
+        mettant en lumière les tendances d'engagement des utilisateurs au fil du temps. 
+        Cette représentation permet d'identifier visuellement les périodes de croissance et 
+        de déclin pour mieux orienter les efforts de reconquête et d'amélioration.
         """
     )
 
@@ -286,7 +288,7 @@ def main():
                 font-size: 48px;
                 color: orange;
                 z-index: 9999;
-                pointer-events: none; 
+                pointer-events: none;
             }}
             </style>
             <div class="year-overlay">{st.session_state.année}</div>
