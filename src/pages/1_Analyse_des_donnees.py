@@ -286,11 +286,11 @@ def main():
             logger.info("Graphiques initialises avec succes.")
 
             
-        st.write("""Dans cette page, diverses analyses seront effectuées sur les données fournies par le site Food.com, 
+        st.write("""Dans cette page, diverses analyses seront effectuées sur les données fournies par le site MangeTaMain, 
                  notamment sur les recettes telles les nombres de recettes publiés, leur note moyenne et nombre commentaires,
                  les ingrédients ou techniques de cuisine utilisés, etc.. 
                  Le but de de cette étude est d'évaluer les performances du site au cours du temps et de comprempre les facteurs de succès 
-                 des recettes les plus populaire afin de redynamiser l'activité sur la platforme""")
+                 des recettes les plus populaires, afin de déterminer le type de recettes à partager et à promouvoir afin de redynamiser l'activité sur la platforme.""")
 
         # Page layout 
         st.header("1️⃣ Analyse de la fréquentation du site")
@@ -545,6 +545,29 @@ def main():
 
         with st.container(border=True):
             st.write(explication_graph_9)
+
+        conclusion = """
+        **Conclusion :**
+        Dans cette étude, l'évolution de la tendance a indiqué que le site, ayant connu une période de haute fréquentation entre 2002 et 2010, 
+        semble aujourd'hui en manque d'activité. Pour tenter de redynamiser le site, une analyse sur la popularité des recettes a été effectué et 
+        a permis de déterminer les facteurs de succès d'une recette étant une note moyenne de 4 minimun et un nombre de commentaires d'au moins 5. 
+        Enfin, les caractéristiques des recettes ainsi défini ont été examinées, permettant d'extraire les points clés de la popularité d'une recette.
+        Ainsi une recette populaire doit accessible au plus grand nombre d'utilisateurs en étant rapide, simple, peu caloriques utilsant des techniques et ingrédients
+        basiques et suivant un protocole concis. 
+
+        Plus précisement, les recettes les plus populaires présentent ces caractéristiques :
+        - moins de 100 minuntes et moins de 17 étapes
+        - entre 4 et 16 ingrédients, de préférence communs
+        - moins de 6 techniques de cuisine, de préférence basiques
+        - entre 190 et 520 calories
+
+        Une deuxième étude sous forme de topic modeling est disponible dans la page "Clustering".
+        Celle-ci se concentre plus sur le rapprochement des recettes populaires pour fournir des exemples et types 
+        concrets de recettes. 
+        """
+
+        with st.container(border=True):
+            st.write(conclusion)
         
         
     except Exception as e:
