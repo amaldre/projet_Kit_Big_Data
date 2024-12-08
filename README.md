@@ -1,5 +1,8 @@
 # Projet_kit_big_data
 
+Lien vers la Webapp Déployée :
+(lien)
+
 ##### Par Damien Thai, Baptiste Cervoni, Alexandre Malfoy, Alexandre Rocchi
 
 Notre axe pour ce projet *Kit Big Data* à été de présenter une analyse approfondie des données du site [Food.com](https://www.food.com/) (données issues d’un dataset disponible sur [Kaggle](https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions)) afin d’expliquer la baisse d’activité observée ces dernières années. Il s’agit d’un travail dans lequel nous jouons le rôle d’une équipe de data analystes conseillant les propriétaires du site sur les raisons de cette perte de popularité et proposant des axes d’amélioration.
@@ -108,10 +111,10 @@ Un pipeline GitHub Actions est configuré pour :
   
 ## Pistes d’Amélioration
 
+Améliorations possibles :
   1.Stockage et requêtes via une base de données plus performante pour améliorer. Une version ulltérieur de l'application a utilisé une base de données MongoDB hébergé sur le 
   cloud via Atlas. Cependant, nous avons été confronté à la limite du le flux d'échange entre l'utilisateur et la base de données. Cette piste à donc été abandonnée pour la      version finale mais le code peut être consulté dans la branche dev_mongoDB.
   2. Ajout de fonctionnalités comme la génération automatique de noms de recettes à partir du profil des recettes populaires déterminé dans l'étude.
   3. Profiling des créateurs de recette car ceux sont eux qui sont les premiers moteurs d'activités et Analyse du cycle de vie des recettes.
 
-Lien vers la Webapp Déployée :
-(lien)
+
