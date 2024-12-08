@@ -151,21 +151,22 @@ def main():
 
             min_popular_recipes = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
-                key="Duree recettes populaires",
-                name="Duree recettes populaires",
+                key="Durée des recettes populaires",
+                name="Durée recettes populaires",
                 axis_x="Durée de la recette (minutes)",
                 axis_y="Nombre de commentaires", filters=['Note moyenne'],
                 plot_type="density map",
-                log_axis_x=True,
+                log_axis_x=False,
                 log_axis_y=True,
                 default_values={
-                    "Durée de la recette (minutes)": (1, 18720),
+                    "Durée de la recette (minutes)": (1, 1750),
                     "Nombre de commentaires": (5, 1613),
-                    "Note moyenne":(0, 5),
+                    "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
                 },
+                graph_pad=1,
             )
-            st.session_state["locked_graphs"]["Duree recettes populaires"] = min_popular_recipes
+            st.session_state["locked_graphs"]["Durée des recettes populaires"] = min_popular_recipes
 
             nb_steps_recipes = BivariateStudy(
                 dataframe=st.session_state["recipes_df"],
@@ -183,6 +184,7 @@ def main():
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
                 },
+                graph_pad=1,
                 
             )
             st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"] = nb_steps_recipes
@@ -203,6 +205,7 @@ def main():
                     "Note moyenne":(4, 5), 
                     "chosen_filters":['Note moyenne'],
                 },
+                graph_pad=1,
             )
             st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"] = nb_ing_recipes
 
@@ -219,6 +222,7 @@ def main():
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
                 },
+                graph_pad=1,
             )
             st.session_state["locked_graphs"]["Ingrédients les plus populaires"] = popular_ing
 
@@ -253,6 +257,7 @@ def main():
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
                 },
+                graph_pad=1,
             )
             st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"] = popular_techniques
 
@@ -271,6 +276,7 @@ def main():
                     "Note moyenne":(4, 5),
                     "chosen_filters":['Note moyenne']
                 },
+                graph_pad=1,
             )
             st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"] = nb_techniques_recipes 
 
@@ -314,9 +320,11 @@ def main():
         with st.container(border=True):
             explanation_graph_2 = """
             **Observations :**
-            - Ces deux graphes représentent le nombre de recettes publiés par an sur deux plages d'années différentes. 
-            Celui de droite offrant une vue d'ensemble sur toute la période couverte par les données, entre 2000 et 2018 
-            Le de gauche se focalise sur la phase de plus grande affluence du site entre 2002 et 2010. 
+            - Ces deux graphes représentent le nombre de recettes publiés par an sur deux plages d'années différentes :
+            1.Celui de droite offrant une vue d'ensemble sur toute la période couverte par les données, entre 2000 et 2018
+            (Les recettes au bords, fin 1999 et début 2018 sont omises pour avoir des intervalles correspondant à des années entirères, 
+            mais ces recettes restent consultable en changeant les dates des filtres)
+            2.Celui de gauche se focalise sur la phase de plus grande affluence du site entre 2002 et 2010. 
             - La tendance nombre de publications de recettes précedemment observée est en accord avec ces graphes avec 
             comme année culminante 2007 et 2008 comptant respectivement 26539 et 23238 recettes, puis une chute de l'activité après 2008.
             - De plus, il est intéressant de noter que le pic d'activité représente 151367 recettes sur 176287 au total, soit 
@@ -403,6 +411,7 @@ def main():
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Distribution de la note moyenne des recettes"].name}")
 
         conclusion_part_2 = """
+        **Interprétation :**
         D'après cette analyse, deux critères peuvent définir la popularité d'une recette. 
         Tout d'abord, l'élément le plus discriminant est le nombre de commentaires par recettes 
         car seulement très peu de recettes réussissent à attirer l'engagement des utilisateurs.
@@ -422,54 +431,68 @@ def main():
         
 
         st.header("3️⃣ Caractéristiques des recettes populaires")
-
-        st.write("")
         
+        st.write("""Après avoir déterminer les critères définissant les recettes populaires, leurs caractériques internes peuvent être explicitées 
+                    afin de comprendre la source de leur popularité. En effet, des analyses seront effectuées sur la logistique, les ingrédients et 
+                    les techniques employées pour comprendre les facteurs de succès d'une recette.""")
+    
 
-        explanation_graph_ = """
+        explanation_graph_6 = """
         **Observations :**
-        - La majorité des recettes populaires sont des recettes courtes, avec une durée de préparation inférieure à 100 Durée de la recette (minutes).
-        - Les recettes populaires ont tendance à avoir un nombre de commentaires plus élevé, avec une concentration autour de 1000 commentaires.
+        Concernant le graphe sur la durée des recettes populaires :
+        - La majorité des recettes populaires sont relativement courtes, avec une durée de préparation inférieure à 100 minutes.
+        Ces recettes ont tendance à avoir un nombre de commentaires plus élevé, avec une grande concentration de recettes à plus de 50 commentaires (log Nombre de commentaires = 4) 
+        ainsi que presque toutes les recettes à plus de 400 commentaires (log Nombre de commentaires = 6).
+        - Cependant certaines recettes longues restent populaires en moins grande proportion entre 200 et 750 minutes, et un pic peut être observé au alentours de 1000 minutes.
+        Enfin, certaines recettes très longues ont un bon nombre de commentaires observables en allogeant le filtre sur la durée de la recette. 
 
-        **Interprétation :**
-        - Les recettes courtes pourraient être **plus populaires** car elles sont **plus faciles et rapides à réaliser**.
-        - Les recettes populaires génèrent plus de commentaires, ce qui peut indiquer un **engagement plus fort de la part des utilisateurs**.
+        Concernant le graphe sur le nombre d'étapes des recettes populaires :
+        - Un très grande concentration des recettes populaires peut être observés pour un nombre d'étapes inférieurs à 17, 
+        puis une baisse entre 17 et 25 et au delà, les recettes ont peu de commentaires.
+
+        **Interprétations :**
+        Les recettes relativement courtes et avec peu d'étapes sempblent être **plus populaires**
+        Une interprétation possible car elles sont **plus simples et rapides à réaliser** ne necissitant pas un iventissement temporelle
+        ou une aptitude à exécuter une procédure complexe.
+        Ces recettes sont alors plus faciles d'accès et s'adressent à un plus grand public, d'où leur popularité.
         """
 
-        st.session_state["locked_graphs"]["Duree recettes populaires"].display_graph(
-            explanation=explanation_graph_
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Duree recettes populaires"].name}")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.session_state["locked_graphs"]["Durée des recettes populaires"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Durée des recettes populaires"].name}")
+        with col2:
+            st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].name}")
 
-        st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'étapes des recettes populaires"].name}")
+        with st.container(border=True):
+            st.write(explanation_graph_6)
 
-        st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].name}")
+
+        
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre d'ingrédients par recette"].name}")
+        with col2:
+            st.session_state["locked_graphs"]["Ingrédients les plus populaires"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Ingrédients les plus populaires"].name}")
 
         st.session_state["locked_graphs"]["Calories des recettes populaires"].display_graph(
             explanation=explanation_graph_1
         )
         logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Calories des recettes populaires"].name}")
         
-        st.session_state["locked_graphs"]["Ingrédients les plus populaires"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Ingrédients les plus populaires"].name}")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].name}")
+        with col2:
+            st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].display_graph()
+            logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].name}")
 
-        st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Techniques de cuisine les plus populaires"].name}")
-
-        st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].display_graph(
-            explanation=explanation_graph_1
-        )
-        logger.info(f"Graphique affiche : {st.session_state["locked_graphs"]["Nombre de techniques de cuisine différentes par recettes"].name}")
+        
         
         
     except Exception as e:
