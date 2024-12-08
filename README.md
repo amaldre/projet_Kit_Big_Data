@@ -112,8 +112,7 @@ Un pipeline GitHub Actions est configuré pour :
 ## Pistes d’Amélioration
 
 Améliorations possibles :
-  1.Stockage et requêtes via une base de données plus performante pour améliorer. Une version ulltérieur de l'application a utilisé une base de données MongoDB hébergé sur le 
-  cloud via Atlas. Cependant, nous avons été confronté à la limite du le flux d'échange entre l'utilisateur et la base de données. Cette piste à donc été abandonnée pour la      version finale mais le code peut être consulté dans la branche dev_mongoDB.
+  1.Stockage et requêtes via une base de données plus performante pour améliorer. Une version ulltérieur de l'application a   utilisé une base de données MongoDB hébergé sur le cloud via Atlas. Cependant, nous avons été confronté à la limite du le flux d'échange entre l'utilisateur et la base de données. Cette piste à donc été abandonnée pour la version finale mais le code peut être consulté dans la branche dev_mongoDB.
   2. Ajout de fonctionnalités comme la génération automatique de noms de recettes à partir du profil des recettes populaires déterminé dans l'étude.
   3. Profiling des créateurs de recette car ceux sont eux qui sont les premiers moteurs d'activités et Analyse du cycle de vie des recettes.
 
