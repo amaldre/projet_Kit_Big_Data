@@ -201,3 +201,4 @@ pymongo == 4.10.1
 python-dotenv == 1.0.1
 pylint == 3.3.2
 geopandas == 1.0.1
+statsmodels == 0.14.4

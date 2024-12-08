@@ -179,3 +179,5 @@ archive
 sujet
 projet.pdf
 app.log
+
+.env_test/
