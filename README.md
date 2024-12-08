@@ -9,13 +9,15 @@ Notre axe pour ce projet *Kit Big Data* à été de présenter une analyse appro
 ## Contexte et Objectifs
 
 **Contexte :**  
-Food.com était une référence en matière de partage et de recommandations de recettes. L’objectif est de comprendre les facteurs à l’origine de la diminution récente du trafic et de l’engagement des utilisateurs.
+Food.com était une référence en matière de partage et de recommandations de recettes. Cependant, depuis 2010, la diminution du trafic et de l’engagement des utilisateurs sur le site a pu être constatés. L’objectif de cette étude, est d'analyser les recettes les plus populaires afin de redynamiser le site en promouvant ou proposant des recettes similaires.
 
 **Objectifs du Projet :**
-1. Analyser le dataset (recettes, interactions, utilisateurs) pour identifier les causes possibles du désengagement.
-2. Mettre en avant les points clés : popularité des recettes, qualité des interactions, durées de préparation, etc.
-3. Proposer des stratégies pour améliorer le site : ajustement des recommandations, mise en avant de certaines catégories de recettes, amélioration de l’expérience utilisateur.
-4. Présenter l’analyse via une webapp Streamlit interactive permettant une exploration intuitive des résultats par les décideurs.
+1. Pretraiter la base de données afin de supprimer les outliers, d'obtenir des informations supplémentaires (note moyenne, nombre de commentaires, ...)
+2. Analyser les tendances du site au fil du temps pour identifier les périodes de croissance et de déclin.
+3. Analyser les critères selon lesquelles une recette peut être qualifié de populaire, telles que la note moyenne et le nombre de commentaires.
+4. Comprendre les facteurs de succès des recettes populaires : durée, nombre d'étapes, ingrédients, ...
+5. Proposer un clustering thématique des recettes afin de faire resortir les catégories de recettes populaires
+6. Présenter l’analyse via une webapp Streamlit interactive permettant une exploration intuitive des résultats par les décideurs.
 
 ---
 
@@ -62,7 +64,6 @@ PROJET_KIT_BI/
    git clone https://github.com/votrecompte/nomduprojet.git
    cd nomduprojet
   ```
-
 2. Installation des dépendences (Python 3.12.3) :
 
   ```bash
@@ -80,7 +81,8 @@ PROJET_KIT_BI/
   ```bash
     pytest --cov=src
   ```
-La couverture des tests est > 90%.
+La couverture des tests est de 77 %. Ce score s'explique par la difficulité de tester l'affichage de tous les graphes de la page d'analyse de données
+
 
 2. Qualité du Code : 
 
@@ -93,7 +95,7 @@ Le code suit les normes PEP 8, utilise le type hinting et des docstrings. Un pip
 
   ```bash
     cd src/documentation
-    ./make.bat html
+    make html
 ```
 Consultez ensuite src/documentation/build/html/index.html.
 
@@ -106,8 +108,11 @@ Un pipeline GitHub Actions est configuré pour :
   
 ## Pistes d’Amélioration
 
-  Stockage et requêtes via une base de données plus performante.
-  Ajout de fonctionnalités comme la génération automatique de noms de recettes ou le filtrage avancé (régimes, allergies, etc.).
+  Stockage et requêtes via une base de données plus performante pour améliorer. Une version ulltérieur de l'application a utilisé une base de données MongoDB hébergé sur le 
+  cloud via Atlas. Cependant, nous avons été confronté à la limite du le flux d'échange entre l'utilisateur et la base de données. Cette piste à donc été abandonnée pour la      version finale mais le code peut être consulté dans la branche dev_mongoDB.
+  Ajout de fonctionnalités comme la génération automatique de noms de recettes à partir du profil des recettes populaires déterminé dans l'étude.
+  Profiling des créateurs de recette car ceux sont eux qui sont les premiers moteurs d'activités. 
+  Analyse du cycle de vie des recettes.
 
 Lien vers la Webapp Déployée :
 (lien)
