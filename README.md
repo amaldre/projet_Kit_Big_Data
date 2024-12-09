@@ -64,8 +64,8 @@ PROJET_KIT_BI/
 
 1. **Cloner le Projet :**
   ```bash
-   git clone https://github.com/votrecompte/nomduprojet.git
-   cd nomduprojet
+   git clone git@github.com:thaid27/projet_Kit_Big_Data.git
+   cd projet_Kit_Big_Data
   ```
 2. Installation des dépendences (Python 3.12.3) :
 
@@ -74,7 +74,7 @@ PROJET_KIT_BI/
   ```
 3. Démarrer la Webapp :
   ```bash
-   python3 run main.py
+   python3 main.py
   ```
   Ouvrez le lien local fourni dans votre navigateur. Vous découvrirez une interface présentant différentes analyses, visualisations et outils d’exploration.
 
