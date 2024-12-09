@@ -1,0 +1,719 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils package &mdash; Documentation de notre application Streamlit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pages package" href="pages.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Documentation de notre application Streamlit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="MangeTaData.html">MangeTaData module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging_config.html">logging_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages.html">pages package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.base_study">utils.base_study module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.base_study.BaseStudy"><code class="docutils literal notranslate"><span class="pre">BaseStudy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.bivariate_study">utils.bivariate_study module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.bivariate_study.BivariateStudy"><code class="docutils literal notranslate"><span class="pre">BivariateStudy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.dbapi">utils.dbapi module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.dbapi.DBApi"><code class="docutils literal notranslate"><span class="pre">DBApi</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.load_functions">utils.load_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.compute_trend"><code class="docutils literal notranslate"><span class="pre">compute_trend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.initialize_recipes_df"><code class="docutils literal notranslate"><span class="pre">initialize_recipes_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.load_background"><code class="docutils literal notranslate"><span class="pre">load_background()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.load_css"><code class="docutils literal notranslate"><span class="pre">load_css()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.load_csv"><code class="docutils literal notranslate"><span class="pre">load_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.load_functions.load_df"><code class="docutils literal notranslate"><span class="pre">load_df()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.score_functions">utils.score_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.score_functions.bayesian_average"><code class="docutils literal notranslate"><span class="pre">bayesian_average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.score_functions.global_mean_score"><code class="docutils literal notranslate"><span class="pre">global_mean_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.score_functions.mean_score"><code class="docutils literal notranslate"><span class="pre">mean_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.score_functions.nb_reviews"><code class="docutils literal notranslate"><span class="pre">nb_reviews()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.univariate_study">utils.univariate_study module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.univariate_study.UnivariateStudy"><code class="docutils literal notranslate"><span class="pre">UnivariateStudy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Documentation de notre application Streamlit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils-package">
+<h1>utils package<a class="headerlink" href="#utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-utils.base_study">
+<span id="utils-base-study-module"></span><h2>utils.base_study module<a class="headerlink" href="#module-utils.base_study" title="Link to this heading"></a></h2>
+<p>Ce module définit la classe de base pour les études de données.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.base_study.BaseStudy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.base_study.</span></span><span class="sig-name descname"><span class="pre">BaseStudy</span></span><a class="reference internal" href="_modules/utils/base_study.html#BaseStudy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.base_study.BaseStudy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A mother class that contains the common methods for the study classes.</p>
+</dd></dl>
+
+</section>
+<section id="module-utils.bivariate_study">
+<span id="utils-bivariate-study-module"></span><h2>utils.bivariate_study module<a class="headerlink" href="#module-utils.bivariate_study" title="Link to this heading"></a></h2>
+<p>Module de classe pour l’analyse bivariée.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.bivariate_study.BivariateStudy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.bivariate_study.</span></span><span class="sig-name descname"><span class="pre">BivariateStudy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_y_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_axis_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_axis_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/bivariate_study.html#BivariateStudy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.bivariate_study.BivariateStudy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#utils.base_study.BaseStudy" title="utils.base_study.BaseStudy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStudy</span></code></a></p>
+<p>Classe pour l’analyse bivariée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>BaseStudy</strong> (<em>Class</em>) – Classe parente</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.bivariate_study.BivariateStudy.display_graph">
+<span class="sig-name descname"><span class="pre">display_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/bivariate_study.html#BivariateStudy.display_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.bivariate_study.BivariateStudy.display_graph" title="Link to this definition"></a></dt>
+<dd><p>Méthode pour afficher le graphique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>free</strong> (<em>bool</em><em>, </em><em>optional</em>) – condition pour choisir les axes et les filtres additionnels, defaults to False</p></li>
+<li><p><strong>explanation</strong> (<em>str</em><em>, </em><em>optional</em>) – explication du graphique, defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True si l’affichage a réussi</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.bivariate_study.BivariateStudy.get_data_points">
+<span class="sig-name descname"><span class="pre">get_data_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_axis_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_axis_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chosen_filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/bivariate_study.html#BivariateStudy.get_data_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.bivariate_study.BivariateStudy.get_data_points" title="Link to this definition"></a></dt>
+<dd><p>Méthode pour obtenir les points de données pour le graphique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – dataframe</p></li>
+<li><p><strong>axis_x</strong> (<em>str</em>) – axe x</p></li>
+<li><p><strong>axis_y</strong> (<em>str</em>) – axe y</p></li>
+<li><p><strong>range_axis_x</strong> (<em>tuple</em>) – plage de l’axe x</p></li>
+<li><p><strong>range_axis_y</strong> (<em>tuple</em>) – plage de l’axe y</p></li>
+<li><p><strong>chosen_filters</strong> (<em>list</em>) – filtres choisis</p></li>
+<li><p><strong>range_filters</strong> (<em>list</em>) – plages des filtres</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Les points de données pour le graphique</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.bivariate_study.BivariateStudy.save_graph">
+<span class="sig-name descname"><span class="pre">save_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/bivariate_study.html#BivariateStudy.save_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.bivariate_study.BivariateStudy.save_graph" title="Link to this definition"></a></dt>
+<dd><p>Méthode pour sauvegarder les attributs du graphe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True si la sauvegarde a réussi</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-utils.dbapi">
+<span id="utils-dbapi-module"></span><h2>utils.dbapi module<a class="headerlink" href="#module-utils.dbapi" title="Link to this heading"></a></h2>
+<p>Module pour interagir avec une base de données MongoDB.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.dbapi.</span></span><span class="sig-name descname"><span class="pre">DBApi</span></span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe pour interagir avec une base de données MongoDB.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi.close_connection">
+<span class="sig-name descname"><span class="pre">close_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi.close_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi.close_connection" title="Link to this definition"></a></dt>
+<dd><p>Ferme la connexion à la base de données.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi.find_by">
+<span class="sig-name descname"><span class="pre">find_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi.find_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi.find_by" title="Link to this definition"></a></dt>
+<dd><p>Trouve des documents par colonne et valeur avec une limite optionnelle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> – Colonne sur laquelle filtrer.</p></li>
+<li><p><strong>value</strong> – Valeur à rechercher.</p></li>
+<li><p><strong>limit</strong> – Nombre maximum de documents à récupérer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste des documents correspondants.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi.find_by_columns">
+<span class="sig-name descname"><span class="pre">find_by_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi.find_by_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi.find_by_columns" title="Link to this definition"></a></dt>
+<dd><p>Trouve des documents en spécifiant les colonnes à inclure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>columns</strong> – Liste des colonnes à inclure dans le résultat.</p></li>
+<li><p><strong>limit</strong> – Nombre maximum de documents à récupérer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame des documents correspondants.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi.find_range_submitted">
+<span class="sig-name descname"><span class="pre">find_range_submitted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi.find_range_submitted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi.find_range_submitted" title="Link to this definition"></a></dt>
+<dd><p>Trouve des documents dont le champ ‘submitted’ est dans la plage donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>begin</strong> – Date de début.</p></li>
+<li><p><strong>end</strong> – Date de fin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste des documents correspondants.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi.get_all_from">
+<span class="sig-name descname"><span class="pre">get_all_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi.get_all_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi.get_all_from" title="Link to this definition"></a></dt>
+<dd><p>Récupère toutes les données pour une colonne donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>column</strong> – Nom de la colonne.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste des documents correspondants.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.dbapi.DBApi.get_percentage_documents">
+<span class="sig-name descname"><span class="pre">get_percentage_documents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dbapi.html#DBApi.get_percentage_documents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dbapi.DBApi.get_percentage_documents" title="Link to this definition"></a></dt>
+<dd><p>Renvoie un pourcentage de documents aléatoires avec les colonnes spécifiées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>columns</strong> – Liste des colonnes à inclure.</p></li>
+<li><p><strong>percentage</strong> – Pourcentage des documents à renvoyer (entre 0 et 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste des documents correspondants.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-utils.load_functions">
+<span id="utils-load-functions-module"></span><h2>utils.load_functions module<a class="headerlink" href="#module-utils.load_functions" title="Link to this heading"></a></h2>
+<p>Ce module contient des fonctions pour charger des fichiers, manipuler des données et calculer des tendances.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.compute_trend">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">compute_trend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_recette_par_annee_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#compute_trend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.compute_trend" title="Link to this definition"></a></dt>
+<dd><p>Calcule la tendance du nombre de recettes soumises par mois.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nb_recette_par_annee_df</strong> (<em>pd.DataFrame</em>) – DataFrame contenant les données des recettes soumises.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Un DataFrame contenant les tendances calculées</p>
+</dd>
+</dl>
+<p>ou un DataFrame vide si les données sont insuffisantes.
+:rtype: pd.DataFrame</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.initialize_recipes_df">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">initialize_recipes_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#initialize_recipes_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.initialize_recipes_df" title="Link to this definition"></a></dt>
+<dd><p>Initialise un DataFrame à partir d’un fichier CSV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Chemin vers le fichier CSV.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Le DataFrame chargé ou un DataFrame vide en cas d’erreur.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.load_background">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">load_background</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#load_background"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.load_background" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.load_css">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">load_css</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#load_css"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.load_css" title="Link to this definition"></a></dt>
+<dd><p>Charge un fichier CSS et l’applique à la page Streamlit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<em>str</em>) – Le nom du fichier CSS à charger.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.load_csv">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">load_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#load_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.load_csv" title="Link to this definition"></a></dt>
+<dd><p>Charge un fichier CSV depuis un chemin donné et retourne un DataFrame pandas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Le chemin du fichier CSV à charger.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – Si le fichier n’est pas trouvé.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Le fichier CSV chargé sous forme de DataFrame pandas.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.load_data">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.load_data" title="Link to this definition"></a></dt>
+<dd><p>Charge un fichier CSV depuis un chemin donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_data</strong> (<em>str</em>) – Le chemin du dossier contenant le fichier.</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – Le nom du fichier CSV à charger.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Un DataFrame pandas contenant les données</p>
+</dd>
+</dl>
+<p>ou un DataFrame vide si le fichier est introuvable.
+:rtype: pd.DataFrame</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.load_functions.load_df">
+<span class="sig-prename descclassname"><span class="pre">utils.load_functions.</span></span><span class="sig-name descname"><span class="pre">load_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load_functions.html#load_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.load_functions.load_df" title="Link to this definition"></a></dt>
+<dd><p>Charge un fichier CSV, applique des transformations
+sur les colonnes et retourne un DataFrame pandas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Le chemin du fichier CSV à charger.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Le fichier CSV transformé sous forme de DataFrame pandas.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-utils.score_functions">
+<span id="utils-score-functions-module"></span><h2>utils.score_functions module<a class="headerlink" href="#module-utils.score_functions" title="Link to this heading"></a></h2>
+<p>Ce module fournit des fonctions pour calculer des scores liés aux évaluations des recettes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.score_functions.bayesian_average">
+<span class="sig-prename descclassname"><span class="pre">utils.score_functions.</span></span><span class="sig-name descname"><span class="pre">bayesian_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/score_functions.html#bayesian_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.score_functions.bayesian_average" title="Link to this definition"></a></dt>
+<dd><p>Calcule le score bayésien moyen pour une recette donnée.</p>
+<p>Cette méthode prend en compte la moyenne des notes, le nombre d’évaluations,
+et la moyenne globale pour produire un score équilibré.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em>) – Moyenne des notes pour une recette.</p></li>
+<li><p><strong>v</strong> (<em>int</em>) – Nombre d’évaluations pour cette recette.</p></li>
+<li><p><strong>c</strong> (<em>float</em>) – Moyenne globale des notes sur l’ensemble du dataset.</p></li>
+<li><p><strong>m</strong> (<em>int</em><em>, </em><em>optional</em>) – Seuil minimum de votes requis pour qu’un item soit considéré pertinent (par défaut 5).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Le score bayésien moyen pour la recette.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.score_functions.global_mean_score">
+<span class="sig-prename descclassname"><span class="pre">utils.score_functions.</span></span><span class="sig-name descname"><span class="pre">global_mean_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/score_functions.html#global_mean_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.score_functions.global_mean_score" title="Link to this definition"></a></dt>
+<dd><p>Calcule la moyenne globale des notes sur l’ensemble des recettes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>database</strong> (<em>pandas.DataFrame</em>) – Le DataFrame contenant les évaluations des recettes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>La moyenne globale des notes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.score_functions.mean_score">
+<span class="sig-prename descclassname"><span class="pre">utils.score_functions.</span></span><span class="sig-name descname"><span class="pre">mean_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/score_functions.html#mean_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.score_functions.mean_score" title="Link to this definition"></a></dt>
+<dd><p>Calcule la moyenne des notes pour une recette donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipe_id</strong> (<em>int</em>) – L’identifiant unique de la recette.</p></li>
+<li><p><strong>database</strong> (<em>pandas.DataFrame</em>) – Le DataFrame contenant les évaluations des recettes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>La moyenne des notes pour la recette spécifiée.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.score_functions.nb_reviews">
+<span class="sig-prename descclassname"><span class="pre">utils.score_functions.</span></span><span class="sig-name descname"><span class="pre">nb_reviews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/score_functions.html#nb_reviews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.score_functions.nb_reviews" title="Link to this definition"></a></dt>
+<dd><p>Calcule le nombre de critiques pour une recette donnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipe_id</strong> (<em>int</em>) – L’identifiant unique de la recette.</p></li>
+<li><p><strong>database</strong> (<em>pandas.DataFrame</em>) – Le DataFrame contenant les évaluations des recettes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Le nombre d’évaluations pour la recette spécifiée.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-utils.univariate_study">
+<span id="utils-univariate-study-module"></span><h2>utils.univariate_study module<a class="headerlink" href="#module-utils.univariate_study" title="Link to this heading"></a></h2>
+<p>Module de classe pour l’analyse univariée et la visualisation des données d’un dataframe.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.univariate_study.</span></span><span class="sig-name descname"><span class="pre">UnivariateStudy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_axis_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_axis_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#utils.base_study.BaseStudy" title="utils.base_study.BaseStudy"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseStudy</span></code></a></p>
+<p>A class to perform univariate data analysis and visualization on a dataframe.
+Supports filtering, axis transformations, and multiple plot types.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.axis_graph">
+<span class="sig-name descname"><span class="pre">axis_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.axis_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.axis_graph" title="Link to this definition"></a></dt>
+<dd><p>Set axis labels, scale, and grid for the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<em>matplotlib.pyplot.Figure</em>) – figure object</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.pyplot.Axes</em>) – axis object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plot object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.pyplot.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.display_graph">
+<span class="sig-name descname"><span class="pre">display_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explanation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.display_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.display_graph" title="Link to this definition"></a></dt>
+<dd><p>Main method to display the graph and handle interaction with the filters and controls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>free</strong> (<em>bool</em><em>, </em><em>optional</em>) – condition pour choisir les axes et les filtres additionnels, defaults to False</p></li>
+<li><p><strong>explanation</strong> (<em>str</em><em>, </em><em>optional</em>) – explication du graphique, defaults to None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the plot was drawn successfully</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.get_data_points">
+<span class="sig-name descname"><span class="pre">get_data_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_axis_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chosen_filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.get_data_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.get_data_points" title="Link to this definition"></a></dt>
+<dd><p>Extract data points for the selected axis and filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – dataframe to extract data from</p></li>
+<li><p><strong>axis_x</strong> (<em>str</em>) – axis x</p></li>
+<li><p><strong>range_axis_x</strong> (<em>tuple</em>) – range for axis x</p></li>
+<li><p><strong>chosen_filters</strong> (<em>list</em>) – filters to apply</p></li>
+<li><p><strong>range_filters</strong> (<em>list</em>) – range for filters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>data points for axis x and recipe_id</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.get_data_points_ingredients">
+<span class="sig-name descname"><span class="pre">get_data_points_ingredients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_axis_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chosen_filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.get_data_points_ingredients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.get_data_points_ingredients" title="Link to this definition"></a></dt>
+<dd><p>Extract and count data points for ingredients or techniques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – dataframe to extract data from</p></li>
+<li><p><strong>axis_x</strong> (<em>str</em>) – axis x</p></li>
+<li><p><strong>range_axis_x</strong> (<em>tuple</em>) – range for axis x</p></li>
+<li><p><strong>chosen_filters</strong> (<em>list</em>) – filters to apply</p></li>
+<li><p><strong>range_filters</strong> (<em>list</em>) – range for filters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>data points for axis x, count of elements, and recipe_id</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.graph_bar_elts">
+<span class="sig-name descname"><span class="pre">graph_bar_elts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_elts_display</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count_elts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.graph_bar_elts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.graph_bar_elts" title="Link to this definition"></a></dt>
+<dd><p>Draw a bar plot for ingredients or techniques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nb_elts_display</strong> (<em>list</em>) – elements to display</p></li>
+<li><p><strong>count_elts</strong> (<em>list</em>) – count of elements</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plot object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.pyplot.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.graph_boxplot">
+<span class="sig-name descname"><span class="pre">graph_boxplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.graph_boxplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.graph_boxplot" title="Link to this definition"></a></dt>
+<dd><p>Draw a boxplot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>list</em>) – data points for the boxplot</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the plot was drawn successfully</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.graph_density">
+<span class="sig-name descname"><span class="pre">graph_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.graph_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.graph_density" title="Link to this definition"></a></dt>
+<dd><p>Draw a density (KDE) plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>list</em>) – data points for the density plot</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plot object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.pyplot.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.graph_histogram">
+<span class="sig-name descname"><span class="pre">graph_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.graph_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.graph_histogram" title="Link to this definition"></a></dt>
+<dd><p>Draw a histogram plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>list</em>) – data points for the histogram</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>plot object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.pyplot.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.print_self">
+<span class="sig-name descname"><span class="pre">print_self</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.print_self"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.print_self" title="Link to this definition"></a></dt>
+<dd><p>Print current object attributes for debugging.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.univariate_study.UnivariateStudy.save_graph">
+<span class="sig-name descname"><span class="pre">save_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/univariate_study.html#UnivariateStudy.save_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.univariate_study.UnivariateStudy.save_graph" title="Link to this definition"></a></dt>
+<dd><p>Save the graph configuration to Streamlit output.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utils" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pages.html" class="btn btn-neutral float-left" title="pages package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

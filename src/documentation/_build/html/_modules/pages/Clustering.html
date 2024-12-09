@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.Clustering &mdash; Documentation de notre application Streamlit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Documentation de notre application Streamlit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Documentation de notre application Streamlit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.Clustering</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.Clustering</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Cette page présente le Clustering appliqué aux données des recettes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">streamlit.components.v1</span> <span class="k">as</span> <span class="nn">components</span>
+<span class="kn">import</span> <span class="nn">html</span>
+<span class="kn">from</span> <span class="nn">utils.load_functions</span> <span class="kn">import</span> <span class="n">load_data</span><span class="p">,</span> <span class="n">load_css</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+<span class="c1"># Paramétrage de Streamlit</span>
+<span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span>
+    <span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;MangeTaData&quot;</span><span class="p">,</span> <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;images/favicon_mangetadata.png&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;wide&quot;</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../pages.html#pages.Clustering.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="n">PATH_DATA</span> <span class="o">=</span> <span class="s2">&quot;data/bertopic_chart/&quot;</span>
+    <span class="n">TOPICS_CSV</span> <span class="o">=</span> <span class="s2">&quot;topics_model.csv&quot;</span>
+
+    <span class="c1"># Charger le CSS</span>
+    <span class="n">load_css</span><span class="p">(</span><span class="s2">&quot;src/style.css&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Titre et description de la page</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;👨‍🍳 Clustering des recettes pour analyser les types de cuisine&quot;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cette page présente le Clustering appliqué aux données de recettes,</span>
+<span class="sd">    afin d&#39;identifier les différents types de cuisine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;1️⃣ Chargement des données&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        À la suite du prétraitement où les données ont été nettoyées, tokenisées et où les stopwords ont été supprimés,</span>
+<span class="sd">        nous pouvons charger les différentes descriptions et noms des recettes pour les analyser.</span>
+<span class="sd">        Pour cela, nous récupérons les données du fichier CSV et les transformons en liste de chaînes de caractères.</span>
+<span class="sd">        Après une analyse et des tests de clustering sur les descriptions, nous préférons finalement utiliser BERTopic </span>
+<span class="sd">        sur la colonne *name*, plus représentative des recettes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;2️⃣ Réalisation du Clustering avec BERTopic&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Nous utilisons la librairie BERTopic pour réaliser le Clustering des recettes.</span>
+<span class="sd">        À l&#39;aide de BERT, un embedding est réalisé pour chaque description de recette.</span>
+<span class="sd">        Ensuite, nous effectuons le Clustering afin d&#39;identifier les différents types de cuisine.</span>
+<span class="sd">        Pour cela, BERTopic utilise HDBSCAN. Nous paramétrons ce dernier pour produire des clusters de taille minimale 100.</span>
+<span class="sd">        De plus, BERTopic utilise UMAP pour la réduction de dimension.</span>
+<span class="sd">        Nous réduisons ensuite les ~300 topics obtenus à 150 en regroupant les topics les plus proches en dimensions réduites (5).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Afin d&#39;obtenir les meilleurs résultats possibles et après plusieurs essais,</span>
+<span class="sd">        nous avons décidé de fournir à BERTopic des &#39;topic_seeds&#39; avec des mots-clés générés par ChatGPT.</span>
+<span class="sd">        Ces mots-clés représentent des types de plats ou de cuisines, ce qui permet à BERTopic de mieux identifier les clusters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">topics_csv</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">PATH_DATA</span><span class="p">,</span> <span class="n">TOPICS_CSV</span><span class="p">)</span>
+
+    <span class="c1"># Afficher les données brutes si elles existent</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">topics_csv</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Exemple des Topics obtenus :&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="n">topics_csv</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Fichier topics_model.csv introuvable.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;topics_model.csv introuvable.&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;3️⃣Analyse des topics&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Une visualisation des topics obtenus est disponible ci-dessous.</span>
+<span class="sd">        Cette représentation 2D permet de visualiser les clusters.</span>
+<span class="sd">        On remarque que des groupes distincts se forment :</span>
+<span class="sd">        </span>
+<span class="sd">        - Dans le coin bas droit, on retrouve les recettes sucrées.</span>
+<span class="sd">        - Au centre, on retrouve les fruits, les agrumes, certaines épices et sirops.</span>
+<span class="sd">        - Les recettes salées se retrouvent à l&#39;opposé, dans le coin haut gauche.</span>
+<span class="sd">        - On observe des recettes de viandes, de poissons, de légumes, d&#39;épices et de nombreux types de sauces.</span>
+<span class="sd">        - Les recettes de types tartes, quiches, pizzas se regroupent dans le même secteur.</span>
+<span class="sd">        - De même pour les recettes à base de légumes, qui se retrouvent dans le coin bas gauche.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">             Les topics les plus fréquents sont des topcis situé dans les quatres coins de la visualisation. Les recettes populaires peuvent etre sucrées ou salées, des sauces ou des gateaux...</span>
+<span class="sd">             &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+        <span class="s2">&quot;data/bertopic_chart/visualization_topics.html&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">html_string</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">escaped_html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">html_string</span><span class="p">)</span>
+
+    <span class="n">iframe_code</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;iframe srcdoc=&quot;</span><span class="si">{</span><span class="n">escaped_html</span><span class="si">}</span><span class="s2">&quot; width=&quot;700&quot; height=&quot;700&quot; style=&quot;border: 2px solid #55381f; border-radius: 20px; background-color: #ffffff;&quot;&gt;&lt;/iframe&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">html</span><span class="p">(</span><span class="n">iframe_code</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">715</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">715</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;4️⃣ Visualisation sous forme d&#39;arbres hiérarchiques&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Voici la visualisation des clusters obtenus avec BERTopic.</span>
+<span class="sd">        Le pan (outil en haut à droite) permet de se déplacer dans la visualisation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/bertopic_chart/visualization.html&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">html_string</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">escaped_html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">html_string</span><span class="p">)</span>
+
+    <span class="n">iframe_code</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;iframe srcdoc=&quot;</span><span class="si">{</span><span class="n">escaped_html</span><span class="si">}</span><span class="s2">&quot; width=&quot;1000&quot; height=&quot;800&quot; style=&quot;border: 2px solid #55381f; border-radius: 20px; background-color: #ffffff;&quot;&gt;&lt;/iframe&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">html</span><span class="p">(</span><span class="n">iframe_code</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">820</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -11,8 +11,8 @@ import sys
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "Documentation de notre application Streamlit"
-copyright = "2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai"
-author = "ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai"
+copyright = "2024, Alexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai"
+author = "Alexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai"
 release = "1.0.0"
 
 # -- General configuration ---------------------------------------------------

@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pages.Simulation_Carte &mdash; Documentation de notre application Streamlit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Documentation de notre application Streamlit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Documentation de notre application Streamlit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pages.Simulation_Carte</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pages.Simulation_Carte</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Page de visualisation des données sous forme d&#39;une carte interactive.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pydeck</span> <span class="k">as</span> <span class="nn">pdk</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">streamlit_autorefresh</span> <span class="kn">import</span> <span class="n">st_autorefresh</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">utils.load_functions</span> <span class="kn">import</span> <span class="n">load_css</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span>
+    <span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;MangeTaData&quot;</span><span class="p">,</span> <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;images/favicon_mangetadata.png&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;wide&quot;</span>
+<span class="p">)</span>
+
+<span class="n">load_css</span><span class="p">(</span><span class="s2">&quot;src/style.css&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="load_geojson">
+<a class="viewcode-back" href="../../pages.html#pages.Simulation_Carte.load_geojson">[docs]</a>
+<span class="nd">@st</span><span class="o">.</span><span class="n">cache_data</span>
+<span class="k">def</span> <span class="nf">load_geojson</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a GeoJSON file</span>
+
+<span class="sd">    :param path: path of the GeoJSON file</span>
+<span class="sd">    :type path: str</span>
+<span class="sd">    :return: GeoDataFrame containing the GeoJSON data</span>
+<span class="sd">    :rtype: gpd.GeoDataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">preserve_topology</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GeoJSON chargé avec succès depuis </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gdf</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur lors du chargement du fichier GeoJSON : </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Erreur lors du chargement des données géographiques.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="load_recipes_data">
+<a class="viewcode-back" href="../../pages.html#pages.Simulation_Carte.load_recipes_data">[docs]</a>
+<span class="nd">@st</span><span class="o">.</span><span class="n">cache_data</span>
+<span class="k">def</span> <span class="nf">load_recipes_data</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Charge les données de recettes soumises et retourne un DataFrame</span>
+
+<span class="sd">    :param path: chemin vers le fichier CSV</span>
+<span class="sd">    :type path: str</span>
+<span class="sd">    :return: DataFrame contenant les données de recettes</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;submitted&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;submitted&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;submitted&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Données de recettes chargées avec succès depuis </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur lors du chargement des données de recettes : </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Erreur lors du chargement des données de recettes.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="generate_random_points">
+<a class="viewcode-back" href="../../pages.html#pages.Simulation_Carte.generate_random_points">[docs]</a>
+<span class="nd">@st</span><span class="o">.</span><span class="n">cache_data</span>
+<span class="k">def</span> <span class="nf">generate_random_points</span><span class="p">(</span><span class="n">recettes_par_années</span><span class="p">,</span> <span class="n">_gdf</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Génère des points aléatoires à l&#39;intérieur de la géométrie des États-Unis</span>
+<span class="sd">    en fonction du nombre de recettes soumises chaque année.</span>
+
+<span class="sd">    :param recettes_par_années: DataFrame contenant le nombre de recettes par année</span>
+<span class="sd">    :type recettes_par_années: pd.DataFrame</span>
+<span class="sd">    :param _gdf: GeoDataFrame contenant la géométrie des États-Unis</span>
+<span class="sd">    :type _gdf: gpd.GeoDataFrame</span>
+<span class="sd">    :return: DataFrame contenant les points aléatoires</span>
+<span class="sd">    :rtype: pd.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">us_geometry</span> <span class="o">=</span> <span class="n">_gdf</span><span class="o">.</span><span class="n">union_all</span><span class="p">()</span>
+        <span class="n">data_points</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">recettes_par_années</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">année</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span>
+            <span class="n">nombre_recettes</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;nombre_recettes&quot;</span><span class="p">]</span>
+            <span class="n">n_points</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nombre_recettes</span> <span class="o">//</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">maxy</span> <span class="o">=</span> <span class="n">us_geometry</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">max_attempts</span> <span class="o">=</span> <span class="n">n_points</span> <span class="o">*</span> <span class="mi">10</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_points</span> <span class="ow">and</span> <span class="n">attempts</span> <span class="o">&lt;</span> <span class="n">max_attempts</span><span class="p">:</span>
+                <span class="n">random_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">miny</span><span class="p">,</span> <span class="n">maxy</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">us_geometry</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">random_point</span><span class="p">):</span>
+                    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="n">random_point</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                            <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="n">random_point</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                            <span class="s2">&quot;année&quot;</span><span class="p">:</span> <span class="n">année</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">data_points</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+        <span class="n">df_points</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_points</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points aléatoires générés avec succès.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df_points</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur lors de la génération de points aléatoires : </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Erreur lors de la génération des points aléatoires.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../pages.html#pages.Simulation_Carte.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Carte Data Food.com au cours des années&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cette carte illustre le défi majeur auquel le site est confronté : </span>
+<span class="sd">        la diminution de sa base d&#39;utilisateurs. </span>
+<span class="sd">        Les points sur la carte ne représentent pas les localisations réelles des utilisateurs, </span>
+<span class="sd">        mais servent uniquement de visualisation symbolique. Chaque point correspond à 10 recettes soumises, </span>
+<span class="sd">        mettant en lumière les tendances d&#39;engagement des utilisateurs au fil du temps. </span>
+<span class="sd">        Cette représentation permet d&#39;identifier visuellement les périodes de croissance et </span>
+<span class="sd">        de déclin pour mieux orienter les efforts de reconquête et d&#39;amélioration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">geojson_path</span> <span class="o">=</span> <span class="s2">&quot;data/us_states.geojson&quot;</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">load_geojson</span><span class="p">(</span><span class="n">geojson_path</span><span class="p">)</span>
+
+    <span class="n">df_recette</span> <span class="o">=</span> <span class="n">load_recipes_data</span><span class="p">(</span><span class="s2">&quot;data/cloud_df.csv&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">gdf</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Le fichier GeoJSON est vide ou non valide.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;GeoJSON chargé avec succès.&quot;</span><span class="p">)</span>
+
+    <span class="n">recettes_par_années</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df_recette</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;année&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;nombre_recettes&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">df_points</span> <span class="o">=</span> <span class="n">generate_random_points</span><span class="p">(</span><span class="n">recettes_par_années</span><span class="p">,</span> <span class="n">gdf</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">df_points</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Aucun point généré pour l&#39;affichage.&quot;</span><span class="p">)</span>
+
+    <span class="n">année_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df_points</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">df_points</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">année_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">df_points</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">df_points</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="s2">&quot;animation_running&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">animation_running</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="s2">&quot;année&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span> <span class="o">=</span> <span class="n">année_min</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">animation_running</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span>
+        <span class="s2">&quot;Démarrer l&#39;animation&quot;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">animation_running</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">animation_running</span><span class="p">:</span>
+        <span class="n">st_autorefresh</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;animation_refresh&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span> <span class="o">&gt;</span> <span class="n">année_max</span><span class="p">:</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span> <span class="o">=</span> <span class="n">année_min</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">année_choisie</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">slider</span><span class="p">(</span>
+            <span class="s2">&quot;Choisissez une année&quot;</span><span class="p">,</span>
+            <span class="n">min_value</span><span class="o">=</span><span class="n">année_min</span><span class="p">,</span>
+            <span class="n">max_value</span><span class="o">=</span><span class="n">année_max</span><span class="p">,</span>
+            <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span> <span class="o">=</span> <span class="n">année_choisie</span>
+
+    <span class="n">df_points_filtered</span> <span class="o">=</span> <span class="n">df_points</span><span class="p">[</span><span class="n">df_points</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span><span class="p">]</span>
+
+    <span class="n">nombre_recettes</span> <span class="o">=</span> <span class="n">recettes_par_années</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="n">recettes_par_années</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span><span class="p">,</span> <span class="s2">&quot;nombre_recettes&quot;</span>
+    <span class="p">]</span>
+    <span class="n">nombre_recettes</span> <span class="o">=</span> <span class="n">nombre_recettes</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">nombre_recettes</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Année choisie : </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span><span class="si">}</span><span class="s2"> avec </span><span class="si">{</span><span class="n">nombre_recettes</span><span class="si">}</span><span class="s2"> recettes.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">geo_layer</span> <span class="o">=</span> <span class="n">pdk</span><span class="o">.</span><span class="n">Layer</span><span class="p">(</span>
+        <span class="s2">&quot;GeoJsonLayer&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">gdf</span><span class="p">,</span>
+        <span class="n">pickable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">stroked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">filled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">line_width_min_pixels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">scatter_layer</span> <span class="o">=</span> <span class="n">pdk</span><span class="o">.</span><span class="n">Layer</span><span class="p">(</span>
+        <span class="s2">&quot;ScatterplotLayer&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">df_points_filtered</span><span class="p">,</span>
+        <span class="n">get_position</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">],</span>
+        <span class="n">get_radius</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span>
+        <span class="n">get_color</span><span class="o">=</span><span class="s2">&quot;[255, 140, 0, 200]&quot;</span><span class="p">,</span>
+        <span class="n">pickable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">view_state</span> <span class="o">=</span> <span class="n">pdk</span><span class="o">.</span><span class="n">ViewState</span><span class="p">(</span>
+        <span class="n">latitude</span><span class="o">=</span><span class="mf">37.0902</span><span class="p">,</span>
+        <span class="n">longitude</span><span class="o">=-</span><span class="mf">95.7129</span><span class="p">,</span>
+        <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">pitch</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">container</span><span class="p">():</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            &lt;style&gt;</span>
+<span class="s2">            .year-overlay </span><span class="se">{{</span>
+<span class="s2">                position: absolute;</span>
+<span class="s2">                top: 20px;  </span>
+<span class="s2">                right: 50px;</span>
+<span class="s2">                font-size: 48px;</span>
+<span class="s2">                color: orange;</span>
+<span class="s2">                z-index: 9999;</span>
+<span class="s2">                pointer-events: none;</span>
+<span class="s2">            </span><span class="se">}}</span>
+<span class="s2">            &lt;/style&gt;</span>
+<span class="s2">            &lt;div class=&quot;year-overlay&quot;&gt;</span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">deck</span> <span class="o">=</span> <span class="n">pdk</span><span class="o">.</span><span class="n">Deck</span><span class="p">(</span>
+            <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="n">geo_layer</span><span class="p">,</span> <span class="n">scatter_layer</span><span class="p">],</span>
+            <span class="n">initial_view_state</span><span class="o">=</span><span class="n">view_state</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">pydeck_chart</span><span class="p">(</span><span class="n">deck</span><span class="p">)</span>
+
+    <span class="n">recettes_par_années</span><span class="p">[</span><span class="s2">&quot;is_current_year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">recettes_par_années</span><span class="p">[</span><span class="s2">&quot;année&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">année</span>
+    <span class="p">)</span>
+
+    <span class="n">chart</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">recettes_par_années</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">&quot;année:O&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Année&quot;</span><span class="p">),</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">&quot;nombre_recettes:Q&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Nombre de recettes&quot;</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">alt</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span>
+                <span class="n">alt</span><span class="o">.</span><span class="n">datum</span><span class="o">.</span><span class="n">is_current_year</span><span class="p">,</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;orange&quot;</span><span class="p">),</span> <span class="n">alt</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;steelblue&quot;</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Nombre de recettes par année&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">altair_chart</span><span class="p">(</span><span class="n">chart</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, ALexandre Malfoy, Alexandre Rocchi, Baptiste Cervoni, Damien Thai.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
