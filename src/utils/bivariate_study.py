@@ -11,7 +11,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-from utils.base_study import BaseStudy
+from src.utils.base_study import BaseStudy
 
 
 # Créez un logger spécifique pour ce module
