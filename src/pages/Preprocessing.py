@@ -27,7 +27,7 @@ except Exception as e:
     logger.error(f"Erreur lors de la configuration de la page : {e}")
     st.error("Une erreur s'est produite lors de la configuration de la page.")
 
-load_css("src/style.css")
+load_css("style.css")
 
 
 def main():

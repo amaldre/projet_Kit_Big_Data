@@ -19,7 +19,7 @@ st.set_page_config(
     page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide"
 )
 
-load_css("src/style.css")
+load_css("style.css")
 
 
 @st.cache_data

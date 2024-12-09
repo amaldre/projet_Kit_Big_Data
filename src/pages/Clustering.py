@@ -25,7 +25,7 @@ def main():
     TOPICS_CSV = "topics_model.csv"
 
     # Charger le CSS
-    load_css("src/style.css")
+    load_css("style.css")
 
     # Titre et description de la page
     st.title("👨‍🍳 Clustering des recettes pour analyser les types de cuisine")

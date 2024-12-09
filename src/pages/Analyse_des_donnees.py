@@ -30,7 +30,7 @@ def main():
     Fonction principale de la page Analyse des données.
     """
     st.title("Analyse des data")
-    load_css("src/style.css")
+    load_css("style.css")
 
     try:
         # Creation of all the graphs displayed in the page

@@ -22,7 +22,7 @@ st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetada
 
 
 # Charger le CSS
-load_css("src/style.css")
+load_css("style.css")
 
 st.title("Analyse interactive des données")
 
