@@ -5,6 +5,7 @@ Page expliquant les étapes de prétraitement des données.
 import streamlit as st
 import pandas as pd
 import os
+from utils.dbapi import DBApi
 import logging
 from utils.load_functions import load_data, load_css
 import html
@@ -15,7 +16,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 PATH_DATA = "data/"
 RAW_RECIPE = "RAW_recipes_sample.csv"
 RAW_INTERACTIONS = "RAW_interactions_sample.csv"
-DF_FINAL = "clean_cloud_df.csv"
+DF_FINAL = "clean_recipe_df.csv"
 
 try:
     st.set_page_config(
@@ -27,7 +28,7 @@ except Exception as e:
     logger.error(f"Erreur lors de la configuration de la page : {e}")
     st.error("Une erreur s'est produite lors de la configuration de la page.")
 
-load_css("style.css")
+load_css("src/style.css")
 
 
 def main():
@@ -136,9 +137,7 @@ def main():
         """
     )
 
-    st.header("3️⃣ Visualisation de la Fusion")
-
-    st.header("4️⃣ Suppression des Valeurs Aberrantes")
+    st.header("3️⃣ Suppression des Valeurs Aberrantes")
     st.write(
         """
     Certaines recettes « troll » ou mal renseignées sont supprimées :
@@ -164,7 +163,7 @@ def main():
             logger.error(f"Erreur lors de la suppression des valeurs aberrantes : {e}")
             st.error("Une erreur est survenue lors du nettoyage des données.")
 
-    st.header("5️⃣ Nettoyage et Tokenisation des Textes")
+    st.header("4️⃣ Nettoyage et Tokenisation des Textes")
     st.write(
         """
     Les descriptions et noms des recettes sont nettoyés et tokenisés :
@@ -187,7 +186,7 @@ def main():
         logger.error(f"Erreur lors du nettoyage des textes : {e}")
         st.error("Impossible de nettoyer les textes.")
 
-    st.header("6️⃣ Mise en place d'une Base de Données")
+    st.header("5️⃣ Mise en place d'une Base de Données")
     st.write(
         """
     Afin de déployer notre application, une base de données MongoDB a été mise en place.
@@ -213,7 +212,7 @@ def main():
         with col:
             st.markdown(
                 f"""
-                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
+                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                     <strong>{columns[i]}</strong>
                 </div>
                 """,
@@ -223,7 +222,7 @@ def main():
             with cols[i]:
                 st.markdown(
                     f"""
-                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                         <strong>{columns[i + 4]}</strong>
                     </div>
                     """,
@@ -236,7 +235,7 @@ def main():
     
     Après avoir créé notre collection et inséré nos données, nous avons pu nous connecter à notre base via une classe Python dédiée.
     Cependant, la version gratuite de MongoDB Atlas nous a limités dans le téléchargement des données (10 Go sur une période glissante de 7 jours), 
-    épuisant rapidement notre quota lors des tests. Nous avons donc abandonné MongoDB Atlas au profit d’une base locale réduite à 55,8 Mo.
+    épuisant rapidement notre quota lors des tests. Nous avons donc abandonné MongoDB Atlas au profit d’une base locale réduite à 120 Mo.
     
     Les colonnes sont alors renommées comme suit :
         """
@@ -260,7 +259,7 @@ def main():
         with col:
             st.markdown(
                 f"""
-                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
+                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                     <strong>{columns[i]}</strong>
                 </div>
                 """,
@@ -270,7 +269,7 @@ def main():
             with cols[i]:
                 st.markdown(
                     f"""
-                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
                         <strong>{columns[i + 4]}</strong>
                     </div>
                     """,
@@ -284,8 +283,8 @@ def main():
         st.write("Le DataFrame final est alors le suivant :")
         st.dataframe(df_final.head(5))
     else:
-        st.warning("Fichier clean_cloud_df.csv introuvable.")
-        logger.warning("clean_cloud_df.csv introuvable.")
+        st.warning("Fichier clean_recipe_df.csv introuvable.")
+        logger.warning("clean_recipe_df.csv introuvable.")
 
 
 if __name__ == "__main__":
