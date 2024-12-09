@@ -15,7 +15,7 @@ logger = logging.getLogger(os.path.basename(__file__))
 PATH_DATA = "data/"
 RAW_RECIPE = "RAW_recipes_sample.csv"
 RAW_INTERACTIONS = "RAW_interactions_sample.csv"
-DF_FINAL = "clean_recipe_df.csv"
+DF_FINAL = "clean_cloud_df.csv"
 
 try:
     st.set_page_config(
@@ -211,7 +211,7 @@ def main():
         with col:
             st.markdown(
                 f"""
-                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
+                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
                     <strong>{columns[i]}</strong>
                 </div>
                 """,
@@ -221,7 +221,7 @@ def main():
             with cols[i]:
                 st.markdown(
                     f"""
-                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
                         <strong>{columns[i + 4]}</strong>
                     </div>
                     """,
@@ -258,7 +258,7 @@ def main():
         with col:
             st.markdown(
                 f"""
-                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
+                <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
                     <strong>{columns[i]}</strong>
                 </div>
                 """,
@@ -268,7 +268,7 @@ def main():
             with cols[i]:
                 st.markdown(
                     f"""
-                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#a1815b; margin-bottom:10px;">
+                    <div style="padding:10px; border:1px solid #ddd; border-radius:8px; background-color:#ffffff; margin-bottom:10px;">
                         <strong>{columns[i + 4]}</strong>
                     </div>
                     """,
@@ -282,8 +282,8 @@ def main():
         st.write("Le DataFrame final est alors le suivant :")
         st.dataframe(df_final.head(5))
     else:
-        st.warning("Fichier clean_recipe_df.csv introuvable.")
-        logger.warning("clean_recipe_df.csv introuvable.")
+        st.warning("Fichier cloud_recipe_df.csv introuvable.")
+        logger.warning("clean_cloud_df.csv introuvable.")
 
 
 if __name__ == "__main__":
