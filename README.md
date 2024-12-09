@@ -5,7 +5,7 @@ https://projetkitbigdata-ipja7lrnugkzoh5way2ngf.streamlit.app
 
 ##### Par Damien Thai, Baptiste Cervoni, Alexandre Malfoy, Alexandre Rocchi
 
-Notre axe pour ce projet *Kit Big Data* à été de présenter une analyse approfondie des données du site [Food.com](https://www.food.com/) (données issues d’un dataset disponible sur [Kaggle](https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions)) afin d’expliquer la baisse d’activité observée ces dernières années. Il s’agit d’un travail dans lequel nous jouons le rôle d’une équipe de data analystes conseillant les propriétaires du site sur les raisons de cette perte de popularité et proposant des axes d’amélioration.
+Notre axe pour ce projet *Kit Big Data* a été de présenter une analyse approfondie des données du site [Food.com](https://www.food.com/) (données issues d’un dataset disponible sur [Kaggle](https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions)) afin d’expliquer la baisse d’activité observée ces dernières années. Il s’agit d’un travail dans lequel nous jouons le rôle d’une équipe de data analystes conseillant les propriétaires du site sur les raisons de cette perte de popularité et proposant des axes d’amélioration.
 
 ---
 
@@ -17,9 +17,9 @@ Food.com était une référence en matière de partage et de recommandations de 
 **Objectifs du Projet :**
 1. Pretraiter la base de données afin de supprimer les outliers, d'obtenir des informations supplémentaires (note moyenne, nombre de commentaires, ...)
 2. Analyser les tendances du site au fil du temps pour identifier les périodes de croissance et de déclin.
-3. Analyser les critères selon lesquelles une recette peut être qualifié de populaire, telles que la note moyenne et le nombre de commentaires.
+3. Analyser les critères selon lesquels une recette peut être qualifiée de populaire, telles que la note moyenne et le nombre de commentaires.
 4. Comprendre les facteurs de succès des recettes populaires : durée, nombre d'étapes, ingrédients, ...
-5. Proposer un clustering thématique des recettes afin de faire resortir les catégories de recettes populaires
+5. Proposer un clustering thématique des recettes afin de faire ressortir les catégories de recettes populaires
 6. Présenter l’analyse via une webapp Streamlit interactive permettant une exploration intuitive des résultats par les décideurs.
 
 ---
@@ -84,7 +84,7 @@ PROJET_KIT_BI/
   ```bash
     pytest --cov=src
   ```
-La couverture des tests est de 77 %. Ce score s'explique par la difficulité de tester l'affichage de tous les graphes de la page d'analyse de données
+La couverture des tests est de 77 %. Ce score s'explique par la difficulté de tester l'affichage de tous les graphes de la page d'analyse de données
 
 
 2. Qualité du Code : 
@@ -112,8 +112,8 @@ Un pipeline GitHub Actions est configuré pour :
 ## Pistes d’Amélioration
 
 **Améliorations possibles :**
-  1. Stockage et requêtes via une base de données plus performante pour améliorer. Une version ulltérieur de l'application a   utilisé une base de données MongoDB hébergé sur le cloud via Atlas. Cependant, nous avons été confronté à la limite du le flux d'échange entre l'utilisateur et la base de données. Cette piste à donc été abandonnée pour la version finale mais le code peut être consulté dans la branche dev_mongoDB.
+  1. Stockage et requêtes via une base de données plus performante pour améliorer. Une version ultérieur de l'application a utilisé une base de données MongoDB hébergé sur le cloud via Atlas. Cependant, nous avons été confrontés à la limite du le flux d'échange entre l'utilisateur et la base de données. Cette piste a donc été abandonnée pour la version finale mais le code peut être consulté dans la branche dev_mongoDB.
   2. Ajout de fonctionnalités comme la génération automatique de noms de recettes à partir du profil des recettes populaires déterminé dans l'étude.
-  3. Profiling des créateurs de recette car ceux sont eux qui sont les premiers moteurs d'activités et Analyse du cycle de vie des recettes.
+  3. Profiling des créateurs de recette car ce sont eux qui sont les premiers moteurs d'activités et Analyse du cycle de vie des recettes.
 
 
