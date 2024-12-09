@@ -1,0 +1,64 @@
+2024-12-08 23:32:50,483 - load_functions.py - INFO - CSS chargé avec succès depuis 'src/style.css'.
+2024-12-08 23:33:26,369 - load_functions.py - INFO - DataFrame chargé avec succès depuis 'data/clean_cloud_df.csv'.
+2024-12-08 23:35:37,334 - Analyse_des_donnees.py - INFO - Tendance calculee avec succes.
+2024-12-08 23:35:37,345 - utils.bivariate_study - INFO - Instance de Study creee avec key='Moyenne glissante du nombre de recettes par mois'
+2024-12-08 23:35:37,345 - utils.bivariate_study - INFO - Instance de Study creee avec key='Nombre de commentaires par recette en fonction du temps'
+2024-12-08 23:35:37,345 - utils.bivariate_study - INFO - Instance de Study creee avec key='Durée des recettes populaires'
+2024-12-08 23:35:37,345 - utils.bivariate_study - INFO - Instance de Study creee avec key='Nombre d'étapes des recettes populaires'
+2024-12-08 23:35:37,345 - utils.bivariate_study - INFO - Instance de Study creee avec key='Nombre d'ingrédients par recette'
+2024-12-08 23:35:37,346 - utils.bivariate_study - INFO - Instance de Study creee avec key='Calories des recettes populaires'
+2024-12-08 23:35:37,346 - utils.bivariate_study - INFO - Instance de Study creee avec key='Nombre de techniques de cuisine différentes par recettes'
+2024-12-08 23:35:37,346 - Analyse_des_donnees.py - INFO - Graphiques initialises avec succes.
+2024-12-08 23:35:37,360 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Moyenne glissante du nombre de recettes par mois'
+2024-12-08 23:35:38,703 - Analyse_des_donnees.py - INFO - Graphique affiche : Moyenne glissante du nombre de recettes du temps
+2024-12-08 23:35:38,705 - utils.univariate_study - INFO - Displaying graph for instance with key='Nombre de recettes par an'
+2024-12-08 23:35:41,784 - Analyse_des_donnees.py - INFO - Graphique affiche : Nombre de recettes par an
+2024-12-08 23:35:41,784 - utils.univariate_study - INFO - Displaying graph for instance with key='Nombre de recettes durant le pic d'activité du site'
+2024-12-08 23:35:44,041 - Analyse_des_donnees.py - INFO - Graphique affiche : Nombre de recettes durant le pic d'activité du site
+2024-12-08 23:35:44,043 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Nombre de commentaires par recette en fonction du temps'
+2024-12-08 23:35:47,084 - Analyse_des_donnees.py - INFO - Graphique affiche : Nombre de commentaires par recette en fonction du temps
+2024-12-08 23:35:47,107 - utils.univariate_study - INFO - Displaying graph for instance with key='Distribution du nombre de commentaires par recette'
+2024-12-08 23:35:49,726 - Analyse_des_donnees.py - INFO - Graphique affiche : Distribution du nombre de commentaires par recette
+2024-12-08 23:35:49,726 - utils.univariate_study - INFO - Displaying graph for instance with key='Distribution de la note moyenne des recettes'
+2024-12-08 23:35:51,996 - Analyse_des_donnees.py - INFO - Graphique affiche : Distribution de la note moyenne des recettes
+2024-12-08 23:35:52,035 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Durée des recettes populaires'
+2024-12-08 23:35:54,969 - Analyse_des_donnees.py - INFO - Graphique affiche : Durée recettes populaires
+2024-12-08 23:35:54,985 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Nombre d'étapes des recettes populaires'
+2024-12-08 23:35:58,174 - Analyse_des_donnees.py - INFO - Graphique affiche : Nombre d'étapes des recettes populaires
+2024-12-08 23:35:58,181 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Nombre d'ingrédients par recette'
+2024-12-08 23:36:00,206 - Analyse_des_donnees.py - INFO - Graphique affiche : Nombre d'ingrédients par recette
+2024-12-08 23:36:00,207 - utils.univariate_study - INFO - Displaying graph for instance with key='Ingrédients les plus populaires'
+2024-12-08 23:36:02,337 - Analyse_des_donnees.py - INFO - Graphique affiche : Ingrédients les plus populaires
+2024-12-08 23:36:02,342 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Calories des recettes populaires'
+2024-12-08 23:36:04,501 - Analyse_des_donnees.py - INFO - Graphique affiche : Calories des recettes populaires
+2024-12-08 23:36:04,511 - utils.bivariate_study - INFO - Affichage du graphique pour l'instance avec key='Nombre de techniques de cuisine différentes par recettes'
+2024-12-08 23:36:06,999 - Analyse_des_donnees.py - INFO - Graphique affiche : Nombre de techniques de cuisine différentes par recettes
+2024-12-08 23:36:07,002 - utils.univariate_study - INFO - Displaying graph for instance with key='Techniques de cuisine les plus populaires'
+2024-12-08 23:36:08,635 - Analyse_des_donnees.py - INFO - Graphique affiche : Techniques de cuisine les plus populaires
+2024-12-08 23:36:13,825 - load_functions.py - INFO - Chargement des données depuis data/bertopic_chart/topics_model.csv
+2024-12-08 23:36:37,908 - utils.univariate_study - INFO - Displaying graph for instance with key='free graph 0'
+2024-12-08 23:37:25,661 - load_functions.py - INFO - Chargement des données depuis data/RAW_recipes_sample.csv
+2024-12-08 23:37:26,124 - load_functions.py - INFO - Chargement des données depuis data/RAW_interactions_sample.csv
+2024-12-08 23:37:27,459 - load_functions.py - WARNING - Fichier introuvable : data/clean_recipe_df.csv
+2024-12-08 23:37:27,600 - Preprocessing.py - WARNING - clean_recipe_df.csv introuvable.
+2024-12-08 23:38:18,025 - Preprocessing.py - WARNING - clean_recipe_df.csv introuvable.
+2024-12-08 23:38:55,988 - Preprocessing.py - WARNING - clean_recipe_df.csv introuvable.
+2024-12-08 23:39:55,744 - load_functions.py - WARNING - Fichier introuvable : data/cloud_recipe_df.csv
+2024-12-08 23:39:55,826 - Preprocessing.py - WARNING - clean_cloud_df.csv introuvable.
+2024-12-08 23:40:03,613 - load_functions.py - INFO - Chargement des données depuis data/clean_cloud_df.csv
+2024-12-08 23:42:52,469 - Simulation_Carte.py - INFO - GeoJSON chargé avec succès depuis data/us_states.geojson.
+2024-12-08 23:42:52,475 - Simulation_Carte.py - ERROR - Erreur lors du chargement des données de recettes : data/cloud_df.csv. [Errno 2] No such file or directory: 'data/cloud_df.csv'
+2024-12-08 23:45:00,053 - Simulation_Carte.py - ERROR - Erreur lors du chargement des données de recettes : data/clean_cloud_df.csv. 'submitted'
+2024-12-08 23:53:24,187 - utils.bivariate_study - INFO - Instance de Study avec key='Moyenne glissante du nombre de recettes par mois' supprimee
+2024-12-08 23:53:24,189 - utils.bivariate_study - INFO - Instance de Study avec key='Nombre de commentaires par recette en fonction du temps' supprimee
+2024-12-08 23:53:24,193 - utils.bivariate_study - INFO - Instance de Study avec key='Durée des recettes populaires' supprimee
+2024-12-08 23:53:24,195 - utils.bivariate_study - INFO - Instance de Study avec key='Nombre d'étapes des recettes populaires' supprimee
+2024-12-08 23:53:24,219 - utils.bivariate_study - INFO - Instance de Study avec key='Nombre d'ingrédients par recette' supprimee
+2024-12-08 23:53:24,219 - utils.bivariate_study - INFO - Instance de Study avec key='Calories des recettes populaires' supprimee
+2024-12-08 23:53:24,221 - utils.bivariate_study - INFO - Instance de Study avec key='Nombre de techniques de cuisine différentes par recettes' supprimee
+2024-12-08 23:54:34,746 - Simulation_Carte.py - INFO - Données de recettes chargées avec succès depuis data/clean_cloud_df.csv.
+2024-12-08 23:56:13,795 - Simulation_Carte.py - INFO - Points aléatoires générés avec succès.
+2024-12-09 00:36:49,318 - load_functions.py - INFO - CSS chargé avec succès depuis 'src/style.css'.
+2024-12-09 00:37:01,999 - load_functions.py - INFO - DataFrame chargé avec succès depuis 'data/clean_cloud_df.csv'.
+2024-12-09 00:49:56,906 - load_functions.py - INFO - CSS chargé avec succès depuis 'src/style.css'.
+2024-12-09 00:50:24,031 - load_functions.py - INFO - DataFrame chargé avec succès depuis 'data/clean_cloud_df.csv'.
