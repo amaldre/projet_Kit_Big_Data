@@ -12,14 +12,14 @@ from streamlit_autorefresh import st_autorefresh
 import altair as alt
 import logging
 import os
-from utils.load_functions import load_css
+from src.utils.load_functions import load_css
 
 logger = logging.getLogger(os.path.basename(__file__))
 st.set_page_config(
     page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide"
 )
 
-load_css("style.css")
+load_css("src/style.css")
 
 
 @st.cache_data

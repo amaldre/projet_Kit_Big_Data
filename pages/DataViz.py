@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from datetime import date
-from utils.bivariate_study import BivariateStudy
-from utils.univariate_study import UnivariateStudy
+from src.utils.bivariate_study import BivariateStudy
+from src.utils.univariate_study import UnivariateStudy
 import pandas as pd
 import ast
-from utils.load_functions import initialize_recipes_df, load_css
+from src.utils.load_functions import initialize_recipes_df, load_css
 import logging
 import os
 
@@ -22,7 +22,7 @@ st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetada
 
 
 # Charger le CSS
-load_css("style.css")
+load_css("src/style.css")
 
 st.title("Analyse interactive des données")
 

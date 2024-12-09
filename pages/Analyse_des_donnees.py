@@ -5,10 +5,10 @@ Page de l'application dédiée à l'analyse des données.
 import os
 import logging
 import streamlit as st
-from utils.bivariate_study import BivariateStudy
-from utils.univariate_study import UnivariateStudy
+from src.utils.bivariate_study import BivariateStudy
+from src.utils.univariate_study import UnivariateStudy
 from pandas import Timestamp
-from utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
+from src.utils.load_functions import compute_trend, load_df, initialize_recipes_df, load_css
 
 st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
 
@@ -30,7 +30,7 @@ def main():
     Fonction principale de la page Analyse des données.
     """
     st.title("Analyse des data")
-    load_css("style.css")
+    load_css("src/style.css")
 
     try:
         # Creation of all the graphs displayed in the page

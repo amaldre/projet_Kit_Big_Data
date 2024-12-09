@@ -5,9 +5,8 @@ Page expliquant les étapes de prétraitement des données.
 import streamlit as st
 import pandas as pd
 import os
-from utils.dbapi import DBApi
 import logging
-from utils.load_functions import load_data, load_css
+from src.utils.load_functions import load_data, load_css
 import html
 
 logger = logging.getLogger(os.path.basename(__file__))

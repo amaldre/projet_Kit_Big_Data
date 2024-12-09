@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import logging
 import streamlit.components.v1 as components
 import html
-from utils.load_functions import load_data, load_css
+from src.utils.load_functions import load_data, load_css
 
 logger = logging.getLogger(os.path.basename(__file__))
 
@@ -25,7 +25,7 @@ def main():
     TOPICS_CSV = "topics_model.csv"
 
     # Charger le CSS
-    load_css("style.css")
+    load_css("src/style.css")
 
     # Titre et description de la page
     st.title("👨‍🍳 Clustering des recettes pour analyser les types de cuisine")

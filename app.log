@@ -62,3 +62,4 @@
 2024-12-09 00:37:01,999 - load_functions.py - INFO - DataFrame chargé avec succès depuis 'data/clean_cloud_df.csv'.
 2024-12-09 00:49:56,906 - load_functions.py - INFO - CSS chargé avec succès depuis 'src/style.css'.
 2024-12-09 00:50:24,031 - load_functions.py - INFO - DataFrame chargé avec succès depuis 'data/clean_cloud_df.csv'.
+2024-12-09 01:46:48,863 - load_functions.py - INFO - CSS chargé avec succès depuis 'src/style.css'.

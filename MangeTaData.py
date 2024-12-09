@@ -6,8 +6,8 @@ import os
 import streamlit as st
 import pandas as pd
 import logging
-from logging_config import setup_logging
-from utils.load_functions import initialize_recipes_df, load_css
+from src.logging_config import setup_logging
+from src.utils.load_functions import initialize_recipes_df, load_css
 
 st.set_page_config(page_title="MangeTaData", page_icon="images/favicon_mangetadata.png", layout="wide")
 
